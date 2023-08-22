@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var configuration = builder.Configuration;
 
 //string connectionString = Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb")?? throw new InvalidOperationException("Connection string 'MYSQLCONNSTR_localdb' not found.");
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -26,6 +26,13 @@ builder.Services.AddDefaultIdentity<User>(options =>
     options.SignIn.RequireConfirmedEmail = false;
     options.SignIn.RequireConfirmedPhoneNumber = false;
 }).AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddAuthentication()
+    .AddFacebook(facebookOptions =>
+{
+    facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
+    facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
+});
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
