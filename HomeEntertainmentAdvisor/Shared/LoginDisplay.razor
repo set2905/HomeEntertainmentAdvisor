@@ -1,12 +1,15 @@
-﻿<AuthorizeView>
+﻿@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<LoginDisplay> Localizer
+
+<AuthorizeView>
     <Authorized>
-        <a href="Identity/Account/Manage">Hello, @context.User.Identity?.Name!</a>
-        <a href="Identity/Account/Logout">Log out</a>
+        <a href="Identity/Account/Manage">@Localizer["hello"], @context.User.Identity?.Name!</a>
+        <a href="Identity/Account/Logout">@Localizer["log out"]</a>
 
 
     </Authorized>
     <NotAuthorized>
-        <a href="Identity/Account/Register">Register</a>
-        <a href="Identity/Account/Login">Log in</a>
+        <a href="Identity/Account/Register">@Localizer["register"]</a>
+        <a href="Identity/Account/Login">@Localizer["log in"]</a>
     </NotAuthorized>
 </AuthorizeView>

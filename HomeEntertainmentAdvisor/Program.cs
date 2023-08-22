@@ -1,10 +1,12 @@
 using HomeEntertainmentAdvisor.Areas.Identity;
 using HomeEntertainmentAdvisor.Data;
 using HomeEntertainmentAdvisor.Data.Models;
+using HomeEntertainmentAdvisor.Localization;
 using kedzior.io.ConnectionStringConverter;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,7 +44,13 @@ builder.Services.AddAuthentication()
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+
+builder.Services.AddControllers();
+
+builder.Services.AddLocalization(options => options.ResourcesPath = "Shared/Resources");
+
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<User>>();
+builder.Services.AddTransient<MudLocalizer, ResXMudLocalizer>();
 
 builder.Services.AddMudServices();
 
@@ -65,6 +73,14 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+var supportedCultures = new[] { "en-US", "ru-RU" };
+var localizationOptions = new RequestLocalizationOptions()
+    .SetDefaultCulture(supportedCultures[0])
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+
+app.UseRequestLocalization(localizationOptions);
 
 app.UseAuthorization();
 
