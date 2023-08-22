@@ -3,13 +3,19 @@
 
 <AuthorizeView>
     <Authorized>
-        <a href="Identity/Account/Manage">@Localizer["hello"], @context.User.Identity?.Name!</a>
-        <a href="Identity/Account/Logout">@Localizer["log out"]</a>
-
-
+        <MudButton Class="px-3" Href="Identity/Account/Manage" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Login">
+            @Localizer["hello"], @context.User.Identity?.Name!
+        </MudButton>
+        <MudButton Class="px-3" Href="Identity/Account/Manage" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Logout">
+            @Localizer["log out"]
+        </MudButton>
     </Authorized>
     <NotAuthorized>
-        <a href="Identity/Account/Register">@Localizer["register"]</a>
-        <a href="Identity/Account/Login">@Localizer["log in"]</a>
+        <MudButton Class="px-3" Href="Identity/Account/Register" Variant="Variant.Filled" Color="Color.Primary">
+            @Localizer["register"]
+        </MudButton>
+        <MudButton Class="px-3" Href="Identity/Account/Login" Variant="Variant.Filled" Color="Color.Primary">
+            @Localizer["log in"]
+        </MudButton>
     </NotAuthorized>
 </AuthorizeView>
