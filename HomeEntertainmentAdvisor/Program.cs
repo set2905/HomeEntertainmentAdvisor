@@ -21,19 +21,18 @@ if (builder.Environment.IsDevelopment())
 {
     builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.Development.json");
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-    fbId=configuration["Authentication:Facebook:AppId"];
-    fbSecret=configuration["Authentication:Facebook:AppSecret"];
-    googleId=configuration["Authentication:Google:ClientId"];
-    googleSecret=configuration["Authentication:Google:ClientSecret"];
+
 }
 else
 {
     connectionString = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
-    fbId=Environment.GetEnvironmentVariable("FB_APPID");
-    fbSecret=Environment.GetEnvironmentVariable("FB_APPSECRET");
-    googleId=Environment.GetEnvironmentVariable("GOOGLE_CLIENTID");
-    googleSecret=Environment.GetEnvironmentVariable("GOOGLE_CLIENTSECRET");
 }
+
+fbId=configuration["Authentication:Facebook:AppId"]??Environment.GetEnvironmentVariable("FB_APPID");
+fbSecret=configuration["Authentication:Facebook:AppSecret"]??Environment.GetEnvironmentVariable("FB_APPSECRET");
+googleId=configuration["Authentication:Google:ClientId"]??Environment.GetEnvironmentVariable("GOOGLE_CLIENTID");
+googleSecret=configuration["Authentication:Google:ClientSecret"]??Environment.GetEnvironmentVariable("GOOGLE_CLIENTSECRET");
+
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
@@ -46,7 +45,7 @@ builder.Services.AddDefaultIdentity<User>(options =>
     options.SignIn.RequireConfirmedPhoneNumber = false;
 }).AddEntityFrameworkStores<ApplicationDbContext>();
 
-//В ENV вариабл надо бы
+
 builder.Services.AddAuthentication()
     .AddFacebook(facebookOptions =>
     {
