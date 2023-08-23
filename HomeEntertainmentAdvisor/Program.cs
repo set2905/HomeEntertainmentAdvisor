@@ -20,7 +20,7 @@ string? googleSecret;
 if (builder.Environment.IsDevelopment())
 {
     builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.Development.json");
-    connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
+    connectionString =Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING")?? builder.Configuration.GetConnectionString("DefaultConnection");
 
 }
 else
