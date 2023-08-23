@@ -17,7 +17,14 @@ string? googleId;
 string? googleSecret;
 if (builder.Environment.IsDevelopment())
 {
-    builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.Development.json");
+    try
+    {
+        builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.Development.json");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+    }
     connectionString =Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING")?? builder.Configuration.GetConnectionString("DefaultConnection");
 
 }
