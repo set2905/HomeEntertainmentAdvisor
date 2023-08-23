@@ -10,25 +10,29 @@ using MudBlazor;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-var configuration = builder.Configuration;
+ConfigurationManager configuration = builder.Configuration;
 
-//string connectionString = Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb")?? throw new InvalidOperationException("Connection string 'MYSQLCONNSTR_localdb' not found.");
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseMySQL(AzureMySQL.ToMySQLStandard(connectionString)));
-//builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-// Add services to the container.
-//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
-var connectionString = String.Empty;
+var connectionString = string.Empty;
+string? fbId;
+string? fbSecret;
+string? googleId;
+string? googleSecret;
 if (builder.Environment.IsDevelopment())
 {
     builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.Development.json");
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
+    fbId=configuration["Authentication:Facebook:AppId"];
+    fbSecret=configuration["Authentication:Facebook:AppSecret"];
+    googleId=configuration["Authentication:Google:ClientId"];
+    googleSecret=configuration["Authentication:Google:ClientSecret"];
 }
 else
 {
     connectionString = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
+    fbId=Environment.GetEnvironmentVariable("FB_APPID");
+    fbSecret=Environment.GetEnvironmentVariable("FB_APPSECRET");
+    googleId=Environment.GetEnvironmentVariable("GOOGLE_CLIENTID");
+    googleSecret=Environment.GetEnvironmentVariable("GOOGLE_CLIENTSECRET");
 }
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -46,13 +50,13 @@ builder.Services.AddDefaultIdentity<User>(options =>
 builder.Services.AddAuthentication()
     .AddFacebook(facebookOptions =>
     {
-        facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
-        facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
+        facebookOptions.AppId = fbId;
+        facebookOptions.AppSecret = fbSecret;
     })
     .AddGoogle(googleOptions =>
     {
-        googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
-        googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+        googleOptions.ClientId = googleId;
+        googleOptions.ClientSecret = googleSecret;
     });
 
 builder.Services.AddRazorPages();
