@@ -27,7 +27,7 @@
 
         <LoginDisplay />
         <CultureSelector />
-        <MudSwitch  Checked="@_isDarkMode" CheckedChanged="HandleThemeChanged" Color="Color.Primary" Class="ml-4 d-none d-sm-block" T="bool" ThumbIcon="@Icons.Material.Filled.DarkMode" />
+        <MudSwitch Checked="@_isDarkMode" CheckedChanged="HandleThemeChanged" Color="Color.Primary" Class="ml-4 d-none d-sm-block" T="bool" ThumbIcon="@Icons.Material.Filled.DarkMode" />
     </MudAppBar>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
@@ -38,10 +38,11 @@
 
 @code {
     private MudTheme _theme = new();
-    private bool _isDarkMode;
+    private bool _isDarkMode=true;
 
     public async Task HandleThemeChanged(bool value)
     {
+        if (_isDarkMode == value) return;
         _isDarkMode=value;
         await localStorage.SetItemAsync("darkTheme", value);
     }
