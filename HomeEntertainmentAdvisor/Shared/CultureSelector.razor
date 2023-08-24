@@ -1,20 +1,24 @@
 ﻿@using System.Globalization
 @inject NavigationManager Navigation
 
-<p>
-    <label>
-        Select your locale:
-        <select @bind="Culture">
+        <MudSelect DisableUnderLine="true"  @bind-Value="@Culture" T="CultureInfo" OpenIcon="" Class="mt-0" >
             @foreach (var culture in supportedCultures)
             {
-                <option value="@culture">@culture.DisplayName</option>
+                <MudSelectItem Value="@culture">
+                    <img src="@cultureSvgs[culture.Name]" width="33" class="mr-1" />
+                </MudSelectItem>
             }
-        </select>
-    </label>
-</p>
+        </MudSelect>
+
 
 @code
 {
+    private Dictionary<string, string> cultureSvgs = new()
+    {
+        {"en-US","https://upload.wikimedia.org/wikipedia/commons/8/83/Flag_of_the_United_Kingdom_%283-5%29.svg"},
+        {"ru-RU","https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Russia.svg"}
+    };
+
     private CultureInfo[] supportedCultures = new[]
     {
         new CultureInfo("en-US"),
@@ -45,3 +49,8 @@
         }
     }
 }
+<style>
+    .mud-input-control > .mud-input-control-input-container > div.mud-input.mud-input-text {
+        margin-top: 0px;
+    }
+</style>

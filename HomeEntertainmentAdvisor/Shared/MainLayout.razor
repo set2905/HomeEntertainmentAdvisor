@@ -6,21 +6,29 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Elevation="0">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <CultureSelector />
-        <MudSwitch Checked="@_isDarkMode" CheckedChanged="HandleThemeChanged" Color="Color.Primary" Class="ma-4" T="bool" Label="Light/Dark" />
+    <MudAppBar Dense="true" Elevation="0">
+        <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
+            <MudText Class="d-none d-md-block" Typo="Typo.body1">
+                Home
+            </MudText>
+        </MudNavLink>
+        <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">
+            <MudText Class="d-none d-md-block" Typo="Typo.body1">
+                Counter
+            </MudText>
+        </MudNavLink>
+        <MudNavLink Href="fetchdata" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">
+            <MudText Class="d-none d-md-block" Typo="Typo.body1">
+                Fetch data
+            </MudText>
+        </MudNavLink>
+
         <MudSpacer />
 
         <LoginDisplay />
-
+        <CultureSelector />
+        <MudSwitch Checked="@_isDarkMode" CheckedChanged="HandleThemeChanged" Color="Color.Primary" Class="ml-4" T="bool" ThumbIcon="@Icons.Material.Filled.DarkMode" />
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h6">MudBlazorTest</MudText>
-        </MudDrawerHeader>
-        <NavMenu />
-    </MudDrawer>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
             @Body
@@ -29,16 +37,9 @@
 </MudLayout>
 
 @code {
-    private MudSwitch<bool> themeSwitch;
     private MudTheme _theme = new();
     private bool _isDarkMode;
 
-    bool _drawerOpen = true;
-
-    void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
     public async Task HandleThemeChanged(bool value)
     {
         _isDarkMode=value;
@@ -50,6 +51,14 @@
         var darkThemeCookieValue = await localStorage.GetItemAsync<bool>("darkTheme");
         _isDarkMode = darkThemeCookieValue;
         StateHasChanged();
-
     }
 }
+<style>
+    .mud-select {
+        flex-grow: 0;
+    }
+
+    .mud-nav-item {
+        width: auto;
+    }
+</style>

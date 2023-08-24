@@ -3,19 +3,29 @@
 
 <AuthorizeView>
     <Authorized>
-        <MudText Class="mx-3" >
-            @Localizer["hello"], @context.User.Identity?.Name!
+        <MudText Class="mx-3">
+            <MudText Class="d-none d-md-block" Typo="Typo.body1">
+                @Localizer["hello"], @context.User.Identity?.Name!
+            </MudText>
+
         </MudText>
-        <MudButton Class="mx-3" Href="Identity/Account/Manage" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Logout">
-            @Localizer["log out"]
-        </MudButton>
+        <MudNavLink Class="mx-3" Href="Identity/Account/Logout" Icon="@Icons.Material.Filled.Logout">
+            <MudText Class="d-none d-md-block" Typo="Typo.body1">
+                @Localizer["log out"]
+            </MudText>
+
+        </MudNavLink>
     </Authorized>
     <NotAuthorized>
-        <MudButton Class="mx-3" Href="Identity/Account/Register" Variant="Variant.Filled" Color="Color.Primary">
-            @Localizer["register"]
-        </MudButton>
-        <MudButton Class="mx-3" Href="Identity/Account/Login" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Login">
-            @Localizer["log in"]
-        </MudButton>
+        <MudNavLink Class="mx-3" Href="Identity/Account/Register">
+            <MudText Typo="Typo.body1">
+                @Localizer["register"]
+            </MudText>
+        </MudNavLink>
+        <MudNavLink Class="mx-3" Href="Identity/Account/Login" Icon="@Icons.Material.Filled.Login">
+            <MudText Class="d-none d-md-block" Typo="Typo.body1">
+                @Localizer["log in"]
+            </MudText>
+        </MudNavLink>
     </NotAuthorized>
 </AuthorizeView>
