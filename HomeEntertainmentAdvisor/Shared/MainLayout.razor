@@ -6,19 +6,19 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Dense="true" Elevation="0">
-        <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
-            <MudText Class="d-none d-md-block" Typo="Typo.body1">
+    <MudAppBar WrapContent="false" Dense="false" Elevation="0">
+        <MudNavLink Href="" Match="NavLinkMatch.All" IconColor="Color.Surface" Icon="@Icons.Material.Filled.Home">
+            <MudText Class="d-none d-sm-block" Typo="Typo.body1">
                 Home
             </MudText>
         </MudNavLink>
-        <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">
-            <MudText Class="d-none d-md-block" Typo="Typo.body1">
+        <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.Add">
+            <MudText Class="d-none d-sm-block" Typo="Typo.body1">
                 Counter
             </MudText>
         </MudNavLink>
-        <MudNavLink Href="fetchdata" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">
-            <MudText Class="d-none d-md-block" Typo="Typo.body1">
+        <MudNavLink Href="fetchdata" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.List">
+            <MudText Class="d-none d-sm-block" Typo="Typo.body1">
                 Fetch data
             </MudText>
         </MudNavLink>
@@ -27,7 +27,7 @@
 
         <LoginDisplay />
         <CultureSelector />
-        <MudSwitch Checked="@_isDarkMode" CheckedChanged="HandleThemeChanged" Color="Color.Primary" Class="ml-4" T="bool" ThumbIcon="@Icons.Material.Filled.DarkMode" />
+        <MudSwitch  Checked="@_isDarkMode" CheckedChanged="HandleThemeChanged" Color="Color.Primary" Class="ml-4 d-none d-sm-block" T="bool" ThumbIcon="@Icons.Material.Filled.DarkMode" />
     </MudAppBar>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
