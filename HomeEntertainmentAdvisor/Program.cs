@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using HomeEntertainmentAdvisor.Areas.Identity;
 using HomeEntertainmentAdvisor.Data;
 using HomeEntertainmentAdvisor.Data.Models;
@@ -38,6 +39,8 @@ fbSecret=configuration["Authentication:Facebook:AppSecret"]??Environment.GetEnvi
 googleId=configuration["Authentication:Google:ClientId"]??Environment.GetEnvironmentVariable("GOOGLE_CLIENTID");
 googleSecret=configuration["Authentication:Google:ClientSecret"]??Environment.GetEnvironmentVariable("GOOGLE_CLIENTSECRET");
 
+builder.Services.AddBlazoredLocalStorage();   
+builder.Services.AddBlazoredLocalStorage(config => config.JsonSerializerOptions.WriteIndented = true); 
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));

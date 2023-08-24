@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
 <MudDialogProvider />
@@ -8,7 +9,7 @@
     <MudAppBar Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <CultureSelector />
-        <MudSwitch @bind-Checked="@_isDarkMode" Color="Color.Primary" Class="ma-4" T="bool" Label="Light/Dark" />
+        <MudSwitch Checked="@_isDarkMode" CheckedChanged="HandleThemeChanged" Color="Color.Primary" Class="ma-4" T="bool" Label="Light/Dark" />
         <MudSpacer />
 
         <LoginDisplay />
@@ -28,6 +29,7 @@
 </MudLayout>
 
 @code {
+    private MudSwitch<bool> themeSwitch;
     private MudTheme _theme = new();
     private bool _isDarkMode;
 
@@ -36,5 +38,18 @@
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+    public async Task HandleThemeChanged(bool value)
+    {
+        _isDarkMode=value;
+        await localStorage.SetItemAsync("darkTheme", value);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var darkThemeCookieValue = await localStorage.GetItemAsync<bool>("darkTheme");
+        _isDarkMode = darkThemeCookieValue;
+        StateHasChanged();
+
     }
 }

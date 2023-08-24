@@ -4,9 +4,9 @@
     using Microsoft.AspNetCore.Mvc;
 
     [Route("[controller]/[action]")]
-    public class CultureController : Controller
+    public class PrefsController : Controller
     {
-        public IActionResult Set(string culture, string redirectUri)
+        public IActionResult SetCulture(string culture, string redirectUri)
         {
             if (culture != null)
             {

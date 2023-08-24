@@ -39,7 +39,7 @@
                 var uriEscaped = Uri.EscapeDataString(uri);
 
                 Navigation.NavigateTo(
-                    $"Culture/Set?culture={cultureEscaped}&redirectUri={uriEscaped}",
+                    $"Prefs/SetCulture?culture={cultureEscaped}&redirectUri={uriEscaped}",
                     forceLoad: true);
             }
         }
