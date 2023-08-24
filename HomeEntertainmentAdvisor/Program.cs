@@ -2,8 +2,10 @@ using Blazored.LocalStorage;
 using HomeEntertainmentAdvisor.Areas.Identity;
 using HomeEntertainmentAdvisor.Data;
 using HomeEntertainmentAdvisor.Data.Models;
+using HomeEntertainmentAdvisor.ExceptionHandling;
 using HomeEntertainmentAdvisor.Localization;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
 using MudBlazor.Services;
@@ -66,6 +68,8 @@ builder.Services.AddAuthentication()
         googleOptions.ClientSecret = googleSecret;
     });
 
+builder.Services.AddTransient<AppExceptionHandlingMiddleware>();
+
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
@@ -79,6 +83,8 @@ builder.Services.AddTransient<MudLocalizer, ResXMudLocalizer>();
 builder.Services.AddMudServices();
 
 var app = builder.Build();
+
+app.UseMiddleware<AppExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

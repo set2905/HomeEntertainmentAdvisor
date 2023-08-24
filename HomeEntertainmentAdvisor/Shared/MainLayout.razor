@@ -31,19 +31,21 @@
     </MudAppBar>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
-            @Body
+            <ErrorBoundary>
+                @Body
+            </ErrorBoundary>
         </MudContainer>
     </MudMainContent>
 </MudLayout>
 
 @code {
     private MudTheme _theme = new();
-    private bool _isDarkMode=true;
+    private bool _isDarkMode = true;
 
     public async Task HandleThemeChanged(bool value)
     {
         if (_isDarkMode == value) return;
-        _isDarkMode=value;
+        //_isDarkMode=value;
         await localStorage.SetItemAsync("darkTheme", value);
     }
 
