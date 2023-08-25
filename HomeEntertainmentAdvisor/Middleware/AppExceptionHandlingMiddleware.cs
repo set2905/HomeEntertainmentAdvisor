@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace HomeEntertainmentAdvisor.ExceptionHandling
+namespace HomeEntertainmentAdvisor.Middleware
 {
     public class AppExceptionHandlingMiddleware : IMiddleware
     {

@@ -1,9 +1,9 @@
 using Blazored.LocalStorage;
 using HomeEntertainmentAdvisor.Areas.Identity;
 using HomeEntertainmentAdvisor.Data;
-using HomeEntertainmentAdvisor.Data.Models;
-using HomeEntertainmentAdvisor.ExceptionHandling;
 using HomeEntertainmentAdvisor.Localization;
+using HomeEntertainmentAdvisor.Middleware;
+using HomeEntertainmentAdvisor.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +45,7 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddBlazoredLocalStorage(config => config.JsonSerializerOptions.WriteIndented = true); 
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseLazyLoadingProxies().UseSqlServer(connectionString));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<User>(options =>

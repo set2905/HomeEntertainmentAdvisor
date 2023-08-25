@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace HomeEntertainmentAdvisor.Data.Models
+namespace HomeEntertainmentAdvisor.Models
 {
     public class User : IdentityUser
     {
