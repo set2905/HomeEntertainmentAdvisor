@@ -9,6 +9,6 @@ namespace HomeEntertainmentAdvisor.Models
         public virtual Review Review { get; set; }
         public Guid ReviewId { get; set; }
         public virtual User User { get; set; }
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
     }
 }

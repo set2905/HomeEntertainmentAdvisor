@@ -6,7 +6,7 @@ namespace HomeEntertainmentAdvisor.Models
     {
         public Guid Id { get; set; }
         public virtual User Author { get; set; }
-        public Guid AuthorId { get; set; }
+        public string AuthorId { get; set; }
         public virtual Review Review { get; set; }
         public Guid ReviewId { get; set; }
 
