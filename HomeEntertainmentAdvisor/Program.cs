@@ -1,6 +1,8 @@
 using Blazored.LocalStorage;
 using HomeEntertainmentAdvisor.Areas.Identity;
 using HomeEntertainmentAdvisor.Data;
+using HomeEntertainmentAdvisor.Domain.Repo;
+using HomeEntertainmentAdvisor.Domain.Repo.Interfaces;
 using HomeEntertainmentAdvisor.Localization;
 using HomeEntertainmentAdvisor.Middleware;
 using HomeEntertainmentAdvisor.Models;
@@ -41,8 +43,8 @@ fbSecret=configuration["Authentication:Facebook:AppSecret"]??Environment.GetEnvi
 googleId=configuration["Authentication:Google:ClientId"]??Environment.GetEnvironmentVariable("GOOGLE_CLIENTID");
 googleSecret=configuration["Authentication:Google:ClientSecret"]??Environment.GetEnvironmentVariable("GOOGLE_CLIENTSECRET");
 
-builder.Services.AddBlazoredLocalStorage();   
-builder.Services.AddBlazoredLocalStorage(config => config.JsonSerializerOptions.WriteIndented = true); 
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddBlazoredLocalStorage(config => config.JsonSerializerOptions.WriteIndented = true);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseLazyLoadingProxies().UseSqlServer(connectionString));
@@ -69,6 +71,14 @@ builder.Services.AddAuthentication()
     });
 
 builder.Services.AddTransient<AppExceptionHandlingMiddleware>();
+
+builder.Services.AddTransient<ICommentsRepo, CommentsRepo>();
+builder.Services.AddTransient<IMediaPiecesRepo, MediaPiecesRepo>();
+builder.Services.AddTransient<IReviewImagesRepo, ReviewImagesRepo>();
+builder.Services.AddTransient<IReviewLikesRepo, ReviewLikesRepo>();
+builder.Services.AddTransient<IReviewsRepo, ReviewsRepo>();
+builder.Services.AddTransient<IReviewTagRelationsRepo, ReviewTagRelationsRepo>();
+builder.Services.AddTransient<ITagRepo, TagRepo>();
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
