@@ -16,6 +16,7 @@ namespace HomeEntertainmentAdvisor.Data
         public DbSet<ReviewLike> ReviewLikes { get; set; }
         public DbSet<MediaPiece> MediaPieces { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
         public DbSet<ReviewImage> ReviewImages { get; set; }
         public DbSet<ReviewTagRelation> ReviewTagRelations { get; set; }
         public DbSet<Tag> Tags { get; set; }

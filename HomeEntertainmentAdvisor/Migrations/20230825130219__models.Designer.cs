@@ -113,7 +113,7 @@ namespace HomeEntertainmentAdvisor.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
-                    b.Property<int>("Rating")
+                    b.Property<int>("Grade")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

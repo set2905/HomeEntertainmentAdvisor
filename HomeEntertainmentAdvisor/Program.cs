@@ -79,6 +79,7 @@ builder.Services.AddTransient<IReviewLikesRepo, ReviewLikesRepo>();
 builder.Services.AddTransient<IReviewsRepo, ReviewsRepo>();
 builder.Services.AddTransient<IReviewTagRelationsRepo, ReviewTagRelationsRepo>();
 builder.Services.AddTransient<ITagRepo, TagRepo>();
+builder.Services.AddTransient<IRatingRepo, RatingRepo>();
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();

@@ -12,6 +12,20 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
             dbSet=context.Reviews;
         }
 
+        public async Task<List<Review>> GetPage(int page, int recordsPerPage)
+        {
+            return await dbSet.OrderBy(x => x.CreatedDate).Skip(page*recordsPerPage).Take(recordsPerPage).ToListAsync();
+        }
+
+        public async Task<List<Review>> GetPage(int page, int recordsPerPage, string searhQuery)
+        {
+            var foundIds = dbSet
+                .Join(context.Comments, r => r.Id, c => c.ReviewId, (r, c) => new { reviewId = r.Id, reviewContent = r.Content, reviewName = r.Name, comment = c.Content })
+                .Where(x => EF.Functions.FreeText(x.reviewContent, searhQuery)||EF.Functions.FreeText(x.reviewName, searhQuery)||EF.Functions.FreeText(x.comment, searhQuery))
+                .Select(x => x.reviewId);
+            var found = dbSet.Where(x => foundIds.Contains(x.Id));
+            return await found.OrderBy(x => x.CreatedDate).Skip(page*recordsPerPage).Take(recordsPerPage).ToListAsync();
+        }
         public override async Task<Review?> GetById(Guid id)
         {
             return await dbSet.SingleOrDefaultAsync(x => x.Id == id);

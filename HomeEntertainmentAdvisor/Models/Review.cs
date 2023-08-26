@@ -10,14 +10,9 @@ namespace HomeEntertainmentAdvisor.Models
         [StringLength(4096, MinimumLength = 1)]
         public string Content { get; set; }
         public int CachedLikes { get; set; }
-        public int Rating { get; set; }
-        public virtual User? Author { get; set; }
-        public string? AuthorId { get; set; }
-        public virtual MediaPiece MediaPiece { get; set; }
-        public Guid MediaPieceId { get; set; }
-
+        public virtual Rating Rating { get; set; }
+        public Guid RatingId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime LastCacheUpdate { get; set; }
-
     }
 }
