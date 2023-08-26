@@ -12,7 +12,7 @@ namespace HomeEntertainmentAdvisor.Migrations
         {
             migrationBuilder.Sql("CREATE FULLTEXT CATALOG ft AS DEFAULT", true);
             migrationBuilder.Sql("CREATE FULLTEXT INDEX ON dbo.Reviews(Content) KEY INDEX PK_Reviews WITH STOPLIST = SYSTEM", true);
-            migrationBuilder.Sql("CREATE FULLTEXT INDEX ON dbo.Reviews(Name) KEY INDEX PK_Reviews WITH STOPLIST = SYSTEM", true);
+           // migrationBuilder.Sql("CREATE FULLTEXT INDEX ON dbo.Reviews(Name) KEY INDEX PK_Reviews WITH STOPLIST = SYSTEM", true);
             migrationBuilder.Sql("CREATE FULLTEXT INDEX ON dbo.Comments(Content) KEY INDEX PK_Comments WITH STOPLIST = SYSTEM", true);
 
         }
@@ -20,6 +20,11 @@ namespace HomeEntertainmentAdvisor.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("DROP FULLTEXT CATALOG ft", true);
+            migrationBuilder.Sql("DROP FULLTEXT INDEX ON dbo.Reviews", true);
+          //  migrationBuilder.Sql("DROP FULLTEXT INDEX ON dbo.Reviews", true);
+            migrationBuilder.Sql("DROP FULLTEXT INDEX ON dbo.Comments", true);
+
 
         }
     }

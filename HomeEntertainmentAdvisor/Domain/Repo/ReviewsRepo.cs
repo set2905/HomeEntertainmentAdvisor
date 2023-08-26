@@ -23,7 +23,7 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
         {
             IQueryable<Guid> foundIds = dbSet
                 .Join(context.Comments, r => r.Id, c => c.ReviewId, (r, c) => new { reviewId = r.Id, reviewContent = r.Content, reviewName = r.Name, comment = c.Content })
-                .Where(x => EF.Functions.FreeText(x.reviewContent, searhQuery)||EF.Functions.FreeText(x.reviewName, searhQuery)||EF.Functions.FreeText(x.comment, searhQuery))
+                .Where(x => EF.Functions.FreeText(x.reviewContent, searhQuery)/*||EF.Functions.FreeText(x.reviewName, searhQuery)*/||EF.Functions.FreeText(x.comment, searhQuery))
                 .Select(x => x.reviewId);
             IQueryable<Review> found = dbSet.Where(x => foundIds.Contains(x.Id));
             return await found.OrderBy(x => x.CreatedDate).Skip(page*recordsPerPage).Take(recordsPerPage).ToListAsync();
