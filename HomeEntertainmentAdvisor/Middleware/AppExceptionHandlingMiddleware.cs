@@ -18,7 +18,8 @@ namespace HomeEntertainmentAdvisor.Middleware
             catch (Exception ex)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                await context.Response.WriteAsync("Internal Server Error. Please, contact us at setoff2905@yandex.ru.");
+                await context.Response.WriteAsync($"{ex.Message}\n{ex.StackTrace}");
+                // await context.Response.WriteAsync("Internal Server Error. Please, contact us at setoff2905@yandex.ru.");
                 _logger.Log(LogLevel.Error, $"Message: {Environment.NewLine + ex.Message} {Environment.NewLine}Trace: {Environment.NewLine + ex.StackTrace ?? string.Empty}");
             }
 
