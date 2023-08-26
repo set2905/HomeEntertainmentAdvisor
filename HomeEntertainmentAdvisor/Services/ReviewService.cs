@@ -28,7 +28,7 @@ namespace HomeEntertainmentAdvisor.Services
         {
             return await reviewsRepo.GetPage(1, 10);
         }
-        public async Task<List<Review>> Find(string query, int page = 1, int perPage = 10)
+        public async Task<List<Review>> Find(string query, int page = 0, int perPage = 10)
         {
             return await reviewsRepo.GetPage(page, perPage, query);
         }

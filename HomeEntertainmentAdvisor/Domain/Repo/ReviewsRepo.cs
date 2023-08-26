@@ -14,17 +14,16 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
 
         public async Task<List<Review>> GetPage(int page, int recordsPerPage)
         {
-            if (page<1) throw new ArgumentException("page cannot be less than 1");
-            if (recordsPerPage<1) throw new ArgumentException("recordsPerPage cannot be less than 1");
+            //if (page<1) throw new ArgumentException("page cannot be less than 1");
+            //if (recordsPerPage<1) throw new ArgumentException("recordsPerPage cannot be less than 1");
             return await dbSet.OrderBy(x => x.CreatedDate).Skip((page-1)*recordsPerPage).Take(recordsPerPage).ToListAsync();
         }
 
         public async Task<List<Review>> GetPage(int page, int recordsPerPage, string searhQuery)
         {
-            IQueryable<Guid> foundIds = dbSet
-                .Join(context.Comments, r => r.Id, c => c.ReviewId, (r, c) => new { reviewId = r.Id, reviewContent = r.Content, reviewName = r.Name, comment = c.Content })
-                .Where(x => EF.Functions.FreeText(x.reviewContent, searhQuery)/*||EF.Functions.FreeText(x.reviewName, searhQuery)*/||EF.Functions.FreeText(x.comment, searhQuery))
-                .Select(x => x.reviewId);
+            var foundIdsInReviews=dbSet.Where(x => EF.Functions.FreeText(x.Content, searhQuery)).Select(x => x.Id);
+            var foundIdsInComments = context.Comments.Where(x => EF.Functions.FreeText(x.Content, searhQuery)).Select(x => x.ReviewId);
+            var foundIds = foundIdsInReviews.Union(foundIdsInComments).Distinct();
             IQueryable<Review> found = dbSet.Where(x => foundIds.Contains(x.Id));
             return await found.OrderBy(x => x.CreatedDate).Skip(page*recordsPerPage).Take(recordsPerPage).ToListAsync();
         }
