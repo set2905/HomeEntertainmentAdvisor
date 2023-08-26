@@ -6,6 +6,8 @@ using HomeEntertainmentAdvisor.Domain.Repo.Interfaces;
 using HomeEntertainmentAdvisor.Localization;
 using HomeEntertainmentAdvisor.Middleware;
 using HomeEntertainmentAdvisor.Models;
+using HomeEntertainmentAdvisor.Services;
+using HomeEntertainmentAdvisor.Services.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
@@ -80,6 +82,8 @@ builder.Services.AddTransient<IReviewsRepo, ReviewsRepo>();
 builder.Services.AddTransient<IReviewTagRelationsRepo, ReviewTagRelationsRepo>();
 builder.Services.AddTransient<ITagRepo, TagRepo>();
 builder.Services.AddTransient<IRatingRepo, RatingRepo>();
+
+builder.Services.AddTransient<IReviewService, ReviewService>();
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();

@@ -1,19 +1,37 @@
 ﻿@page "/fetchdata"
 @using HomeEntertainmentAdvisor.Data
+@using HomeEntertainmentAdvisor.Models;
+@using HomeEntertainmentAdvisor.Services.Interfaces;
+
+@inject IReviewService reviewService
 
 <PageTitle>Weather forecast</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">Weather forecast</MudText>
-<MudText Class="mb-8">This component demonstrates fetching data from the server.</MudText>
+<MudPaper>
+    <MudList>
+        @foreach (Review rev in reviews)
+        {
+            <MudListItem>
+                <MudText>
+                    @rev.Name
+                </MudText>
+                <MudText>
+                    @rev.Content
+                </MudText>
+            </MudListItem>
+        }
+    </MudList>
+</MudPaper>
 
 
 
 
 @code {
-   // private WeatherForecast[]? forecasts;
+    private List<Review> reviews = new();
 
     protected override async Task OnInitializedAsync()
     {
-       // forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        await reviewService.CreateReview();
+        reviews = await reviewService.Find("SearchTest");
     }
 }

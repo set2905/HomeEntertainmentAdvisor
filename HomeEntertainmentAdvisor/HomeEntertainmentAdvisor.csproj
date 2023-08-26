@@ -39,7 +39,6 @@
 
   <ItemGroup>
     <Folder Include="Domain\Migrations\" />
-    <Folder Include="Services\Interfaces\" />
     <Folder Include="Shared\Resources\Pages\" />
   </ItemGroup>
 
