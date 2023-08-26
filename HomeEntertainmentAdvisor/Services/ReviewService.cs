@@ -1,4 +1,5 @@
 ﻿using HomeEntertainmentAdvisor.Domain.Repo.Interfaces;
+using HomeEntertainmentAdvisor.Models;
 
 namespace HomeEntertainmentAdvisor.Services
 {
@@ -6,6 +7,10 @@ namespace HomeEntertainmentAdvisor.Services
     {
         private readonly IReviewsRepo reviewsRepo;
         private readonly IRatingRepo ratingRepo;
-        private readonly IReviewTagRelationsRepo reviewTagRelationsRepo;
+
+        public async Task<List<Review>> GetNewest()
+        {
+            return await reviewsRepo.GetPage(1, 10);
+        }
     }
 }
