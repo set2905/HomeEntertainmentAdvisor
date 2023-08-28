@@ -1,0 +1,31 @@
+﻿@page "/EditReview"
+@using Blazored.FluentValidation
+@using HomeEntertainmentAdvisor.Models;
+@using HomeEntertainmentAdvisor.Services.Interfaces;
+@inject IReviewService reviewService
+<PageTitle>Edit review</PageTitle>
+
+<EditForm Model="@review" OnValidSubmit="@SubmitValidForm">
+    <FluentValidationValidator />
+    <ValidationSummary />
+
+        <MudText>Name: </MudText>
+        <MudTextField @bind-Value="@review.Name" />
+
+        <label>Content: </label>
+        <MudTextField @bind-Value="@review.Content" />
+   
+        <MudRating @bind-SelectedValue="@review.Rating.Grade" MaxValue="10"/>
+
+
+    <MudButton ButtonType="ButtonType.Submit">Save</MudButton>
+</EditForm>
+
+@code 
+{
+    private Review review=new();
+    private void SubmitValidForm()
+    {
+        Console.WriteLine("Form submitted");
+    }
+}

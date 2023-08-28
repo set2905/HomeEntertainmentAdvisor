@@ -26,32 +26,32 @@ namespace HomeEntertainmentAdvisor.Data
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<MediaPiece>().HasData(
-             new MediaPiece()
-             {
-                 Id=new Guid("706C2E99-6F6C-4472-81A5-43C56E11637C"),
-                 Name="TestMediaPiece"
+            //builder.Entity<MediaPiece>().HasData(
+            // new MediaPiece()
+            // {
+            //     Id=new Guid("706C2E99-6F6C-4472-81A5-43C56E11637C"),
+            //     Name="TestMediaPiece"
 
-             }
-            );
+            // }
+            //);
 
-            builder.Entity<Rating>().HasData(
-             new Rating()
-             {
-                 Id=new Guid("bbd5efd3-bd3b-4bc9-8474-a6820a313483"),
-                 MediaPieceId=new Guid("706C2E99-6F6C-4472-81A5-43C56E11637C")
+            //builder.Entity<Rating>().HasData(
+            // new Rating()
+            // {
+            //     Id=new Guid("bbd5efd3-bd3b-4bc9-8474-a6820a313483"),
+            //     MediaPieceId=new Guid("706C2E99-6F6C-4472-81A5-43C56E11637C")
 
-             }
-            );
-            builder.Entity<Review>().HasData(
-             new Review()
-             {
-                 Id=new Guid("ddd4edd3-bd3b-4bc9-8474-a6820a313483"),
-                 RatingId=new Guid("bbd5efd3-bd3b-4bc9-8474-a6820a313483"),
-                 Content="test TestSearch 1234",
-                 Name="Test Review"
-             }
-            );
+            // }
+            //);
+            //builder.Entity<Review>().HasData(
+            // new Review()
+            // {
+            //     Id=new Guid("ddd4edd3-bd3b-4bc9-8474-a6820a313483"),
+            //     RatingId=new Guid("bbd5efd3-bd3b-4bc9-8474-a6820a313483"),
+            //     Content="test TestSearch 1234",
+            //     Name="Test Review"
+            // }
+            //);
         }
     }
 }

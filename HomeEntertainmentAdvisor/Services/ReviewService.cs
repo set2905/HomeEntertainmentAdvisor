@@ -32,7 +32,7 @@ namespace HomeEntertainmentAdvisor.Services
         {
             return await reviewsRepo.GetPage(page, perPage, query);
         }
-        public async Task CreateReview()
+        public async Task EditReview()
         {
             var media = (await mediaRepo.GetAll()).First();
 
