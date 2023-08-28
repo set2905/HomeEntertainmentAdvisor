@@ -41,6 +41,7 @@ namespace HomeEntertainmentAdvisor.Models
                .NotNull().WithMessage("You must enter the content of the review")
                .NotEmpty().WithMessage("You must enter the content of the review")
                .MaximumLength(Review.MAX_CONTENT).WithMessage($"Content should not be longer than {Review.MAX_CONTENT} chars");
+            RuleFor(r => r.Rating).SetValidator(new RatingValidator());
         }
 
     }

@@ -32,6 +32,6 @@
     protected override async Task OnInitializedAsync()
     {
        // await reviewService.CreateReview();
-        reviews = await reviewService.Find("1234");
+        reviews = await reviewService.FindReviews("1234");
     }
 }

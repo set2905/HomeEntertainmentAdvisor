@@ -3,27 +3,45 @@
 @using HomeEntertainmentAdvisor.Models;
 @using HomeEntertainmentAdvisor.Services.Interfaces;
 @inject IReviewService reviewService
+@inject IMediaService mediaService
 <PageTitle>Edit review</PageTitle>
 
 <EditForm Model="@review" OnValidSubmit="@SubmitValidForm">
     <FluentValidationValidator />
     <ValidationSummary />
+    <MudAutocomplete T="MediaPiece" Label="Media"  @bind-Value="review.Rating.MediaPiece" SearchFunc="@SearchMediaPieces"
+                     ToStringFunc="@(e=> e!=null?e.Name:null)" Immediate="true"
+                     AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" ShowProgressIndicator="true">
+        <ProgressIndicatorTemplate>
+            <MudProgressLinear Size="Size.Small" Indeterminate="true" />
+        </ProgressIndicatorTemplate>
+    </MudAutocomplete>
 
-        <MudText>Name: </MudText>
-        <MudTextField @bind-Value="@review.Name" />
 
-        <label>Content: </label>
-        <MudTextField @bind-Value="@review.Content" />
-   
-        <MudRating @bind-SelectedValue="@review.Rating.Grade" MaxValue="10"/>
+    <MudText>Name: </MudText>
+    <MudTextField @bind-Value="@review.Name" />
+    <MudText>Content: </MudText>
+    <MudTextField @bind-Value="@review.Content" />
 
+    <MudRating @bind-SelectedValue="@review.Rating.Grade" MaxValue="10" />
 
     <MudButton ButtonType="ButtonType.Submit">Save</MudButton>
 </EditForm>
 
-@code 
+@code
 {
-    private Review review=new();
+    private Review review = new();
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+    }
+    private async Task<IEnumerable<MediaPiece>> SearchMediaPieces(string value)
+    {
+        IEnumerable<MediaPiece> result = await mediaService.Search(value);
+        return result;
+    }
+
     private void SubmitValidForm()
     {
         Console.WriteLine("Form submitted");

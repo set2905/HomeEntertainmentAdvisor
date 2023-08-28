@@ -84,6 +84,7 @@ builder.Services.AddTransient<ITagRepo, TagRepo>();
 builder.Services.AddTransient<IRatingRepo, RatingRepo>();
 
 builder.Services.AddTransient<IReviewService, ReviewService>();
+builder.Services.AddTransient<IMediaService, MediaService>();
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();

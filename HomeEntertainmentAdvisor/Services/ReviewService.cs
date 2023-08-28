@@ -10,45 +10,33 @@ namespace HomeEntertainmentAdvisor.Services
     public class ReviewService : IReviewService
     {
         private readonly IReviewsRepo reviewsRepo;
-        private readonly IRatingRepo ratingRepo;
-        private readonly IMediaPiecesRepo mediaRepo;
+
         private readonly AuthenticationStateProvider authenticationStateProvider;
         private readonly UserManager<User> userManager;
 
-        public ReviewService(IReviewsRepo reviewsRepo, IRatingRepo ratingRepo, IMediaPiecesRepo mediaRepo, AuthenticationStateProvider authenticationStateProvider, UserManager<User> userManager)
+        public ReviewService(IReviewsRepo reviewsRepo, AuthenticationStateProvider authenticationStateProvider, UserManager<User> userManager)
         {
             this.reviewsRepo=reviewsRepo;
-            this.ratingRepo=ratingRepo;
             this.authenticationStateProvider=authenticationStateProvider;
             this.userManager=userManager;
-            this.mediaRepo=mediaRepo;
         }
 
         public async Task<List<Review>> GetNewest()
         {
             return await reviewsRepo.GetPage(1, 10);
         }
-        public async Task<List<Review>> Find(string query, int page = 0, int perPage = 10)
+        public async Task<List<Review>> FindReviews(string query, int page = 0, int perPage = 10)
         {
             return await reviewsRepo.GetPage(page, perPage, query);
         }
-        public async Task EditReview()
+        public async Task EditReview(Review review)
         {
-            var media = (await mediaRepo.GetAll()).First();
-
-            Guid ratingId = await ratingRepo.Save(new Rating()
+            if (review.Rating.AuthorId==default||review.Rating.Author==null)
             {
-                MediaPieceId=media.Id,
-            });
-            Rating rating = await ratingRepo.GetById(ratingId);
-            Review rev = new Review
-            {
-                Name="test review",
-                Content="SearchTest",
-                RatingId=ratingId,
-                Rating=rating,
-            };
-            await reviewsRepo.Save(rev);
+                User? author = await GetUser();
+                review.Rating.Author=author;
+            }
+            await reviewsRepo.Save(review);
         }
         private async Task<User?> GetUser()
         {
