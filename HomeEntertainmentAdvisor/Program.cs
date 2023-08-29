@@ -9,7 +9,6 @@ using HomeEntertainmentAdvisor.Models;
 using HomeEntertainmentAdvisor.Services;
 using HomeEntertainmentAdvisor.Services.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
 using MudBlazor.Services;
@@ -98,7 +97,6 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 builder.Services.AddTransient<MudLocalizer, ResXMudLocalizer>();
 
 builder.Services.AddMudServices();
-builder.Services.AddCoreServices();
 builder.Services.AddMudMarkdownServices();
 var app = builder.Build();
 

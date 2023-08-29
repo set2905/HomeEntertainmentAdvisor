@@ -22,11 +22,8 @@
     <MudText>Name: </MudText>
     <MudTextField @bind-Value="@review.Name" />
     <MudText>Content: </MudText>
-    <MudMarkdown Value="@review.Content" Styling="Styling"
-                 TableCellMinWidth="100"
-                 OverrideLinkUrl="OverrideLink"
-                 OverrideHeaderTypo="OverrideHeaderTypo"
-                 CodeBlockTheme="CodeBlockTheme.DraculaBase16" />
+    <MarkdownEditor @bind-Value="@review.Content"
+                    />
 
     <MudRating @bind-SelectedValue="@review.Rating.Grade" MaxValue="10" />
 
