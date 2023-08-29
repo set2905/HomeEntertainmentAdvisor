@@ -16,9 +16,9 @@ namespace HomeEntertainmentAdvisor.Services
         {
             return await mediaPiecesRepo.GetAll();
         }
-        public async Task<List<MediaPiece>> Search(string value)
+        public async Task<List<MediaPiece>> Search(string value, CancellationToken cancellationToken)
         {
-            return await mediaPiecesRepo.Search(value);
+            return await mediaPiecesRepo.Search(value, cancellationToken);
         }
     }
 }

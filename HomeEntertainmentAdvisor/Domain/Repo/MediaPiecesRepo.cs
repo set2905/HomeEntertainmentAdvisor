@@ -26,11 +26,11 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
             await context.SaveChangesAsync();
             return entity.Id;
         }
-        public async Task<List<MediaPiece>> Search(string value)
+        public async Task<List<MediaPiece>> Search(string value, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(value))
                 return await dbSet.Take(10).ToListAsync();
-            var result = await dbSet.Where(x => x.Name.StartsWith(value)).ToListAsync();
+            var result = await dbSet.Where(x => x.Name.StartsWith(value)).ToListAsync(cancellationToken);
             return result;
         }
     }

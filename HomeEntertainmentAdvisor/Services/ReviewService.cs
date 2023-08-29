@@ -29,7 +29,7 @@ namespace HomeEntertainmentAdvisor.Services
         {
             return await reviewsRepo.GetPage(page, perPage, query);
         }
-        public async Task EditReview(Review review)
+        public async Task SaveReview(Review review)
         {
             if (review.Rating.AuthorId==default||review.Rating.Author==null)
             {

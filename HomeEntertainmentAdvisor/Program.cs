@@ -85,6 +85,7 @@ builder.Services.AddTransient<IRatingRepo, RatingRepo>();
 
 builder.Services.AddTransient<IReviewService, ReviewService>();
 builder.Services.AddTransient<IMediaService, MediaService>();
+builder.Services.AddTransient<IRatingService, RatingService>();
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();

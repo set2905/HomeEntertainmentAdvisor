@@ -23,7 +23,7 @@ namespace HomeEntertainmentAdvisor.Models
                .NotNull().WithMessage("You must enter the rating of the review")
                .GreaterThanOrEqualTo(1).WithMessage($"Rating should not be less than 1")
                .LessThanOrEqualTo(Rating.MAX_RATING).WithMessage($"Rating should not be greater than {Rating.MAX_RATING}");
-            RuleFor(r => r.MediaPieceId)
+            RuleFor(r => r.MediaPiece.Id)
                 .NotEqual(Guid.Empty).WithMessage("Select media piece to review");
         }
 

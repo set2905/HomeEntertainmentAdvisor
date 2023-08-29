@@ -4,12 +4,13 @@
 @using HomeEntertainmentAdvisor.Services.Interfaces;
 @inject IReviewService reviewService
 @inject IMediaService mediaService
+@inject IRatingService ratingService
 <PageTitle>Edit review</PageTitle>
 
 <EditForm Model="@review" OnValidSubmit="@SubmitValidForm">
     <FluentValidationValidator />
     <ValidationSummary />
-    <MudAutocomplete T="MediaPiece" Label="Media"  @bind-Value="review.Rating.MediaPiece" SearchFunc="@SearchMediaPieces"
+    <MudAutocomplete T="MediaPiece" Label="Media" @bind-Value="review.Rating.MediaPiece" SearchFuncWithCancel="@SearchMediaPieces"
                      ToStringFunc="@(e=> e!=null?e.Name:null)" Immediate="true"
                      AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" ShowProgressIndicator="true">
         <ProgressIndicatorTemplate>
@@ -36,14 +37,16 @@
         await base.OnInitializedAsync();
 
     }
-    private async Task<IEnumerable<MediaPiece>> SearchMediaPieces(string value)
+    private async Task<IEnumerable<MediaPiece>> SearchMediaPieces(string value, CancellationToken token)
     {
-        IEnumerable<MediaPiece> result = await mediaService.Search(value);
+        IEnumerable<MediaPiece> result = await mediaService.Search(value, token);
         return result;
     }
 
-    private void SubmitValidForm()
+    private async Task SubmitValidForm()
     {
         Console.WriteLine("Form submitted");
+        review.RatingId = await ratingService.SaveRating(review.Rating);
+        await reviewService.SaveReview(review);
     }
 }
