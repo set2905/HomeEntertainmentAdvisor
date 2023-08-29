@@ -98,7 +98,8 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 builder.Services.AddTransient<MudLocalizer, ResXMudLocalizer>();
 
 builder.Services.AddMudServices();
-
+builder.Services.AddCoreServices();
+builder.Services.AddMudMarkdownServices();
 var app = builder.Build();
 
 app.UseMiddleware<AppExceptionHandlingMiddleware>();

@@ -2,6 +2,7 @@
 @using Blazored.FluentValidation
 @using HomeEntertainmentAdvisor.Models;
 @using HomeEntertainmentAdvisor.Services.Interfaces;
+@using Markdig.Syntax.Inlines;
 @inject IReviewService reviewService
 @inject IMediaService mediaService
 @inject IRatingService ratingService
@@ -18,11 +19,14 @@
         </ProgressIndicatorTemplate>
     </MudAutocomplete>
 
-
     <MudText>Name: </MudText>
     <MudTextField @bind-Value="@review.Name" />
     <MudText>Content: </MudText>
-    <MudTextField @bind-Value="@review.Content" />
+    <MudMarkdown Value="@review.Content" Styling="Styling"
+                 TableCellMinWidth="100"
+                 OverrideLinkUrl="OverrideLink"
+                 OverrideHeaderTypo="OverrideHeaderTypo"
+                 CodeBlockTheme="CodeBlockTheme.DraculaBase16" />
 
     <MudRating @bind-SelectedValue="@review.Rating.Grade" MaxValue="10" />
 
@@ -31,6 +35,7 @@
 
 @code
 {
+    private MudMarkdownStyling Styling { get; } = new();
     private Review review = new();
     protected override async Task OnInitializedAsync()
     {
@@ -43,10 +48,21 @@
         return result;
     }
 
+
+
     private async Task SubmitValidForm()
     {
         Console.WriteLine("Form submitted");
         review.RatingId = await ratingService.SaveRating(review.Rating);
-        await reviewService.SaveReview(review);
+        Guid reviewId = await reviewService.SaveReview(review);
+    }
+    private Typo OverrideHeaderTypo(Typo x)
+    {
+        return x == Typo.h1 ? Typo.h4 : x;
+    }
+
+    private static string? OverrideLink(LinkInline x)
+    {
+        return x.Url;
     }
 }

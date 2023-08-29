@@ -29,14 +29,14 @@ namespace HomeEntertainmentAdvisor.Services
         {
             return await reviewsRepo.GetPage(page, perPage, query);
         }
-        public async Task SaveReview(Review review)
+        public async Task<Guid> SaveReview(Review review)
         {
             if (review.Rating.AuthorId==default||review.Rating.Author==null)
             {
                 User? author = await GetUser();
                 review.Rating.Author=author;
             }
-            await reviewsRepo.Save(review);
+            return await reviewsRepo.Save(review);
         }
         private async Task<User?> GetUser()
         {
