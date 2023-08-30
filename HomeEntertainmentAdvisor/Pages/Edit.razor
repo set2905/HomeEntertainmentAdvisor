@@ -1,4 +1,5 @@
-﻿@page "/EditReview"
+﻿@page "/EditReview/{ReviewId}"
+@page "/EditReview"
 @using Blazored.FluentValidation
 @using HomeEntertainmentAdvisor.Models;
 @using HomeEntertainmentAdvisor.Services.Interfaces;
@@ -6,6 +7,7 @@
 @inject IReviewService reviewService
 @inject IMediaService mediaService
 @inject IRatingService ratingService
+@inject ISnackbar snackBar
 <PageTitle>Edit review</PageTitle>
 
 <EditForm Model="@review" OnValidSubmit="@SubmitValidForm">
@@ -43,10 +45,28 @@
 
 @code
 {
+    [Parameter]
+    public string? ReviewId { get; set; }
     private Review review = new();
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        await SetReview();
+    }
+    private async Task SetReview()
+    {
+        if (ReviewId!=null)
+        {
+            Guid reviewGuid;
+            if (Guid.TryParse(ReviewId, out reviewGuid))
+            {
+                Review? found = await reviewService.GetById(reviewGuid);
+                if (found == null) return;
+               // Rating? rating = await ratingService.GetById(review.RatingId);
+                //if (rating == null) return;
+                review = found;
+            }
+        }
     }
     private async Task<IEnumerable<MediaPiece>> SearchMediaPieces(string value, CancellationToken token)
     {
@@ -56,7 +76,7 @@
 
     private async Task SubmitValidForm()
     {
-        Console.WriteLine("Form submitted");
+        snackBar.Add("Review created!");
         review.RatingId = await ratingService.SaveRating(review.Rating);
         Guid reviewId = await reviewService.SaveReview(review);
     }
@@ -68,14 +88,13 @@
         background: none;
     }
 
-    .CodeMirror{
+    .CodeMirror {
         background: var(--mud-palette-surface);
         color: var(--mud-palette-text-primary);
     }
 
     .editor-preview {
         background: var(--mud-palette-surface);
-    
     }
 
 </style>

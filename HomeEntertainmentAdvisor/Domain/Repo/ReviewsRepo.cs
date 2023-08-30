@@ -21,7 +21,7 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
 
         public async Task<List<Review>> GetPage(int page, int recordsPerPage, string searhQuery)
         {
-            var foundIdsInReviews=dbSet.Where(x => EF.Functions.FreeText(x.Content, searhQuery)).Select(x => x.Id);
+            var foundIdsInReviews = dbSet.Where(x => EF.Functions.FreeText(x.Content, searhQuery)).Select(x => x.Id);
             var foundIdsInComments = context.Comments.Where(x => EF.Functions.FreeText(x.Content, searhQuery)).Select(x => x.ReviewId);
             var foundIds = foundIdsInReviews.Union(foundIdsInComments).Distinct();
             IQueryable<Review> found = dbSet.Where(x => foundIds.Contains(x.Id));
@@ -29,7 +29,7 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
         }
         public override async Task<Review?> GetById(Guid id)
         {
-            return await dbSet.SingleOrDefaultAsync(x => x.Id == id);
+            return await context.Reviews.SingleOrDefaultAsync(x => x.Id == id);
         }
 
         public override async Task<Guid> Save(Review entity)

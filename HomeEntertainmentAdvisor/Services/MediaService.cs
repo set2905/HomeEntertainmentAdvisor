@@ -20,5 +20,9 @@ namespace HomeEntertainmentAdvisor.Services
         {
             return await mediaPiecesRepo.Search(value, cancellationToken);
         }
+        public async Task Save(MediaPiece media)
+        {
+            await mediaPiecesRepo.Save(media);
+        }
     }
 }

@@ -12,6 +12,10 @@ namespace HomeEntertainmentAdvisor.Services
         {
             this.ratingRepo=ratingRepo;
         }
+        public async Task<Rating?> GetById(Guid id)
+        {
+            return await ratingRepo.GetById(id);
+        }
         public async Task<Guid> SaveRating(Rating rating)
         {
             Guid id = await ratingRepo.Save(rating);

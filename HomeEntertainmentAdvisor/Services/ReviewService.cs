@@ -20,7 +20,10 @@ namespace HomeEntertainmentAdvisor.Services
             this.authenticationStateProvider=authenticationStateProvider;
             this.userManager=userManager;
         }
-
+        public async Task<Review?> GetById(Guid id)
+        {
+            return await reviewsRepo.GetById(id);
+        }
         public async Task<List<Review>> GetNewest()
         {
             return await reviewsRepo.GetPage(1, 10);

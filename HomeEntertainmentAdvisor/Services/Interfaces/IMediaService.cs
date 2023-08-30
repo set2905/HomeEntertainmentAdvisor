@@ -6,5 +6,6 @@ namespace HomeEntertainmentAdvisor.Services.Interfaces
     {
         Task<List<MediaPiece>> Search(string value, CancellationToken cancellationToken);
         Task<List<MediaPiece>> GetAll();
+        Task Save(MediaPiece media);
     }
 }
