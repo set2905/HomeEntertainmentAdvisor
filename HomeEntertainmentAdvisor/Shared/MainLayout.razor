@@ -1,36 +1,33 @@
 ﻿@inherits LayoutComponentBase
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
-<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
+<MudThemeProvider @bind-IsDarkMode="@isDarkMode" Theme="theme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <MudLayout>
     <MudAppBar WrapContent="false" Dense="false" Elevation="0">
-        <MudNavLink Href="" Match="NavLinkMatch.All" IconColor="Color.Surface" Icon="@Icons.Material.Filled.Home">
-            <MudText Class="d-none d-sm-block" Typo="Typo.body1">
-                Home
-            </MudText>
-        </MudNavLink>
-        <MudNavLink Href="EditReview" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.Add">
-            <MudText Class="d-none d-sm-block" Typo="Typo.body1">
-                Add Review
-            </MudText>
-        </MudNavLink>
-        <MudNavLink Href="fetchdata" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.List">
-            <MudText Class="d-none d-sm-block" Typo="Typo.body1">
-                Fetch data
-            </MudText>
-        </MudNavLink>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
 
         <MudSpacer />
 
         <LoginDisplay />
-        <CultureSelector />
-        <MudSwitch Checked="@_isDarkMode" CheckedChanged="HandleThemeChanged" Color="Color.Primary" Class="ml-4 d-none d-sm-block" T="bool" ThumbIcon="@Icons.Material.Filled.DarkMode" />
+
     </MudAppBar>
+    <MudDrawer @bind-Open="@drawerOpen" Elevation="1">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">Menu</MudText>
+        </MudDrawerHeader>
+        <MudStack Row="true">
+            <MudSwitch Checked="@isDarkMode" CheckedChanged="HandleThemeChanged" Color="Color.Primary" Class="ml-4" T="bool" ThumbIcon="@Icons.Material.Filled.DarkMode" />
+            <CultureSelector />
+
+        </MudStack>
+        <NavMenu />
+
+    </MudDrawer>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
+        <MudContainer MaxWidth="MaxWidth.Large" Class="my-4 pt-0">
             <ErrorBoundary>
                 @Body
             </ErrorBoundary>
@@ -39,21 +36,25 @@
 </MudLayout>
 
 @code {
-    private MudTheme _theme = new();
-    private bool _isDarkMode = true;
+    private MudTheme theme = new();
+    private bool isDarkMode = true;
+    private bool drawerOpen = false;
 
     public async Task HandleThemeChanged(bool value)
     {
-        if (_isDarkMode == value) return;
-        //_isDarkMode=value;
+        if (isDarkMode == value) return;
         await localStorage.SetItemAsync("darkTheme", value);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         var darkThemeCookieValue = await localStorage.GetItemAsync<bool>("darkTheme");
-        _isDarkMode = darkThemeCookieValue;
+        isDarkMode = darkThemeCookieValue;
         StateHasChanged();
+    }
+    private void ToggleDrawer()
+    {
+        drawerOpen = !drawerOpen;
     }
 }
 <style>
@@ -64,4 +65,5 @@
     .mud-nav-item {
         width: auto;
     }
+
 </style>

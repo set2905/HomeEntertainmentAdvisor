@@ -11,33 +11,42 @@
 <EditForm Model="@review" OnValidSubmit="@SubmitValidForm">
     <FluentValidationValidator />
     <ValidationSummary />
-    <MudAutocomplete T="MediaPiece" Label="Media" @bind-Value="review.Rating.MediaPiece" SearchFuncWithCancel="@SearchMediaPieces"
-                     ToStringFunc="@(e=> e!=null?e.Name:null)" Immediate="true"
-                     AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" ShowProgressIndicator="true">
-        <ProgressIndicatorTemplate>
-            <MudProgressLinear Size="Size.Small" Indeterminate="true" />
-        </ProgressIndicatorTemplate>
-    </MudAutocomplete>
+    <MudGrid Justify="Justify.Center">
+        <MudItem md="10" xs="12">
+            <MudPaper Class="pa-4">
+                <MudStack>
+                    <MudText Typo="Typo.h4">Edit review </MudText>
 
-    <MudText>Name: </MudText>
-    <MudTextField @bind-Value="@review.Name" />
-    <MudText>Content: </MudText>
-    <MarkdownEditor @bind-Value="@review.Content"
-                    />
+                    <MudText>Media: </MudText>
+                    <MudAutocomplete T="MediaPiece" @bind-Value="review.Rating.MediaPiece" SearchFuncWithCancel="@SearchMediaPieces"
+                                     ToStringFunc="@(e=> e!=null?e.Name:null)" Immediate="true"
+                                     AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" ShowProgressIndicator="true">
+                        <ProgressIndicatorTemplate>
+                            <MudProgressLinear Size="Size.Small" Indeterminate="true" />
+                        </ProgressIndicatorTemplate>
+                    </MudAutocomplete>
+                    <MudText>Name: </MudText>
+                    <MudTextField @bind-Value="@review.Name" />
 
-    <MudRating @bind-SelectedValue="@review.Rating.Grade" MaxValue="10" />
+                    <MudText>Rating: </MudText>
+                    <MudRating @bind-SelectedValue="@review.Rating.Grade" MaxValue="10" />
 
-    <MudButton ButtonType="ButtonType.Submit">Save</MudButton>
+                    <MudText>Content: </MudText>
+                    <MarkdownEditor Theme="easymde" @bind-Value="@review.Content" />
+
+                    <MudButton Color="Color.Surface" StartIcon="@Icons.Material.Filled.Save" FullWidth="false" ButtonType="ButtonType.Submit">Save</MudButton>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
 </EditForm>
 
 @code
 {
-    private MudMarkdownStyling Styling { get; } = new();
     private Review review = new();
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-
     }
     private async Task<IEnumerable<MediaPiece>> SearchMediaPieces(string value, CancellationToken token)
     {
@@ -45,21 +54,28 @@
         return result;
     }
 
-
-
     private async Task SubmitValidForm()
     {
         Console.WriteLine("Form submitted");
         review.RatingId = await ratingService.SaveRating(review.Rating);
         Guid reviewId = await reviewService.SaveReview(review);
     }
-    private Typo OverrideHeaderTypo(Typo x)
-    {
-        return x == Typo.h1 ? Typo.h4 : x;
+}
+
+<style>
+    .editor-toolbar button.active, .editor-toolbar button:hover {
+        border-color: #95a5a6;
+        background: none;
     }
 
-    private static string? OverrideLink(LinkInline x)
-    {
-        return x.Url;
+    .CodeMirror{
+        background: var(--mud-palette-surface);
+        color: var(--mud-palette-text-primary);
     }
-}
+
+    .editor-preview {
+        background: var(--mud-palette-surface);
+    
+    }
+
+</style>
