@@ -10,21 +10,20 @@
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
 
         <MudSpacer />
-
-        <LoginDisplay />
-
+        <MudContainer Style="width:auto" Class="d-none d-md-block">
+            <LoginDisplay />
+        </MudContainer>
+        <MudSwitch Checked="@isDarkMode" CheckedChanged="HandleThemeChanged" Color="Color.Primary" Class="ml-4" T="bool" ThumbIcon="@Icons.Material.Filled.DarkMode" />
+        <CultureSelector />
     </MudAppBar>
     <MudDrawer @bind-Open="@drawerOpen" Elevation="1">
         <MudDrawerHeader>
             <MudText Typo="Typo.h6">Menu</MudText>
         </MudDrawerHeader>
-        <MudStack Row="true">
-            <MudSwitch Checked="@isDarkMode" CheckedChanged="HandleThemeChanged" Color="Color.Primary" Class="ml-4" T="bool" ThumbIcon="@Icons.Material.Filled.DarkMode" />
-            <CultureSelector />
-
-        </MudStack>
+        <MudContainer Class="d-block d-md-none pa-0">
+            <LoginDisplay />
+        </MudContainer>
         <NavMenu />
-
     </MudDrawer>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Large" Class="my-4 pt-0">

@@ -1,5 +1,5 @@
-﻿@page "/EditReview/{ReviewId}"
-@page "/EditReview"
+﻿@page "/Review/Edit/{ReviewId}"
+@page "/Review/Edit"
 @using Blazored.FluentValidation
 @using HomeEntertainmentAdvisor.Models;
 @using HomeEntertainmentAdvisor.Services.Interfaces;
@@ -8,6 +8,7 @@
 @inject IMediaService mediaService
 @inject IRatingService ratingService
 @inject ISnackbar snackBar
+@inject NavigationManager navManager
 <PageTitle>Edit review</PageTitle>
 
 <EditForm Model="@review" OnValidSubmit="@SubmitValidForm">
@@ -61,9 +62,18 @@
             if (Guid.TryParse(ReviewId, out reviewGuid))
             {
                 Review? found = await reviewService.GetById(reviewGuid);
-                if (found == null) return;
-               // Rating? rating = await ratingService.GetById(review.RatingId);
-                //if (rating == null) return;
+                if (found == null)
+                {
+                    snackBar.Add("Review not found!", Severity.Error);
+                    return;
+                }
+                Rating? rating = await ratingService.GetById(found.RatingId);
+                if (rating == null)
+                {
+                    snackBar.Add("Rating not found!", Severity.Error);
+                    return;
+                }
+                found.Rating = rating;
                 review = found;
             }
         }
@@ -79,6 +89,7 @@
         snackBar.Add("Review created!");
         review.RatingId = await ratingService.SaveRating(review.Rating);
         Guid reviewId = await reviewService.SaveReview(review);
+        navManager.NavigateTo($"Review/{reviewId.ToString()}");
     }
 }
 
