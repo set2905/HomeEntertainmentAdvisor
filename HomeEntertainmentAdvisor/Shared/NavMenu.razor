@@ -1,17 +1,19 @@
-﻿<MudNavLink Href="" Match="NavLinkMatch.All" IconColor="Color.Surface" Icon="@Icons.Material.Filled.Home">
-    <MudText Typo="Typo.body1">
-        Home
-    </MudText>
-</MudNavLink>
-<MudNavLink Href="Review/Edit" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.Add">
-    <MudText Typo="Typo.body1">
-        Add Review
-    </MudText>
-</MudNavLink>
-<MudNavLink Href="Review" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.List">
-    <MudText Typo="Typo.body1">
-        Reviews
-    </MudText>
-</MudNavLink>
-
-
+﻿<MudNavMenu>
+    <MudNavLink Href="" Match="NavLinkMatch.All" IconColor="Color.Surface" Icon="@Icons.Material.Filled.Home">
+        <MudText Typo="Typo.body1">
+            Home
+        </MudText>
+    </MudNavLink>
+    <MudNavGroup Title="Dashboard" Icon="@Icons.Material.Filled.Dashboard" Expanded="true">
+        <MudNavLink Href="Review/Edit" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.Add">
+            <MudText Typo="Typo.body1">
+                Add Review
+            </MudText>
+        </MudNavLink>
+        <MudNavLink Href="UserReviews" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.List">
+            <MudText Typo="Typo.body1">
+                My Reviews
+            </MudText>
+        </MudNavLink>
+    </MudNavGroup>
+</MudNavMenu>
