@@ -9,6 +9,8 @@
 @inject IRatingService ratingService
 @inject ISnackbar snackBar
 @inject NavigationManager navManager
+
+@attribute [Authorize]
 <PageTitle>Edit review</PageTitle>
 
 <EditForm Model="@review" OnValidSubmit="@SubmitValidForm">

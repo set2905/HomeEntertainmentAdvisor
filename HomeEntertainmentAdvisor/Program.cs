@@ -7,7 +7,9 @@ using HomeEntertainmentAdvisor.Localization;
 using HomeEntertainmentAdvisor.Middleware;
 using HomeEntertainmentAdvisor.Models;
 using HomeEntertainmentAdvisor.Services;
+using HomeEntertainmentAdvisor.Services.Authorizarion;
 using HomeEntertainmentAdvisor.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -73,6 +75,7 @@ builder.Services.AddAuthentication()
         googleOptions.ClientSecret = googleSecret;
     });
 
+
 builder.Services.AddTransient<AppExceptionHandlingMiddleware>();
 
 builder.Services.AddTransient<ICommentsRepo, CommentsRepo>();
@@ -87,6 +90,12 @@ builder.Services.AddTransient<IRatingRepo, RatingRepo>();
 builder.Services.AddTransient<IReviewService, ReviewService>();
 builder.Services.AddTransient<IMediaService, MediaService>();
 builder.Services.AddTransient<IRatingService, RatingService>();
+
+builder.Services.AddTransient<IAuthorizationHandler, ReviewOwnerAuthorizationHandler>();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("UserIsAuthor", policy => policy.Requirements.Add(new UserIsAuthorRequirement()));
+});
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
