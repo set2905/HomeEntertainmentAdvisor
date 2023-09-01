@@ -1,34 +1,41 @@
 ﻿@using HomeEntertainmentAdvisor.Models;
-
-<MudPaper Height="150px">
-    <MudStack Style="height:100%;" Row="true">
-        <MudImage ObjectFit="ObjectFit.Fill" Src="https://cdn.shazoo.ru/c330x180/707447_ZWvHp2x_starfield.jpg" />
-        <MudStack>
-            <MudText Typo="Typo.h4">
+<MudContainer Class="my-4" Style="height:150px">
+    <MudStack Class="pa-2" Style="height:100%;" Row="true">
+        <MudImage Class="rounded-lg d-none d-sm-block" ObjectFit="ObjectFit.Fill" Src="https://cdn.shazoo.ru/c330x180/707447_ZWvHp2x_starfield.jpg" />
+        <MudStack Style="width:100%;" Justify="Justify.SpaceBetween">
+            <MudLink Underline="Underline.None" Color="Color.Surface" Typo="Typo.h4">
                 @Review.Name
-            </MudText>
+            </MudLink>
             <MudStack Row="true">
+                <MudRating Size="Size.Small" MaxValue="10" ReadOnly="true" SelectedValue="@Review.Rating.Grade" />
+                <MudText>
+                    @gradeText
+                </MudText>
+            </MudStack>
+            <MudStack Style="width:100%;" Row="true" Justify="Justify.SpaceBetween">
                 <MudText>
                     @if (Review.Rating.Author!=null)
                         @Review.Rating.Author.UserName
 
+                    </MudText>
 
-                    </MudText>
-                    <MudSpacer />
-                    <MudIconButton Icon="@Icons.Material.Filled.ThumbUp" />
-                    <MudText>
-                        @Review.CachedLikes
-                    </MudText>
-                    <MudIconButton Icon="@Icons.Material.Filled.ThumbDown" />
+                    <MudStack Row="true">
+                        <MudText>
+                            @Review.CachedLikes
+                        </MudText>
+                        <MudIcon Icon="@Icons.Material.Filled.ThumbUp" Size="Size.Small" />
+                    </MudStack>
                 </MudStack>
             </MudStack>
         </MudStack>
-    </MudPaper>
+        <MudDivider />
+    </MudContainer>
+
     @code
     {
     [Parameter]
     public Review Review { get; set; } = new();
-
     private MudMarkdownStyling Styling { get; } = new();
+    private string gradeText { get => $"{Review.Rating.Grade}/{Rating.MAX_RATING}"; }
 
 }

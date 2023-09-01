@@ -6,11 +6,16 @@
 
 <PageTitle>Review</PageTitle>
 <MudGrid Justify="Justify.Center">
-    <MudItem xs="12" md="8">
-        @foreach (Review rev in reviews)
-        {
-            <ReviewItem Review="@rev" />
-        }
+    <MudItem xs="12" md="10">
+        <MudList>
+            @foreach (Review rev in reviews)
+            {
+                string href = $"Review/{rev.Id.ToString()}";
+                <MudListItem Href="@href">
+                    <ReviewItem Review="@rev" />
+                </MudListItem>
+            }
+        </MudList>
     </MudItem>
 </MudGrid>
 

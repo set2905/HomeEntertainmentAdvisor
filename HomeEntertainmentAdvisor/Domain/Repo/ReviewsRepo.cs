@@ -16,7 +16,7 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
         {
             //if (page<1) throw new ArgumentException("page cannot be less than 1");
             //if (recordsPerPage<1) throw new ArgumentException("recordsPerPage cannot be less than 1");
-            return await dbSet.OrderBy(x => x.CreatedDate).Skip((page-1)*recordsPerPage).Take(recordsPerPage).ToListAsync();
+            return await dbSet.OrderBy(x => x.CreatedDate).Skip((page-1)*recordsPerPage).Take(recordsPerPage).Include(r => r.Rating).ThenInclude(r => r.Author).ToListAsync();
         }
 
         public async Task<List<Review>> GetPage(int page, int recordsPerPage, string searhQuery)
@@ -24,8 +24,8 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
             var foundIdsInReviews = dbSet.Where(x => EF.Functions.FreeText(x.Content, searhQuery)).Select(x => x.Id);
             var foundIdsInComments = context.Comments.Where(x => EF.Functions.FreeText(x.Content, searhQuery)).Select(x => x.ReviewId);
             var foundIds = foundIdsInReviews.Union(foundIdsInComments).Distinct();
-            IQueryable<Review> found = dbSet.Where(x => foundIds.Contains(x.Id)).Include(r => r.Rating).ThenInclude(r => r.Author);
-            return await found.OrderBy(x => x.CreatedDate).Skip(page*recordsPerPage).Take(recordsPerPage).ToListAsync();
+            IQueryable<Review> found = dbSet.Where(x => foundIds.Contains(x.Id));
+            return await found.OrderBy(x => x.CreatedDate).Skip(page*recordsPerPage).Take(recordsPerPage).Include(r => r.Rating).ThenInclude(r => r.Author).ToListAsync();
         }
         public override async Task<Review?> GetById(Guid id)
         {
