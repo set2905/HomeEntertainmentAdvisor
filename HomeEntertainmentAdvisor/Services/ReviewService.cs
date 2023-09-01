@@ -4,8 +4,7 @@ using HomeEntertainmentAdvisor.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
-using System.Security.Principal;
+
 
 namespace HomeEntertainmentAdvisor.Services
 {
@@ -35,22 +34,37 @@ namespace HomeEntertainmentAdvisor.Services
         {
             return await reviewsRepo.GetPage(page, perPage, query);
         }
-        public async Task<Guid> SaveReview(Review review)
+        public async Task<(Guid id, bool succeeded, string message)> TrySaveReview(Review review)
         {
             AuthenticationState authState = await GetAuthState();
             User? user = await GetUser(authState);
-
-            if (review.Id==default&&(review.Rating.AuthorId==default||review.Rating.Author==null))
+            if (user==null)
             {
-                review.Rating.Author=user;
-                review.Rating.AuthorId=user.Id;
+                return (Guid.Empty, false, "User could not be found!");
             }
-            else
+            if (!TrySetReviewAuthor(user, review))
             {
-                var authorizationResult = await authorizationService.AuthorizeAsync(authState.User, review, "UserIsAuthor");
-                if (!authorizationResult.Succeeded) throw new UnauthorizedAccessException("You are not the owner of this resource");
+                if (!await IsUserAuthor(authState, review))
+                {
+                    return (Guid.Empty, false, "You are not the owner of this resource");
+                }
             }
-            return await reviewsRepo.Save(review);
+            return (await reviewsRepo.Save(review), true, "Review saved");
+        }
+        private async Task<bool> IsUserAuthor(AuthenticationState authState, Review review)
+        {
+            var authorizationResult = await authorizationService.AuthorizeAsync(authState.User, review, "UserIsAuthor");
+            return authorizationResult.Succeeded;
+        }
+        private bool TrySetReviewAuthor(User user, Review review)
+        {
+            if (review.Id == default && (review.Rating.AuthorId == default || review.Rating.Author == null))
+            {
+                review.Rating.Author = user;
+                review.Rating.AuthorId = user.Id;
+                return true;
+            }
+            else return false;
         }
         private async Task<User?> GetUser(AuthenticationState authState)
         {
