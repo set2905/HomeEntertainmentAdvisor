@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager navManager
 
 <MudThemeProvider @bind-IsDarkMode="@isDarkMode" Theme="theme" />
 <MudDialogProvider />
@@ -8,7 +9,9 @@
 <MudLayout>
     <MudAppBar WrapContent="false" Dense="false" Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
-
+        <MudContainer MaxWidth="MaxWidth.ExtraSmall">
+            <MudTextField Margin="Margin.Dense" @bind-Value="Search" Variant="Variant.Outlined" InputType="InputType.Text" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" OnAdornmentClick="HandleSearchClicked" />
+        </MudContainer>
         <MudSpacer />
         <MudContainer Style="width:auto" Class="d-none d-md-block">
             <LoginDisplay />
@@ -39,6 +42,7 @@
     private bool isDarkMode = true;
     private bool drawerOpen = false;
 
+    private string Search = string.Empty;
     public async Task HandleThemeChanged(bool value)
     {
         if (isDarkMode == value) return;
@@ -54,6 +58,10 @@
     private void ToggleDrawer()
     {
         drawerOpen = !drawerOpen;
+    }
+    void HandleSearchClicked()
+    {
+        navManager.NavigateTo($"{Search}", true);
     }
 }
 <style>

@@ -55,7 +55,7 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddBlazoredLocalStorage(config => config.JsonSerializerOptions.WriteIndented = true);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseLazyLoadingProxies().UseSqlServer(connectionString)
+    options.UseSqlServer(connectionString)
     .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.DetachedLazyLoadingWarning)));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();

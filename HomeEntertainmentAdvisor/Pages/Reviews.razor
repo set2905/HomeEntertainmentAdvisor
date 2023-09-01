@@ -1,0 +1,38 @@
+﻿@page "/{Search}"
+@page "/"
+@using HomeEntertainmentAdvisor.Models;
+@using HomeEntertainmentAdvisor.Services.Interfaces;
+@inject IReviewService reviewService
+
+<PageTitle>Review</PageTitle>
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="12" md="8">
+        @foreach (Review rev in reviews)
+        {
+            <ReviewItem Review="@rev" />
+        }
+    </MudItem>
+</MudGrid>
+
+@code
+{
+    [Parameter]
+    public string? Search { get; set; }
+    private int perPage = 10;
+
+    private int currentPage;
+    private List<Review> reviews = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        if (Search!=null)
+            reviews = await reviewService.Search(Search, currentPage, perPage);
+        else
+        {
+            reviews = await reviewService.GetNewest();
+        }
+
+    }
+
+}

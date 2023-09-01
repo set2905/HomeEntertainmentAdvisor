@@ -11,9 +11,6 @@
 @inject ISnackbar snackBar
 @inject NavigationManager navManager
 
-@inject IAuthorizationService authorizationService;
-@inject AuthenticationStateProvider authenticationStateProvider;
-@inject UserManager<User> userManager;
 
 @attribute [Authorize]
 <PageTitle>Edit review</PageTitle>
@@ -103,9 +100,6 @@
         snackBar.Add(saveReviewResult.message);
         navManager.NavigateTo($"Review/{saveReviewResult.id.ToString()}");
     }
-
-
-
 }
 
 <style>
