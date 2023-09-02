@@ -43,5 +43,14 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
             await context.SaveChangesAsync();
             return entity.Id;
         }
+        public override async Task<bool> Delete(Review entity)
+        {
+            if (entity.Status==ReviewStatus.Deleted)
+            {
+                return false;
+            }
+            entity.Status=ReviewStatus.Deleted;
+            return true;
+        }
     }
 }

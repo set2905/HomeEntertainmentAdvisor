@@ -7,6 +7,7 @@
         <MudTh>№</MudTh>
         <MudTh>Name</MudTh>
         <MudTh>Likes</MudTh>
+        <MudTh>Status</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="№">@Reviews.IndexOf(context)</MudTd>
@@ -16,6 +17,7 @@
             </MudLink>
         </MudTd>
         <MudTd DataLabel="Likes">@context.CachedLikes</MudTd>
+        <MudTd DataLabel="Status">@context.Status.ToString()</MudTd>
     </RowTemplate>
 </MudTable>
 @code {
