@@ -9,5 +9,6 @@ namespace HomeEntertainmentAdvisor.Services.Interfaces
         Task<List<Review>> GetNewest();
         Task<Review?> GetById(Guid id);
         Task<(Guid id, bool succeeded, string message)> TrySaveReview(Review review);
+        Task<List<Review>> GetMyReviews();
     }
 }

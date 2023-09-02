@@ -22,6 +22,12 @@ namespace HomeEntertainmentAdvisor.Services
             this.userManager=userManager;
             this.authorizationService=authorizationService;
         }
+        public async Task<List<Review>> GetMyReviews()
+        {
+            User? user = await GetUser(await GetAuthState());
+            if (user == null) return new();
+            return await reviewsRepo.GetUserReviews(user.Id);
+        }
         public async Task<Review?> GetById(Guid id)
         {
             return await reviewsRepo.GetById(id);

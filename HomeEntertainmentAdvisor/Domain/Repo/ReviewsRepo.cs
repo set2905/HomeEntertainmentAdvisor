@@ -12,10 +12,12 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
             dbSet=context.Reviews;
         }
 
+        public async Task<List<Review>> GetUserReviews(string userId)
+        {
+            return await dbSet.Include(r => r.Rating).Where(x => x.Rating.AuthorId==userId).ToListAsync();
+        }
         public async Task<List<Review>> GetPage(int page, int recordsPerPage)
         {
-            //if (page<1) throw new ArgumentException("page cannot be less than 1");
-            //if (recordsPerPage<1) throw new ArgumentException("recordsPerPage cannot be less than 1");
             return await dbSet.OrderBy(x => x.CreatedDate).Skip((page-1)*recordsPerPage).Take(recordsPerPage).Include(r => r.Rating).ThenInclude(r => r.Author).ToListAsync();
         }
 
