@@ -7,9 +7,9 @@ namespace HomeEntertainmentAdvisor.Models
 {
     public enum ReviewStatus
     {
+        Published,
         Draft,
-        Deleted,
-        Published
+        Deleted    
     }
     public class Review
     {
