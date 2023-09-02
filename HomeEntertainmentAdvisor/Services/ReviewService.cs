@@ -54,7 +54,7 @@ namespace HomeEntertainmentAdvisor.Services
             }
             if (!TrySetReviewAuthor(user, review))
             {
-                if (!await IsUserAuthor(authState, review))
+                if (!await IsUserAuthor(authState, review) && !await IsUserAdmin(user))
                 {
                     return (Guid.Empty, false, "You are not the owner of this resource");
                 }
@@ -65,6 +65,10 @@ namespace HomeEntertainmentAdvisor.Services
         {
             var authorizationResult = await authorizationService.AuthorizeAsync(authState.User, review, "UserIsAuthor");
             return authorizationResult.Succeeded;
+        }
+        private async Task<bool> IsUserAdmin(User user)
+        {
+            return await userManager.IsInRoleAsync(user, "admin");
         }
         private bool TrySetReviewAuthor(User user, Review review)
         {
