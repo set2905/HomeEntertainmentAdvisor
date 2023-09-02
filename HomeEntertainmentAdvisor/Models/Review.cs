@@ -5,6 +5,12 @@ using static MudBlazor.CategoryTypes;
 
 namespace HomeEntertainmentAdvisor.Models
 {
+    public enum ReviewStatus
+    {
+        Draft,
+        Deleted,
+        Published
+    }
     public class Review
     {
         public const int MAX_NAME = 64;
@@ -28,6 +34,7 @@ namespace HomeEntertainmentAdvisor.Models
         public Guid RatingId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime LastCacheUpdate { get; set; }
+        public ReviewStatus Status { get; set; }
     }
     public class ReviewValidator : AbstractValidator<Review>
     {
