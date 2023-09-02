@@ -1,0 +1,29 @@
+﻿@using HomeEntertainmentAdvisor.Models;
+<MudTable Items="@Reviews">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Reviews</MudText>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>№</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Likes</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="№">@Reviews.IndexOf(context)</MudTd>
+        <MudTd DataLabel="Name">
+            <MudLink Href="@GetHref(context)">
+                @context.Name
+            </MudLink>
+        </MudTd>
+        <MudTd DataLabel="Likes">@context.CachedLikes</MudTd>
+    </RowTemplate>
+</MudTable>
+@code {
+    [Parameter]
+    public List<Review> Reviews { get; set; }
+
+    private string GetHref(Review context)
+    {
+        return $"Review/{context.Id}";
+    }
+}

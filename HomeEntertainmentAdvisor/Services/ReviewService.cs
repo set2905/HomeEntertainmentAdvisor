@@ -26,7 +26,11 @@ namespace HomeEntertainmentAdvisor.Services
         {
             User? user = await GetUser(await GetAuthState());
             if (user == null) return new();
-            return await reviewsRepo.GetUserReviews(user.Id);
+            return await GetUserReviews(user.Id);
+        }
+        public async Task<List<Review>> GetUserReviews(string id)
+        {
+            return await reviewsRepo.GetUserReviews(id);
         }
         public async Task<Review?> GetById(Guid id)
         {

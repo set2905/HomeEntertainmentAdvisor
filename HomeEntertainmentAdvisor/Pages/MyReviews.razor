@@ -1,0 +1,25 @@
+﻿@page "/MyReviews"
+@using HomeEntertainmentAdvisor.Models;
+@using HomeEntertainmentAdvisor.Pages.Shared
+@using HomeEntertainmentAdvisor.Services.Interfaces;
+@inject IReviewService reviewService
+@attribute [Authorize]
+<PageTitle>Review</PageTitle>
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="12" md="10">
+        <ReviewsTable Reviews="@reviews" />
+    </MudItem>
+</MudGrid>
+
+@code
+{
+    private List<Review> reviews = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        reviews = await reviewService.GetMyReviews();
+    }
+
+
+}
