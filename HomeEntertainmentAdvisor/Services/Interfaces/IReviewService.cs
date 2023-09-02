@@ -11,5 +11,6 @@ namespace HomeEntertainmentAdvisor.Services.Interfaces
         Task<(Guid id, bool succeeded, string message)> TrySaveReview(Review review);
         Task<List<Review>> GetMyReviews();
         Task<List<Review>> GetUserReviews(string id);
+        Task SetStatus(IEnumerable<Review> toDelete, ReviewStatus status);
     }
 }

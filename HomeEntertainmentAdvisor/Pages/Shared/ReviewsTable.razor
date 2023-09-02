@@ -1,13 +1,23 @@
 ﻿@using HomeEntertainmentAdvisor.Models;
-<MudTable Items="@Reviews">
+@using HomeEntertainmentAdvisor.Services.Interfaces;
+@inject IReviewService reviewService
+@inject ISnackbar snackBar
+
+<MudTable Items="@Reviews" MultiSelection="true" @bind-SelectedItems="selectedItems" Hover="true" Bordered="true" Striped="false" SelectOnRowClick="true">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Reviews</MudText>
+        <MudButton OnClick="@DeleteSelected" EndIcon="@Icons.Material.Filled.Delete" Color="Color.Surface">
+            Delete selected
+        </MudButton>
+        <MudButton OnClick="@RestoreSelected" EndIcon="@Icons.Material.Filled.Restore" Color="Color.Surface">
+            Restore selected
+        </MudButton>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>№</MudTh>
         <MudTh>Name</MudTh>
         <MudTh>Likes</MudTh>
         <MudTh>Status</MudTh>
+        <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="№">@Reviews.IndexOf(context)</MudTd>
@@ -18,14 +28,33 @@
         </MudTd>
         <MudTd DataLabel="Likes">@context.CachedLikes</MudTd>
         <MudTd DataLabel="Status">@context.Status.ToString()</MudTd>
+        <MudTd DataLabel="Actions">
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Href="@GetEditHref(context)" />
+        </MudTd>
     </RowTemplate>
 </MudTable>
 @code {
     [Parameter]
-    public List<Review> Reviews { get; set; }
+    public List<Review> Reviews { get; set; } = new();
+    private HashSet<Review> selectedItems = new();
 
     private string GetHref(Review context)
     {
         return $"Review/{context.Id}";
+    }
+    private string GetEditHref(Review context)
+    {
+        return $"Review/Edit/{context.Id}";
+    }
+    private async Task DeleteSelected()
+    {
+        await reviewService.SetStatus(selectedItems,ReviewStatus.Deleted);
+        snackBar.Add($"{selectedItems.Count} reviews deleted!");
+    }
+    private async Task RestoreSelected()
+    {
+        await reviewService.SetStatus(selectedItems, ReviewStatus.Draft);
+        snackBar.Add($"{selectedItems.Count} reviews restored!");
+
     }
 }

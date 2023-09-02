@@ -22,6 +22,13 @@ namespace HomeEntertainmentAdvisor.Services
             this.userManager=userManager;
             this.authorizationService=authorizationService;
         }
+        public async Task SetStatus(IEnumerable<Review> toDelete, ReviewStatus status)
+        {
+            foreach(Review review in toDelete)
+            {
+                await reviewsRepo.SetStatus(review, status);
+            }
+        }
         public async Task<List<Review>> GetMyReviews()
         {
             User? user = await GetUser(await GetAuthState());

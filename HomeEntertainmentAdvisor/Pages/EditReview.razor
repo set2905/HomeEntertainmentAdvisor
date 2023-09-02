@@ -41,7 +41,7 @@
                     <MudText>Content: </MudText>
                     <MarkdownEditor Theme="easymde" @bind-Value="@review.Content" />
 
-                    <MudButton Color="Color.Surface" StartIcon="@Icons.Material.Filled.Save" FullWidth="false" ButtonType="ButtonType.Submit">Save</MudButton>
+                    <MudButton Color="Color.Surface" StartIcon="@Icons.Material.Filled.Save" FullWidth="false" ButtonType="ButtonType.Submit">Publish</MudButton>
                 </MudStack>
             </MudPaper>
         </MudItem>
@@ -90,6 +90,7 @@
 
     private async Task SubmitValidForm()
     {
+        review.Status = ReviewStatus.Published;
         review.RatingId = await ratingService.SaveRating(review.Rating);
         var saveReviewResult = await reviewService.TrySaveReview(review);
         if (!saveReviewResult.succeeded)
