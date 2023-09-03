@@ -31,7 +31,7 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
         }
         public override async Task<Review?> GetById(Guid id)
         {
-            return await context.Reviews.SingleOrDefaultAsync(x => x.Id == id);
+            return await context.Reviews.Include(x => x.Rating).ThenInclude(x => x.MediaPiece).SingleOrDefaultAsync(x => x.Id == id);
         }
 
         public override async Task<Guid> Save(Review entity)
