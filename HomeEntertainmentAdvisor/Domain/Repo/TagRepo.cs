@@ -2,6 +2,7 @@
 using HomeEntertainmentAdvisor.Domain.Repo.Interfaces;
 using HomeEntertainmentAdvisor.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Security;
 
 namespace HomeEntertainmentAdvisor.Domain.Repo
 {
@@ -12,6 +13,15 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
             dbSet=context.Tags;
         }
 
+        public async Task<Tag?> GetByName(string name)
+        {
+            return await context.Tags.SingleOrDefaultAsync(x => x.Name == name);
+        }
+
+        public async Task<List<Tag>> SearchByName(string query)
+        {
+            return await dbSet.Where(x => x.Name.StartsWith(query)).ToListAsync();
+        }
         public override async Task<Tag?> GetById(Guid id)
         {
             return await dbSet.SingleOrDefaultAsync(x => x.Id == id);

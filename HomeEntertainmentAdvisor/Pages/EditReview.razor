@@ -8,6 +8,7 @@
 @inject IReviewService reviewService
 @inject IMediaService mediaService
 @inject IRatingService ratingService
+@inject ITagService tagService
 @inject ISnackbar snackBar
 @inject NavigationManager navManager
 
@@ -22,8 +23,19 @@
         <MudItem md="10" xs="12">
             <MudPaper Class="pa-4">
                 <MudStack>
+                    <MudText>Tags: </MudText>
                     <MudText Typo="Typo.h4">Edit review </MudText>
-
+                    <MudAutocomplete T="string" @bind-Value="tagInputValue" SearchFunc="@tagService.SearchByName" Immediate="true"
+                                     ResetValueOnEmptyText="false"
+                                     CoerceText="false" CoerceValue="true"
+                                     AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" />
+                    <MudButton OnClick="@AddTag">Add</MudButton>
+                    <MudChipSet AllClosable="true" OnClose="HandleTagRemoved">
+                        @foreach (string t in tags)
+                        {
+                            <MudChip Value="@t" Text="@t"></MudChip>
+                        }
+                    </MudChipSet>
                     <MudText>Media: </MudText>
                     <MudAutocomplete T="MediaPiece" @bind-Value="review.Rating.MediaPiece" SearchFuncWithCancel="@SearchMediaPieces"
                                      ToStringFunc="@(e=> e!=null?e.Name:null)" Immediate="true"
@@ -40,7 +52,6 @@
 
                     <MudText>Content: </MudText>
                     <MarkdownEditor Theme="easymde" @bind-Value="@review.Content" />
-
                     <MudButton Color="Color.Surface" StartIcon="@Icons.Material.Filled.Save" FullWidth="false" ButtonType="ButtonType.Submit">Publish</MudButton>
                 </MudStack>
             </MudPaper>
@@ -53,6 +64,8 @@
     [Parameter]
     public string? ReviewId { get; set; }
     private Review review = new();
+    private List<string> tags = new();
+    private string tagInputValue = string.Empty;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -79,6 +92,8 @@
                 }
                 found.Rating = rating;
                 review = found;
+
+                tags = (await tagService.GetReviewTags(reviewGuid)).Select(x => x.Name).ToList();
             }
         }
     }
@@ -88,6 +103,15 @@
         return result;
     }
 
+    private void AddTag()
+    {
+        if (!tags.Contains(tagInputValue))
+            tags.Add(tagInputValue);
+    }
+    private void HandleTagRemoved(MudChip chip)
+    {
+        tags.Remove(chip.Text);
+    }
     private async Task SubmitValidForm()
     {
         review.Status = ReviewStatus.Published;
@@ -98,6 +122,7 @@
             snackBar.Add(saveReviewResult.message, Severity.Error);
             return;
         }
+        await tagService.OverwriteTags(saveReviewResult.id, tags);
         snackBar.Add(saveReviewResult.message);
         navManager.NavigateTo($"Review/{saveReviewResult.id.ToString()}");
     }
