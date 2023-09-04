@@ -11,7 +11,10 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
         {
             dbSet=context.ReviewLikes;
         }
-
+        public async Task<int> GetLikeCount(Guid reviewId)
+        {
+            return await dbSet.Where(x => x.ReviewId==reviewId).CountAsync();
+        }
         public override async Task<ReviewLike?> GetById((Guid, string) id)
         {
             return await dbSet.SingleOrDefaultAsync(x => x.ReviewId == id.Item1&&x.UserId==id.Item2);

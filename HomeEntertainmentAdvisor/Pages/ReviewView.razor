@@ -5,6 +5,7 @@
 @inject IReviewService reviewService
 @inject IMediaService mediaService
 @inject IRatingService ratingService
+@inject IReviewLikeService likeService
 @inject ISnackbar snackBar
 <PageTitle>Review</PageTitle>
 <MudText>
@@ -14,6 +15,7 @@
              Styling="Styling"
              TableCellMinWidth="100"
              CodeBlockTheme="CodeBlockTheme.DraculaBase16" />
+             <MudIconButton Icon="" />
 @code
 {
     [Parameter]
