@@ -1,0 +1,92 @@
+﻿@using HomeEntertainmentAdvisor.Models;
+@using HomeEntertainmentAdvisor.Services.Interfaces;
+@inject IReviewLikeService likeService
+@inject ISnackbar snackBar
+@inject IReviewService reviewService
+
+@implements IDisposable
+
+
+<MudText>
+    @likeCount
+</MudText>
+<MudIconButton Icon="@Icons.Material.Filled.ThumbUp" Color="@likeButtonColor" OnClick="HandleLikeClicked" />
+@code {
+    [Parameter]
+    public Review Review
+    {
+        get => review;
+        set
+        {
+            review = value;
+            if (onReviewSet!=null)
+                onReviewSet.Invoke(this, new());
+        }
+    }
+    private event AsyncEventHandler onReviewSet;
+    private Review review = new();
+    private int likeCount;
+    private Color likeButtonColor = Color.Surface;
+    private bool liked = false;
+    private CancellationTokenSource likeCancellationTokenSource = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        onReviewSet += async (s, e) =>
+         {
+             await SetLikes();
+         };
+        await SetLikes();
+
+    }
+    private async Task HandleLikeClicked()
+    {
+        CancelAndResetLikeToken();
+        if (!liked)
+        {
+            likeButtonColor = Color.Success;
+            StateHasChanged();
+            if (!await likeService.LikeReview(Review.Id, likeCancellationTokenSource.Token))
+                snackBar.Add("Like couldnt be added");
+        }
+        else
+        {
+            likeButtonColor = Color.Surface;
+            StateHasChanged();
+            if (!await likeService.RemoveLikeReview(Review.Id, likeCancellationTokenSource.Token))
+                snackBar.Add("Like couldnt be removed");
+        }
+        await SetLikes();
+    }
+    private async Task SetLikes()
+    {
+        if (await likeService.IsLikedByUser(Review))
+        {
+            liked = true;
+            likeButtonColor = Color.Success;
+        }
+        else
+        {
+            liked = false;
+            likeButtonColor = Color.Surface;
+        }
+        likeCount = await likeService.UpdateLikeCount(Review);
+        StateHasChanged();
+    }
+
+    private void CancelAndResetLikeToken()
+    {
+        likeCancellationTokenSource.Cancel();
+        likeCancellationTokenSource.Dispose();
+        likeCancellationTokenSource = new CancellationTokenSource();
+    }
+    #region IDisposable
+    public void Dispose()
+    {
+        likeCancellationTokenSource.Cancel();
+        likeCancellationTokenSource.Dispose();
+    }
+    #endregion
+    public delegate Task AsyncEventHandler(object sender, EventArgs e);
+}
