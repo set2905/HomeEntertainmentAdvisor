@@ -9,6 +9,7 @@ namespace HomeEntertainmentAdvisor.Services
 {
     public class ReviewLikeService : AuthServiceBase, IReviewLikeService
     {
+        private const int LIKECOUNT_UPDATE_SECONDS = 3600;
 
         private readonly IReviewLikesRepo reviewLikesRepo;
         private readonly IReviewService reviewService;
@@ -18,7 +19,27 @@ namespace HomeEntertainmentAdvisor.Services
             this.reviewService = reviewService;
             this.reviewLikesRepo= reviewLikesRepo;
         }
-
+        public async Task<bool> IsLikedByUser(Review review)
+        {
+            User? user = await GetUser(await GetAuthState());
+            if (user == null) return false;
+            ReviewLike? like = await reviewLikesRepo.GetById((review.Id, user.Id));
+            if (like == null) return false;
+            return true;
+        }
+        public async Task<int> UpdateLikeCount(Review review)
+        {
+            if (review.LastCacheUpdate < DateTime.Now-TimeSpan.FromSeconds(3600))
+            {
+                int likeCount = await reviewLikesRepo.GetLikeCount(review.Id);
+                review.LastCacheUpdate = DateTime.Now;
+                review.CachedLikes = likeCount;
+                await reviewService.TrySaveReview(review);
+                return likeCount;
+            }
+            else
+                return review.CachedLikes;
+        }
         public async Task<bool> LikeReview(Guid reviewId)
         {
             User? user = await GetUser(await GetAuthState());

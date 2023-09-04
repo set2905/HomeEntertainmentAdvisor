@@ -15,18 +15,50 @@
              Styling="Styling"
              TableCellMinWidth="100"
              CodeBlockTheme="CodeBlockTheme.DraculaBase16" />
-             <MudIconButton Icon="" />
+<MudText>
+    @likeCount
+</MudText>
+<MudIconButton Icon="@Icons.Material.Filled.ThumbUp" Color="@likeButtonColor" OnClick="HandleLikeClicked" />
 @code
 {
     [Parameter]
     public string? ReviewId { get; set; }
     private Review review = new();
+    private int likeCount;
+    private Color likeButtonColor = Color.Surface;
 
     private MudMarkdownStyling Styling { get; } = new();
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         await SetReview();
+    }
+    private async Task HandleLikeClicked()
+    {
+        if (await likeService.LikeReview(review.Id))
+        {
+            likeCount++;
+            likeButtonColor = Color.Success;
+            StateHasChanged();
+            return;
+        }
+        if (await likeService.RemoveLikeReview(review.Id))
+        {
+            likeCount--;
+            likeButtonColor = Color.Surface;
+            StateHasChanged();
+            return;
+        }
+
+    }
+    private async Task SetLikes()
+    {
+        if (await likeService.IsLikedByUser(review))
+        {
+            likeButtonColor = Color.Success;
+        }
+        likeCount = await likeService.UpdateLikeCount(review);
+        StateHasChanged();
     }
     private async Task SetReview()
     {
@@ -49,6 +81,7 @@
                 }
                 found.Rating = rating;
                 review = found;
+                await SetLikes();
             }
         }
     }
