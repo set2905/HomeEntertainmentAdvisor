@@ -21,12 +21,12 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
             }
         }
 
-        public async Task<List<Tag>> SearchByName(string query)
+        public async Task<List<Tag>> SearchByName(string query, CancellationToken cancellationToken = default)
         {
             using (var context = contextFactory.CreateDbContext())
             {
                 var dbSet = context.Set<Tag>();
-                return await dbSet.Where(x => x.Name.StartsWith(query)).ToListAsync();
+                return await dbSet.Where(x => x.Name.StartsWith(query)).ToListAsync(cancellationToken);
             }
         }
         public override async Task<Tag?> GetById(Guid id)

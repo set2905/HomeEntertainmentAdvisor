@@ -9,7 +9,7 @@
         /// <returns>
         /// Id of saved <paramref name="entity"></paramref>
         /// </returns>
-        public Task<TId> Save(TEntity entity);
+        public Task<TId> Save(TEntity entity, CancellationToken cancellationToken = default);
         /// <summary>
         ///  Removes <paramref name="entity"></paramref> from db
         /// </summary>

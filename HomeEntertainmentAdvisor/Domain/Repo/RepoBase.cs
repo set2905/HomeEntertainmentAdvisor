@@ -34,6 +34,6 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
 
         public abstract Task<TEntity?> GetById(TId id);
 
-        public abstract Task<TId> Save(TEntity entity);
+        public abstract Task<TId> Save(TEntity entity, CancellationToken cancellationToken = default);
     }
 }
