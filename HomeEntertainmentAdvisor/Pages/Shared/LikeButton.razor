@@ -13,54 +13,53 @@
 <MudIconButton Icon="@Icons.Material.Filled.ThumbUp" Color="@likeButtonColor" OnClick="HandleLikeClicked" />
 @code {
     [Parameter]
-    public Review Review
-    {
-        get => review;
-        set
-        {
-            review = value;
-            if (onReviewSet!=null)
-                onReviewSet.Invoke(this, new());
-        }
-    }
-    private event AsyncEventHandler onReviewSet;
-    private Review review = new();
+    public Review? Review { get; set; }
     private int likeCount;
     private Color likeButtonColor = Color.Surface;
     private bool liked = false;
     private CancellationTokenSource likeCancellationTokenSource = new();
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnInitializedAsync();
-        onReviewSet += async (s, e) =>
-         {
-             await SetLikes();
-         };
+        await base.OnAfterRenderAsync(firstRender);
+    }
+    protected override async Task OnParametersSetAsync()
+    {
         await SetLikes();
-
     }
     private async Task HandleLikeClicked()
     {
+        if (Review == null) return;
         CancelAndResetLikeToken();
         if (!liked)
         {
-            likeButtonColor = Color.Success;
-            StateHasChanged();
             if (!await likeService.LikeReview(Review.Id, likeCancellationTokenSource.Token))
                 snackBar.Add("Like couldnt be added");
+            else
+            {
+                likeButtonColor = Color.Success;
+                liked = true;
+            }
+
         }
         else
         {
-            likeButtonColor = Color.Surface;
-            StateHasChanged();
             if (!await likeService.RemoveLikeReview(Review.Id, likeCancellationTokenSource.Token))
                 snackBar.Add("Like couldnt be removed");
+            else
+            {
+                likeButtonColor = Color.Surface;
+                liked = false;
+            }
+
         }
-        await SetLikes();
+        StateHasChanged();
+
     }
     private async Task SetLikes()
     {
+        if (Review == null||Review.Id==default) return;
+
         if (await likeService.IsLikedByUser(Review))
         {
             liked = true;
@@ -88,5 +87,4 @@
         likeCancellationTokenSource.Dispose();
     }
     #endregion
-    public delegate Task AsyncEventHandler(object sender, EventArgs e);
 }

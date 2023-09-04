@@ -17,19 +17,21 @@
              Styling="Styling"
              TableCellMinWidth="100"
              CodeBlockTheme="CodeBlockTheme.DraculaBase16" />
-<LikeButton Review="@review"/>
+<LikeButton @ref=@likeButton Review="@review" />
 @code
 {
     [Parameter]
     public string? ReviewId { get; set; }
     private Review review = new();
-   
+    private LikeButton likeButton = new();
+
     private MudMarkdownStyling Styling { get; } = new();
-    protected override async Task OnInitializedAsync()
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnInitializedAsync();
-        CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-        await SetReview();
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+            await SetReview();
     }
 
     private async Task SetReview()
@@ -46,8 +48,9 @@
                     return;
                 }
                 review = found;
+                StateHasChanged();
             }
         }
     }
-   
+
 }

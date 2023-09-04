@@ -29,6 +29,7 @@ namespace HomeEntertainmentAdvisor.Services
         }
         public async Task<int> UpdateLikeCount(Review review)
         {
+            
             if (review.LastCacheUpdate < DateTime.Now-TimeSpan.FromSeconds(3600))
             {
                 int likeCount = await reviewLikesRepo.GetLikeCount(review.Id);
