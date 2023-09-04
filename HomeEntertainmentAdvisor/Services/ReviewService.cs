@@ -8,23 +8,18 @@ using Microsoft.AspNetCore.Identity;
 
 namespace HomeEntertainmentAdvisor.Services
 {
-    public class ReviewService : IReviewService
+    public class ReviewService : AuthServiceBase, IReviewService
     {
         private readonly IReviewsRepo reviewsRepo;
-        private readonly IAuthorizationService authorizationService;
-        private readonly AuthenticationStateProvider authenticationStateProvider;
-        private readonly UserManager<User> userManager;
 
-        public ReviewService(IReviewsRepo reviewsRepo, AuthenticationStateProvider authenticationStateProvider, UserManager<User> userManager, IAuthorizationService authorizationService)
+        public ReviewService(IReviewsRepo reviewsRepo, AuthenticationStateProvider authenticationStateProvider, UserManager<User> userManager, IAuthorizationService authorizationService) : base(authenticationStateProvider, userManager, authorizationService)
         {
-            this.reviewsRepo=reviewsRepo;
-            this.authenticationStateProvider=authenticationStateProvider;
-            this.userManager=userManager;
-            this.authorizationService=authorizationService;
+            this.reviewsRepo = reviewsRepo;
         }
+
         public async Task SetStatus(IEnumerable<Review> toDelete, ReviewStatus status)
         {
-            foreach(Review review in toDelete)
+            foreach (Review review in toDelete)
             {
                 await reviewsRepo.SetStatus(review, status);
             }
@@ -68,15 +63,7 @@ namespace HomeEntertainmentAdvisor.Services
             }
             return (await reviewsRepo.Save(review), true, "Review saved");
         }
-        private async Task<bool> IsUserAuthor(AuthenticationState authState, Review review)
-        {
-            var authorizationResult = await authorizationService.AuthorizeAsync(authState.User, review, "UserIsAuthor");
-            return authorizationResult.Succeeded;
-        }
-        private async Task<bool> IsUserAdmin(User user)
-        {
-            return await userManager.IsInRoleAsync(user, "admin");
-        }
+
         private bool TrySetReviewAuthor(User user, Review review)
         {
             if (review.Id == default && (review.Rating.AuthorId == default || review.Rating.Author == null))
@@ -86,15 +73,6 @@ namespace HomeEntertainmentAdvisor.Services
                 return true;
             }
             else return false;
-        }
-        private async Task<User?> GetUser(AuthenticationState authState)
-        {
-            return await userManager.GetUserAsync(authState.User);
-        }
-        private async Task<AuthenticationState> GetAuthState()
-        {
-            return await authenticationStateProvider.GetAuthenticationStateAsync();
-
         }
     }
 }
