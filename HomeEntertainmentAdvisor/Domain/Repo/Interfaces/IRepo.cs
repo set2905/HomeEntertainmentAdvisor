@@ -17,7 +17,7 @@
         /// <returns>
         /// Is removal succesful
         /// </returns>
-        public Task<bool> Delete(TEntity entity);
+        public Task<bool> Delete(TEntity entity, CancellationToken cancellationToken = default);
         /// <summary>
         ///  Gets all records from the db
         /// </summary>

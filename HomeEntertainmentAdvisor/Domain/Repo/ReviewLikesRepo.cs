@@ -29,12 +29,12 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
 
         }
 
-        public override async Task<(Guid, string)> Save(ReviewLike entity)
+        public override async Task<(Guid, string)> Save(ReviewLike entity, CancellationToken cancellationToken = default)
         {
             using (var context = contextFactory.CreateDbContext())
             {
                 context.Entry(entity).State = EntityState.Added;
-                await context.SaveChangesAsync();
+                await context.SaveChangesAsync(cancellationToken);
                 return (entity.ReviewId, entity.UserId);
             }
         }

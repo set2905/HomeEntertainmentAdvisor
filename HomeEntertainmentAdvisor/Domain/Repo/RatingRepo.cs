@@ -20,7 +20,7 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
             }
         }
 
-        public override async Task<Guid> Save(Rating entity)
+        public override async Task<Guid> Save(Rating entity, CancellationToken cancellationToken = default)
         {
             using (var context = contextFactory.CreateDbContext())
             {
@@ -29,7 +29,7 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
                     context.Entry(entity).State = EntityState.Added;
                 else
                     context.Entry(entity).State = EntityState.Modified;
-                await context.SaveChangesAsync();
+                await context.SaveChangesAsync(cancellationToken);
                 return entity.Id;
             }
         }

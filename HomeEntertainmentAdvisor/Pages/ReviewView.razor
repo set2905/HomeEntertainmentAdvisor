@@ -7,6 +7,8 @@
 @inject IRatingService ratingService
 @inject IReviewLikeService likeService
 @inject ISnackbar snackBar
+
+@implements IDisposable
 <PageTitle>Review</PageTitle>
 <MudText>
     @review.Name
@@ -27,27 +29,29 @@
     private int likeCount;
     private Color likeButtonColor = Color.Surface;
     private bool liked = false;
-
+    private CancellationTokenSource likeCancellationTokenSource = new();
     private MudMarkdownStyling Styling { get; } = new();
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
         await SetReview();
     }
     private async Task HandleLikeClicked()
     {
+        CancelAndResetLikeToken();
         if (!liked)
         {
             likeButtonColor = Color.Success;
             StateHasChanged();
-            if (!await likeService.LikeReview(review.Id))
+            if (!await likeService.LikeReview(review.Id, likeCancellationTokenSource.Token))
                 snackBar.Add("Like couldnt be added");
         }
         else
         {
             likeButtonColor = Color.Surface;
             StateHasChanged();
-            if (!await likeService.RemoveLikeReview(review.Id))
+            if (!await likeService.RemoveLikeReview(review.Id, likeCancellationTokenSource.Token))
                 snackBar.Add("Like couldnt be removed");
         }
         await SetLikes();
@@ -92,4 +96,19 @@
             }
         }
     }
+    private void CancelAndResetLikeToken()
+    {
+        likeCancellationTokenSource.Cancel();
+        likeCancellationTokenSource.Dispose();
+        likeCancellationTokenSource = new CancellationTokenSource();
+    }
+    #region IDisposable
+
+    public void Dispose()
+    {
+        likeCancellationTokenSource.Cancel();
+        likeCancellationTokenSource.Dispose();
+    }
+
+    #endregion
 }

@@ -40,7 +40,7 @@ namespace HomeEntertainmentAdvisor.Services
             else
                 return review.CachedLikes;
         }
-        public async Task<bool> LikeReview(Guid reviewId)
+        public async Task<bool> LikeReview(Guid reviewId, CancellationToken cancellationToken = default)
         {
             User? user = await GetUser(await GetAuthState());
             if (user == null) return false;
@@ -48,11 +48,11 @@ namespace HomeEntertainmentAdvisor.Services
             if (review == null) return false;
             ReviewLike? like = await reviewLikesRepo.GetById((reviewId, user.Id));
             if (like != null) return false;
-            await reviewLikesRepo.Save(new() { UserId=user.Id, ReviewId=reviewId });
+            await reviewLikesRepo.Save(new() { UserId=user.Id, ReviewId=reviewId }, cancellationToken);
             return true;
 
         }
-        public async Task<bool> RemoveLikeReview(Guid reviewId)
+        public async Task<bool> RemoveLikeReview(Guid reviewId, CancellationToken cancellationToken = default)
         {
             User? user = await GetUser(await GetAuthState());
             if (user == null) return false;
@@ -60,7 +60,7 @@ namespace HomeEntertainmentAdvisor.Services
             if (review == null) return false;
             ReviewLike? like = await reviewLikesRepo.GetById((reviewId, user.Id));
             if (like == null) return false;
-            return await reviewLikesRepo.Delete(like);
+            return await reviewLikesRepo.Delete(like, cancellationToken);
         }
 
     }

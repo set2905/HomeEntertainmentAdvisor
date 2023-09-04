@@ -14,12 +14,12 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
             this.contextFactory=contextFactory;
         }
 
-        public virtual async Task<bool> Delete(TEntity entity)
+        public virtual async Task<bool> Delete(TEntity entity, CancellationToken cancellationToken = default)
         {
             using (var context = contextFactory.CreateDbContext())
             {
                 context.Set<TEntity>().Remove(entity);
-                await context.SaveChangesAsync();
+                await context.SaveChangesAsync(cancellationToken);
                 return true;
             }
         }
