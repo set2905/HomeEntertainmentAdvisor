@@ -26,6 +26,7 @@
     private Review review = new();
     private int likeCount;
     private Color likeButtonColor = Color.Surface;
+    private bool liked = false;
 
     private MudMarkdownStyling Styling { get; } = new();
     protected override async Task OnInitializedAsync()
@@ -35,19 +36,19 @@
     }
     private async Task HandleLikeClicked()
     {
-        if (await likeService.LikeReview(review.Id))
+        if (!liked)
         {
             likeCount++;
             likeButtonColor = Color.Success;
             StateHasChanged();
-            return;
+            liked = await likeService.LikeReview(review.Id);
         }
-        if (await likeService.RemoveLikeReview(review.Id))
+        else
         {
             likeCount--;
             likeButtonColor = Color.Surface;
             StateHasChanged();
-            return;
+            liked = await likeService.RemoveLikeReview(review.Id);
         }
 
     }
@@ -55,6 +56,7 @@
     {
         if (await likeService.IsLikedByUser(review))
         {
+            liked = true;
             likeButtonColor = Color.Success;
         }
         likeCount = await likeService.UpdateLikeCount(review);
