@@ -38,19 +38,19 @@
     {
         if (!liked)
         {
-            likeCount++;
             likeButtonColor = Color.Success;
             StateHasChanged();
-            liked = await likeService.LikeReview(review.Id);
+            if (!await likeService.LikeReview(review.Id))
+                snackBar.Add("Like couldnt be added");
         }
         else
         {
-            likeCount--;
             likeButtonColor = Color.Surface;
             StateHasChanged();
-            liked = await likeService.RemoveLikeReview(review.Id);
+            if (!await likeService.RemoveLikeReview(review.Id))
+                snackBar.Add("Like couldnt be removed");
         }
-
+        await SetLikes();
     }
     private async Task SetLikes()
     {
@@ -58,6 +58,11 @@
         {
             liked = true;
             likeButtonColor = Color.Success;
+        }
+        else
+        {
+            liked = false;
+            likeButtonColor = Color.Surface;
         }
         likeCount = await likeService.UpdateLikeCount(review);
         StateHasChanged();

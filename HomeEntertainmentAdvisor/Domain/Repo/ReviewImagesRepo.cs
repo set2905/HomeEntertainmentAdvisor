@@ -7,24 +7,31 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
 {
     public class ReviewImagesRepo : RepoBase<ReviewImage, Guid>, IReviewImagesRepo
     {
-        public ReviewImagesRepo(ApplicationDbContext context) : base(context)
+        public ReviewImagesRepo(IDbContextFactory<ApplicationDbContext> contextFactory) : base(contextFactory)
         {
-            dbSet=context.ReviewImages;
         }
 
         public override  async Task<ReviewImage?> GetById(Guid id)
         {
-            return await dbSet.SingleOrDefaultAsync(x => x.Id == id);
+            using (var context = contextFactory.CreateDbContext())
+            {
+                var dbSet = context.Set<ReviewImage>();
+                return await dbSet.SingleOrDefaultAsync(x => x.Id == id);
+            }
         }
 
         public override async Task<Guid> Save(ReviewImage entity)
         {
-            if (entity.Id == default)
-                context.Entry(entity).State = EntityState.Added;
-            else
-                context.Entry(entity).State = EntityState.Modified;
-            await context.SaveChangesAsync();
-            return entity.Id;
+            using (var context = contextFactory.CreateDbContext())
+            {
+    
+                if (entity.Id == default)
+                    context.Entry(entity).State = EntityState.Added;
+                else
+                    context.Entry(entity).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                return entity.Id;
+            }
         }
     }
 }

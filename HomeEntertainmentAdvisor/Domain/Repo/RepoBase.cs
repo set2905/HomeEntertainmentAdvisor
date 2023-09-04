@@ -1,29 +1,35 @@
 ﻿using HomeEntertainmentAdvisor.Data;
 using HomeEntertainmentAdvisor.Domain.Repo.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace HomeEntertainmentAdvisor.Domain.Repo
 {
     public abstract class RepoBase<TEntity, TId> : IRepo<TEntity, TId> where TEntity : class
     {
-        protected readonly ApplicationDbContext context;
-        protected DbSet<TEntity> dbSet;
+        protected readonly IDbContextFactory<ApplicationDbContext> contextFactory;
 
-        public RepoBase(ApplicationDbContext context)
+        protected RepoBase(IDbContextFactory<ApplicationDbContext> contextFactory)
         {
-            this.context = context;
+            this.contextFactory=contextFactory;
         }
 
         public virtual async Task<bool> Delete(TEntity entity)
         {
-            dbSet.Remove(entity);
-            await context.SaveChangesAsync();
-            return true;
+            using (var context = contextFactory.CreateDbContext())
+            {
+                context.Set<TEntity>().Remove(entity);
+                await context.SaveChangesAsync();
+                return true;
+            }
         }
         /// <inheritdoc />
         public virtual async Task<List<TEntity>> GetAll()
         {
-            return await dbSet.ToListAsync();
+            using (var context = contextFactory.CreateDbContext())
+            {
+                return await context.Set<TEntity>().ToListAsync();
+            }
         }
 
         public abstract Task<TEntity?> GetById(TId id);

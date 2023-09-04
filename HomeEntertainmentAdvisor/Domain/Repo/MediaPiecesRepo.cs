@@ -7,31 +7,41 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
 {
     public class MediaPiecesRepo : RepoBase<MediaPiece, Guid>, IMediaPiecesRepo
     {
-        public MediaPiecesRepo(ApplicationDbContext context) : base(context)
+        public MediaPiecesRepo(IDbContextFactory<ApplicationDbContext> contextFactory) : base(contextFactory)
         {
-            dbSet=context.MediaPieces;
         }
 
         public override async Task<MediaPiece?> GetById(Guid id)
         {
-            return await dbSet.SingleOrDefaultAsync(x => x.Id == id);
+            using (var context = contextFactory.CreateDbContext())
+            {
+                var dbSet = context.Set<MediaPiece>();
+                return await dbSet.SingleOrDefaultAsync(x => x.Id == id);
+            }
         }
 
         public override async Task<Guid> Save(MediaPiece entity)
         {
-            if (entity.Id == default)
-                context.Entry(entity).State = EntityState.Added;
-            else
-                context.Entry(entity).State = EntityState.Modified;
-            await context.SaveChangesAsync();
-            return entity.Id;
+            using (var context = contextFactory.CreateDbContext())
+            {
+                if (entity.Id == default)
+                    context.Entry(entity).State = EntityState.Added;
+                else
+                    context.Entry(entity).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                return entity.Id;
+            }
         }
         public async Task<List<MediaPiece>> Search(string value, CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrEmpty(value))
-                return await dbSet.OrderBy(x => x.Name).Take(10).ToListAsync();
-            var result = await dbSet.Where(x => x.Name.StartsWith(value)).ToListAsync(cancellationToken);
-            return result;
+            using (var context = contextFactory.CreateDbContext())
+            {
+                var dbSet = context.Set<MediaPiece>();
+                if (string.IsNullOrEmpty(value))
+                    return await dbSet.OrderBy(x => x.Name).Take(10).ToListAsync();
+                var result = await dbSet.Where(x => x.Name.StartsWith(value)).ToListAsync(cancellationToken);
+                return result;
+            }
         }
     }
 }
