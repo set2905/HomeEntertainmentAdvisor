@@ -4,6 +4,7 @@ using HomeEntertainmentAdvisor.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HomeEntertainmentAdvisor.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230905121828__mediaGroupEnumRemoval")]
+    partial class _mediaGroupEnumRemoval
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,16 +84,11 @@ namespace HomeEntertainmentAdvisor.Migrations
                     b.Property<DateTime>("LastCacheUpdate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("MediaGroupId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("MediaGroupId");
 
                     b.ToTable("MediaPieces");
                 });
@@ -447,15 +445,6 @@ namespace HomeEntertainmentAdvisor.Migrations
                     b.Navigation("Author");
 
                     b.Navigation("Review");
-                });
-
-            modelBuilder.Entity("HomeEntertainmentAdvisor.Models.MediaPiece", b =>
-                {
-                    b.HasOne("HomeEntertainmentAdvisor.Models.MediaGroup", "MediaGroup")
-                        .WithMany()
-                        .HasForeignKey("MediaGroupId");
-
-                    b.Navigation("MediaGroup");
                 });
 
             modelBuilder.Entity("HomeEntertainmentAdvisor.Models.Rating", b =>

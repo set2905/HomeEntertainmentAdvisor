@@ -20,6 +20,7 @@ namespace HomeEntertainmentAdvisor.Data
         public DbSet<ReviewImage> ReviewImages { get; set; }
         public DbSet<ReviewTagRelation> ReviewTagRelations { get; set; }
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<MediaGroup> MediaGroups { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
