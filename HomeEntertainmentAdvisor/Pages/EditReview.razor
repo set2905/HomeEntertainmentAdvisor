@@ -2,6 +2,7 @@
 @page "/Review/Edit"
 @using Blazored.FluentValidation
 @using HomeEntertainmentAdvisor.Models;
+@using HomeEntertainmentAdvisor.Pages.Shared
 @using HomeEntertainmentAdvisor.Services.Interfaces;
 @using Markdig.Syntax.Inlines;
 @using Microsoft.AspNetCore.Identity;
@@ -52,6 +53,8 @@
 
                     <MudText>Content: </MudText>
                     <MarkdownEditor Theme="easymde" @bind-Value="@review.Content" />
+
+                    <ImageUploadComponent />
                     <MudButton Color="Color.Surface" StartIcon="@Icons.Material.Filled.Save" FullWidth="false" ButtonType="ButtonType.Submit">Publish</MudButton>
                 </MudStack>
             </MudPaper>
@@ -126,6 +129,8 @@
         snackBar.Add(saveReviewResult.message);
         navManager.NavigateTo($"Review/{saveReviewResult.id.ToString()}");
     }
+
+
 }
 
 <style>
