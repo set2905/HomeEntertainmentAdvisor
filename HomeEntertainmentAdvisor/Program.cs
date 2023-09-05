@@ -3,6 +3,7 @@ using HomeEntertainmentAdvisor.Areas.Identity;
 using HomeEntertainmentAdvisor.Data;
 using HomeEntertainmentAdvisor.Domain.Repo;
 using HomeEntertainmentAdvisor.Domain.Repo.Interfaces;
+using HomeEntertainmentAdvisor.Hubs;
 using HomeEntertainmentAdvisor.Localization;
 using HomeEntertainmentAdvisor.Middleware;
 using HomeEntertainmentAdvisor.MiddleWare;
@@ -13,6 +14,7 @@ using HomeEntertainmentAdvisor.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
@@ -91,6 +93,7 @@ builder.Services.AddAuthentication()
 
 builder.Services.AddTransient<AppExceptionHandlingMiddleware>();
 
+
 builder.Services.AddTransient<ICommentsRepo, CommentsRepo>();
 builder.Services.AddTransient<IMediaPiecesRepo, MediaPiecesRepo>();
 builder.Services.AddTransient<IMediaPieceGroupsRepo, MediaPieceGroupsRepo>();
@@ -117,6 +120,12 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+          new[] { "application/octet-stream" });
+});
+
 builder.Services.AddControllers();
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Shared/Resources");
@@ -128,6 +137,7 @@ builder.Services.AddMudServices();
 builder.Services.AddMudMarkdownServices();
 var app = builder.Build();
 
+app.UseResponseCompression();
 app.UseMiddleware<AppExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
@@ -176,6 +186,7 @@ using (var scope = app.Services.CreateScope())
 
 app.MapControllers();
 app.MapBlazorHub();
+app.MapHub<CommentHub>("/commenthub");
 app.MapFallbackToPage("/_Host");
 
 app.Run();

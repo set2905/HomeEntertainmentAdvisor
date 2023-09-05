@@ -22,7 +22,7 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
         {
             using (var context = contextFactory.CreateDbContext())
             {
-                return await context.Set<Comment>().SingleOrDefaultAsync(x => x.Id == id);
+                return await context.Set<Comment>().Include(x => x.Author).SingleOrDefaultAsync(x => x.Id == id);
             }
         }
 

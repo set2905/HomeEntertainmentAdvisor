@@ -1,8 +1,11 @@
 ﻿@using HomeEntertainmentAdvisor.Models;
 @using HomeEntertainmentAdvisor.Services.Interfaces;
+@using Microsoft.AspNetCore.SignalR.Client;
+@inject NavigationManager Navigation
 @inject IReviewCommentsService commentService;
 
-<MudPaper>
+@implements IAsyncDisposable
+<MudPaper Class="pa-6">
     <AuthorizeView>
         <MudTextField @bind-Value="commentFieldValue" Label="Standard" Variant="Variant.Text" MaxLength="Comment.MAX_LENGTH"></MudTextField>
         <MudButton OnClick="@AddComment">
@@ -16,6 +19,10 @@
             <MudText Typo="Typo.h6">
                 @comment.Author.UserName
             </MudText>
+            <MudText>
+                @comment.CreatedDate.ToString("dd.MM.yy HH:mm")
+            </MudText>
+
             <MudText>
                 @comment.Content
             </MudText>
@@ -35,9 +42,36 @@
     private List<Comment> comments = new();
     private string commentFieldValue = string.Empty;
 
+    private HubConnection? hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        hubConnection = new HubConnectionBuilder()
+    .WithUrl(Navigation.ToAbsoluteUri("/commenthub"))
+    .Build();
+
+        hubConnection.On<Comment>("RecieveComment", (comment) =>
+        {
+            if (comment.ReviewId != default && comment.ReviewId == Review.Id)
+            {
+                comments.Add(comment);
+                InvokeAsync(StateHasChanged);
+            }
+        });
+
+        await hubConnection.StartAsync();
+    }
     protected override async Task OnParametersSetAsync()
     {
         await SetComments();
+    }
+    private async Task Send(Comment comment)
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("SendComment", comment);
+        }
     }
     private async Task SetComments()
     {
@@ -50,6 +84,19 @@
     {
         if (commentFieldValue.Length == 0) return;
         Guid addedCommentId = await commentService.AddComment(commentFieldValue, Review.Id);
+        Comment? comment = await commentService.GetById(addedCommentId);
+        if (comment!=null)
+            await Send(comment);
+    }
 
+    public bool IsConnected =>
+    hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
     }
 }
