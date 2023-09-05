@@ -11,6 +11,13 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
         {
         }
 
+        public async Task<List<Comment>> GetComments(Guid reviewId, int skip = 0, int take = 10)
+        {
+            using (var context = contextFactory.CreateDbContext())
+            {
+                return await context.Set<Comment>().Where(x => x.ReviewId==reviewId).OrderBy(x => x.CreatedDate).Skip(skip).Take(take).Include(x => x.Author).ToListAsync();
+            }
+        }
         public override async Task<Comment?> GetById(Guid id)
         {
             using (var context = contextFactory.CreateDbContext())

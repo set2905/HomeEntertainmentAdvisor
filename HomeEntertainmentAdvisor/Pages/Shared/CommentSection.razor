@@ -1,0 +1,55 @@
+﻿@using HomeEntertainmentAdvisor.Models;
+@using HomeEntertainmentAdvisor.Services.Interfaces;
+@inject IReviewCommentsService commentService;
+
+<MudPaper>
+    <AuthorizeView>
+        <MudTextField @bind-Value="commentFieldValue" Label="Standard" Variant="Variant.Text" MaxLength="Comment.MAX_LENGTH"></MudTextField>
+        <MudButton OnClick="@AddComment">
+            Leave comment
+        </MudButton>
+    </AuthorizeView>
+    @if (comments.Count>0)
+    {
+        foreach (Comment comment in comments)
+        {
+            <MudText Typo="Typo.h6">
+                @comment.Author.UserName
+            </MudText>
+            <MudText>
+                @comment.Content
+            </MudText>
+        }
+    }
+    else
+    {
+        <MudText>
+            There is no comments
+        </MudText>
+    }
+</MudPaper>
+
+@code {
+    [Parameter]
+    public Review Review { get; set; } = new();
+    private List<Comment> comments = new();
+    private string commentFieldValue = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await SetComments();
+    }
+    private async Task SetComments()
+    {
+        if (Review == null||Review.Id==default) return;
+
+        comments = await commentService.GetCommentPage(Review.Id);
+        StateHasChanged();
+    }
+    private async Task AddComment()
+    {
+        if (commentFieldValue.Length == 0) return;
+        Guid addedCommentId = await commentService.AddComment(commentFieldValue, Review.Id);
+
+    }
+}

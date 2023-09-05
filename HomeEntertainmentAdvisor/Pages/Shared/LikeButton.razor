@@ -19,10 +19,7 @@
     private bool liked = false;
     private CancellationTokenSource likeCancellationTokenSource = new();
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-    }
+
     protected override async Task OnParametersSetAsync()
     {
         await SetLikes();

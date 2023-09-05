@@ -106,6 +106,7 @@ builder.Services.AddTransient<IMediaService, MediaService>();
 builder.Services.AddTransient<IRatingService, RatingService>();
 builder.Services.AddTransient<ITagService, TagService>();
 builder.Services.AddTransient<IReviewLikeService, ReviewLikeService>();
+builder.Services.AddTransient<IReviewCommentsService, ReviewCommentsService>();
 
 builder.Services.AddTransient<IAuthorizationHandler, ReviewOwnerAuthorizationHandler>();
 builder.Services.AddAuthorization(options =>
