@@ -93,6 +93,7 @@ builder.Services.AddTransient<AppExceptionHandlingMiddleware>();
 
 builder.Services.AddTransient<ICommentsRepo, CommentsRepo>();
 builder.Services.AddTransient<IMediaPiecesRepo, MediaPiecesRepo>();
+builder.Services.AddTransient<IMediaPieceGroupsRepo, MediaPieceGroupsRepo>();
 builder.Services.AddTransient<IReviewImagesRepo, ReviewImagesRepo>();
 builder.Services.AddTransient<IReviewLikesRepo, ReviewLikesRepo>();
 builder.Services.AddTransient<IReviewsRepo, ReviewsRepo>();

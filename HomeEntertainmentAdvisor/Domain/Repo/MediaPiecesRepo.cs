@@ -7,6 +7,8 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
 {
     public class MediaPiecesRepo : RepoBase<MediaPiece, Guid>, IMediaPiecesRepo
     {
+        private const int EMPTYSEARCH_COUNT = 10;
+
         public MediaPiecesRepo(IDbContextFactory<ApplicationDbContext> contextFactory) : base(contextFactory)
         {
         }
@@ -38,7 +40,7 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
             {
                 var dbSet = context.Set<MediaPiece>();
                 if (string.IsNullOrEmpty(value))
-                    return await dbSet.OrderBy(x => x.Name).Take(10).ToListAsync();
+                    return await dbSet.OrderBy(x => x.Name).Take(EMPTYSEARCH_COUNT).ToListAsync();
                 var result = await dbSet.Where(x => x.Name.StartsWith(value)).ToListAsync(cancellationToken);
                 return result;
             }

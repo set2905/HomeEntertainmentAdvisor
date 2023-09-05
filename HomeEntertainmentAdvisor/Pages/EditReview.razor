@@ -99,7 +99,7 @@
     }
     private async Task<IEnumerable<MediaPiece>> SearchMediaPieces(string value, CancellationToken token)
     {
-        IEnumerable<MediaPiece> result = await mediaService.Search(value, token);
+        IEnumerable<MediaPiece> result = await mediaService.SearchMediaPieces(value, token);
         return result;
     }
 
