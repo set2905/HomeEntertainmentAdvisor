@@ -54,7 +54,7 @@
                     <MudText>Content: </MudText>
                     <MarkdownEditor Theme="easymde" @bind-Value="@review.Content" />
 
-                    <ImageUploadComponent />
+                    <ImageUploadComponent Review="@review" />
                     <MudButton Color="Color.Surface" StartIcon="@Icons.Material.Filled.Save" FullWidth="false" ButtonType="ButtonType.Submit">Publish</MudButton>
                 </MudStack>
             </MudPaper>

@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using CloudinaryDotNet;
 using HomeEntertainmentAdvisor.Areas.Identity;
 using HomeEntertainmentAdvisor.Data;
 using HomeEntertainmentAdvisor.Domain.Repo;
@@ -30,6 +31,7 @@ string? fbId;
 string? fbSecret;
 string? googleId;
 string? googleSecret;
+string? cloudinaryUrl;
 if (builder.Environment.IsDevelopment())
 {
     try
@@ -52,6 +54,10 @@ fbId=configuration["Authentication:Facebook:AppId"]??Environment.GetEnvironmentV
 fbSecret=configuration["Authentication:Facebook:AppSecret"]??Environment.GetEnvironmentVariable("FB_APPSECRET");
 googleId=configuration["Authentication:Google:ClientId"]??Environment.GetEnvironmentVariable("GOOGLE_CLIENTID");
 googleSecret=configuration["Authentication:Google:ClientSecret"]??Environment.GetEnvironmentVariable("GOOGLE_CLIENTSECRET");
+
+//Cloudinary cloudinary = new Cloudinary(configuration["CloudinaryUrl"]??Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
+cloudinaryUrl= configuration["CloudinaryUrl"]??Environment.GetEnvironmentVariable("CLOUDINARY_URL");
+//cloudinary.Api.Secure = true;
 
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddBlazoredLocalStorage(config => config.JsonSerializerOptions.WriteIndented = true);
@@ -110,6 +116,7 @@ builder.Services.AddTransient<IRatingService, RatingService>();
 builder.Services.AddTransient<ITagService, TagService>();
 builder.Services.AddTransient<IReviewLikeService, ReviewLikeService>();
 builder.Services.AddTransient<IReviewCommentsService, ReviewCommentsService>();
+builder.Services.AddTransient<IImageService, ImageService>();
 
 builder.Services.AddTransient<IAuthorizationHandler, ReviewOwnerAuthorizationHandler>();
 builder.Services.AddAuthorization(options =>
