@@ -1,13 +1,24 @@
 ﻿@using HomeEntertainmentAdvisor.Models;
-<MudCarousel Class="mud-width-full" ItemsSource="@Images" Style="height:400px;" ShowArrows="true" ShowBullets="true" EnableSwipeGesture="true" AutoCycle="false">
+<MudCarousel SelectedIndex="0"  Class="@carouselClass" ItemsSource="@Images" Style="height:400px;" ShowArrows="true" ShowBullets="true" EnableSwipeGesture="true" AutoCycle="false">
     <ItemTemplate>
         <MudContainer Class="d-flex justify-center">
             <MudImage ObjectPosition="ObjectPosition.Center" ObjectFit="ObjectFit.Contain" Src="@context.Url" />
         </MudContainer>
     </ItemTemplate>
 </MudCarousel>
-@code 
+@code
 {
     [Parameter]
     public List<ReviewImage> Images { get; set; } = new();
+    private string carouselClass = "d-none";
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (Images.Count() > 0)
+            carouselClass = "mud-width-full";
+        else
+            carouselClass = "d-none";
+
+    }
 }
