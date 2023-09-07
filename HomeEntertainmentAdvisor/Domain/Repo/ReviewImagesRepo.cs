@@ -11,7 +11,7 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
         {
         }
 
-        public override  async Task<ReviewImage?> GetById(Guid id)
+        public override async Task<ReviewImage?> GetById(Guid id)
         {
             using (var context = contextFactory.CreateDbContext())
             {
@@ -19,12 +19,20 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
                 return await dbSet.SingleOrDefaultAsync(x => x.Id == id);
             }
         }
+        public async Task<List<ReviewImage>> GetImagesForReview(Guid reviewId)
+        {
+            using (var context = contextFactory.CreateDbContext())
+            {
+                var dbSet = context.Set<ReviewImage>();
+                return await dbSet.Where(x => x.ReviewId==reviewId).ToListAsync();
+            }
+        }
 
         public override async Task<Guid> Save(ReviewImage entity, CancellationToken cancellationToken = default)
         {
             using (var context = contextFactory.CreateDbContext())
             {
-    
+
                 if (entity.Id == default)
                     context.Entry(entity).State = EntityState.Added;
                 else

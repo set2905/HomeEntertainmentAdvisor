@@ -15,7 +15,7 @@ namespace HomeEntertainmentAdvisor.Services
         {
             this.imagesRepo=imagesRepo;
             //Tecт!!!
-            cloudinary=new Cloudinary("url");
+            cloudinary=new Cloudinary("");
         }
 
         public async Task<Guid> UploadImage(IBrowserFile file, Guid reviewId)
@@ -42,11 +42,11 @@ namespace HomeEntertainmentAdvisor.Services
         }
         public async Task<List<ReviewImage>> GetImagesForReview(Guid reviewId)
         {
-            throw new NotImplementedException();
+            return await imagesRepo.GetImagesForReview(reviewId);
         }
-        public async Task<ReviewImage> GetById(Guid id)
+        public async Task<ReviewImage?> GetById(Guid id)
         {
-            throw new NotImplementedException();
+            return await imagesRepo.GetById(id);
         }
     }
 }
