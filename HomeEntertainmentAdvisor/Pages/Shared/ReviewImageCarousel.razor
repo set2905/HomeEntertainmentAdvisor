@@ -1,0 +1,13 @@
+﻿@using HomeEntertainmentAdvisor.Models;
+<MudCarousel Class="mud-width-full" ItemsSource="@Images" Style="height:400px;" ShowArrows="true" ShowBullets="true" EnableSwipeGesture="true" AutoCycle="false">
+    <ItemTemplate>
+        <MudContainer Class="d-flex justify-center">
+            <MudImage ObjectPosition="ObjectPosition.Center" ObjectFit="ObjectFit.Contain" Src="@context.Url" />
+        </MudContainer>
+    </ItemTemplate>
+</MudCarousel>
+@code 
+{
+    [Parameter]
+    public List<ReviewImage> Images { get; set; } = new();
+}

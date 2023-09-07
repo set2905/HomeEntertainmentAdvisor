@@ -18,7 +18,7 @@ namespace HomeEntertainmentAdvisor.Services
             cloudinary=new Cloudinary("");
         }
 
-        public async Task<Guid> UploadImage(IBrowserFile file, Guid reviewId)
+        public async Task<ImageUploadResult> UploadImage(IBrowserFile file, Guid reviewId)
         {
             ImageUploadResult result = new();
             using (var stream = file.OpenReadStream())
@@ -32,9 +32,19 @@ namespace HomeEntertainmentAdvisor.Services
             ReviewImage reviewImage = new()
             {
                 Url=result.Url.ToString(),
-                ReviewId=reviewId
+                ReviewId=reviewId,
+                CloudinaryPublicId=result.PublicId,
+                FileName=file.Name
             };
-            return await SaveReviewImage(reviewImage);
+            if (result.StatusCode==System.Net.HttpStatusCode.OK) await SaveReviewImage(reviewImage);
+            return result;
+        }
+        public async Task<bool> RemoveImage(ReviewImage reviewImage)
+        {
+            DelResResult delResResult = await cloudinary.DeleteResourcesAsync(new string[] { reviewImage.CloudinaryPublicId.ToString() });
+            if (delResResult.Deleted.First().Value!="deleted") return false;
+            await imagesRepo.Delete(reviewImage);
+            return true;
         }
         public async Task<Guid> SaveReviewImage(ReviewImage reviewImage)
         {

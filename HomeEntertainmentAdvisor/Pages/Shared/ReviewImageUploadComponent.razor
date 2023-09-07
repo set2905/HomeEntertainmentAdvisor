@@ -1,0 +1,83 @@
+﻿@using CloudinaryDotNet.Actions;
+@using HomeEntertainmentAdvisor.Models;
+@using HomeEntertainmentAdvisor.Services.Interfaces;
+@inject IImageService imageService;
+@inject ISnackbar snackBar;
+
+<MudChipSet>
+    @foreach (IBrowserFile file in allFiles)
+    {
+        <MudChip Color="Color.Dark" Text="@file.Name" Value="@file" OnClose="@HandleFileChipRemoved" />
+    }
+</MudChipSet>
+<MudFileUpload Accept=".jpg,.png,.jpeg" T="IReadOnlyList<IBrowserFile>" OnFilesChanged="OnInputFileChanged" AppendMultipleFiles Hidden="false" Class="flex-1" InputClass="absolute mud-width-full mud-height-full overflow-hidden z-20" InputStyle="opacity:0"
+@ondragenter="@SetDragClass" @ondragleave="@ClearDragClass" @ondragend="@ClearDragClass">
+    <ButtonTemplate>
+        <MudPaper Height="300px" Outlined="true" Class="@DragClass">
+            <MudText Typo="Typo.h6">Drag and drop files here or click</MudText>
+        </MudPaper>
+    </ButtonTemplate>
+</MudFileUpload>
+<MudToolBar DisableGutters="true" Class="gap-4">
+    <MudButton OnClick="Clear" Disabled="@(!allFiles.Any())" Color="Color.Error" Variant="Variant.Filled">Clear</MudButton>
+</MudToolBar>
+@code {
+    [Parameter]
+    public Review Review { get; set; } = new();
+    private static string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full z-10";
+    private string DragClass = DefaultDragClass;
+    private List<IBrowserFile> allFiles = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+    }
+    private void OnInputFileChanged(InputFileChangeEventArgs e)
+    {
+        ClearDragClass();
+        var files = e.GetMultipleFiles();
+        if (allFiles.Count() + files.Count() > ReviewImage.MAXIMAGES_PERREVIEW)
+        {
+            snackBar.Add($"You cannot upload more than {ReviewImage.MAXIMAGES_PERREVIEW} files");
+            return;
+        }
+        foreach (IBrowserFile file in files)
+        {
+            this.allFiles.Add(file);
+        }
+    }
+    private async Task Clear()
+    {
+        allFiles.Clear();
+        ClearDragClass();
+        await Task.Delay(100);
+    }
+    public async Task<IEnumerable<ImageUploadResult>> Overwrite()
+    {
+        if (Review.Id == default) return Enumerable.Empty<ImageUploadResult>();
+        await DeleteImages();
+        var uploadedImageResults = await Task.WhenAll(allFiles.Select(x => imageService.UploadImage(x, Review.Id)));
+        snackBar.Add($"{uploadedImageResults.Where(x => x.StatusCode==System.Net.HttpStatusCode.OK).Count()} images uploaded!");
+        return uploadedImageResults;
+    }
+    private async Task DeleteImages()
+    {
+        List<ReviewImage> existingImages = await imageService.GetImagesForReview(Review.Id);
+        var deleteImagesResults = await Task.WhenAll(existingImages.Select(x => imageService.RemoveImage(x)));
+    }
+    private void HandleFileChipRemoved(MudChip chip)
+    {
+        allFiles.Remove((IBrowserFile)chip.Value);
+        StateHasChanged();
+    }
+    private void SetDragClass()
+    {
+        DragClass = $"{DefaultDragClass} mud-border-primary";
+    }
+
+    private void ClearDragClass()
+    {
+        DragClass = DefaultDragClass;
+    }
+}

@@ -10,6 +10,8 @@
 @inject IMediaService mediaService
 @inject IRatingService ratingService
 @inject ITagService tagService
+@inject IImageService imageService;
+
 @inject ISnackbar snackBar
 @inject NavigationManager navManager
 
@@ -53,8 +55,11 @@
 
                     <MudText>Content: </MudText>
                     <MarkdownEditor Theme="easymde" @bind-Value="@review.Content" />
+                    <MudText>Images: </MudText>
 
-                    <ImageUploadComponent Review="@review" />
+                    <ReviewImageUploadComponent @ref="@imageUpload" Review="@review" />
+                    <ReviewImageCarousel Images="@existingImages" />
+
                     <MudButton Color="Color.Surface" StartIcon="@Icons.Material.Filled.Save" FullWidth="false" ButtonType="ButtonType.Submit">Publish</MudButton>
                 </MudStack>
             </MudPaper>
@@ -69,6 +74,9 @@
     private Review review = new();
     private List<string> tags = new();
     private string tagInputValue = string.Empty;
+    private ReviewImageUploadComponent imageUpload = new();
+    private List<ReviewImage> existingImages = new();
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -87,16 +95,10 @@
                     snackBar.Add("Review not found!", Severity.Error);
                     return;
                 }
-                Rating? rating = await ratingService.GetById(found.RatingId);
-                if (rating == null)
-                {
-                    snackBar.Add("Rating not found!", Severity.Error);
-                    return;
-                }
-                found.Rating = rating;
                 review = found;
 
                 tags = (await tagService.GetReviewTags(reviewGuid)).Select(x => x.Name).ToList();
+                existingImages = await imageService.GetImagesForReview(reviewGuid);
             }
         }
     }
@@ -126,6 +128,7 @@
             return;
         }
         await tagService.OverwriteTags(saveReviewResult.id, tags);
+        var imageUploadResults = await imageUpload.Overwrite();
         snackBar.Add(saveReviewResult.message);
         navManager.NavigateTo($"Review/{saveReviewResult.id.ToString()}");
     }
