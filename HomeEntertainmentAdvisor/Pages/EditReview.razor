@@ -10,7 +10,6 @@
 @inject IMediaService mediaService
 @inject IRatingService ratingService
 @inject ITagService tagService
-@inject IImageService imageService;
 
 @inject ISnackbar snackBar
 @inject NavigationManager navManager
@@ -58,7 +57,6 @@
                     <MudText>Images: </MudText>
 
                     <ReviewImageUploadComponent @ref="@imageUpload" Review="@review" />
-                    <ReviewImageCarousel Images="@existingImages" />
 
                     <MudButton Color="Color.Surface" StartIcon="@Icons.Material.Filled.Save" FullWidth="false" ButtonType="ButtonType.Submit">Publish</MudButton>
                 </MudStack>
@@ -75,7 +73,7 @@
     private List<string> tags = new();
     private string tagInputValue = string.Empty;
     private ReviewImageUploadComponent imageUpload = new();
-    private List<ReviewImage> existingImages = new();
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -98,7 +96,6 @@
                 review = found;
 
                 tags = (await tagService.GetReviewTags(reviewGuid)).Select(x => x.Name).ToList();
-                existingImages = await imageService.GetImagesForReview(reviewGuid);
             }
         }
     }

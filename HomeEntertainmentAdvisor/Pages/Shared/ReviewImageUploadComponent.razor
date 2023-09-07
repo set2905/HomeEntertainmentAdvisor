@@ -15,11 +15,15 @@
     <ButtonTemplate>
         <MudPaper Height="300px" Outlined="true" Class="@DragClass">
             <MudText Typo="Typo.h6">Drag and drop files here or click</MudText>
+            @foreach (var img in existingImages)
+            {
+                <MudImage Height="100" Src="@img.Url" />
+            }
         </MudPaper>
     </ButtonTemplate>
 </MudFileUpload>
 <MudToolBar DisableGutters="true" Class="gap-4">
-    <MudButton OnClick="Clear" Disabled="@(!allFiles.Any())" Color="Color.Error" Variant="Variant.Filled">Clear</MudButton>
+    <MudButton OnClick="Clear" Disabled="@(!allFiles.Any()&&!existingImages.Any())" Color="Color.Error" Variant="Variant.Filled">Clear</MudButton>
 </MudToolBar>
 @code {
     [Parameter]
@@ -27,17 +31,19 @@
     private static string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full z-10";
     private string DragClass = DefaultDragClass;
     private List<IBrowserFile> allFiles = new();
+    private List<ReviewImage> existingImages = new();
+    private List<ReviewImage> imagesToDelete = new();
 
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
-
+        existingImages = await imageService.GetImagesForReview(Review.Id);
     }
     private void OnInputFileChanged(InputFileChangeEventArgs e)
     {
         ClearDragClass();
         var files = e.GetMultipleFiles();
-        if (allFiles.Count() + files.Count() > ReviewImage.MAXIMAGES_PERREVIEW)
+        if (allFiles.Count() + files.Count()+existingImages.Count() > ReviewImage.MAXIMAGES_PERREVIEW)
         {
             snackBar.Add($"You cannot upload more than {ReviewImage.MAXIMAGES_PERREVIEW} files");
             return;
@@ -50,6 +56,8 @@
     private async Task Clear()
     {
         allFiles.Clear();
+        imagesToDelete = new(existingImages);
+        existingImages.Clear();
         ClearDragClass();
         await Task.Delay(100);
     }
@@ -63,8 +71,7 @@
     }
     private async Task DeleteImages()
     {
-        List<ReviewImage> existingImages = await imageService.GetImagesForReview(Review.Id);
-        var deleteImagesResults = await Task.WhenAll(existingImages.Select(x => imageService.RemoveImage(x)));
+        var deleteImagesResults = await Task.WhenAll(imagesToDelete.Select(x => imageService.RemoveImage(x)));
     }
     private void HandleFileChipRemoved(MudChip chip)
     {

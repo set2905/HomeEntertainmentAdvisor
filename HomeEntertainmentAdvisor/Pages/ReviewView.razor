@@ -6,6 +6,7 @@
 @inject IReviewService reviewService
 @inject IMediaService mediaService
 @inject IRatingService ratingService
+@inject IImageService imageService;
 
 @inject ISnackbar snackBar
 
@@ -17,6 +18,8 @@
              Styling="Styling"
              TableCellMinWidth="100"
              CodeBlockTheme="CodeBlockTheme.DraculaBase16" />
+<ReviewImageCarousel Images="@images" />
+
 <LikeButton @ref=@likeButton Review="@review" />
 <CommentSection Review="@review" />
 @code
@@ -28,6 +31,7 @@
 
     private MudMarkdownStyling Styling { get; } = new();
 
+    private List<ReviewImage> images = new();
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -49,6 +53,7 @@
                     return;
                 }
                 review = found;
+                images = await imageService.GetImagesForReview(reviewGuid);
                 StateHasChanged();
             }
         }
