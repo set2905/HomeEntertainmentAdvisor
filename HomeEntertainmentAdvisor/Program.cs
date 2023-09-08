@@ -8,12 +8,14 @@ using HomeEntertainmentAdvisor.Localization;
 using HomeEntertainmentAdvisor.Middleware;
 using HomeEntertainmentAdvisor.MiddleWare;
 using HomeEntertainmentAdvisor.Models;
+using HomeEntertainmentAdvisor.Models.Options;
 using HomeEntertainmentAdvisor.Services;
 using HomeEntertainmentAdvisor.Services.Authorizarion;
 using HomeEntertainmentAdvisor.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -113,6 +115,13 @@ builder.Services.AddTransient<IReviewLikeService, ReviewLikeService>();
 builder.Services.AddTransient<IReviewCommentsService, ReviewCommentsService>();
 builder.Services.AddTransient<IImageService, ImageService>();
 builder.Services.AddTransient<IImageCloud, ImageCloud>(serviceProvider => new(cloudinaryUrl));
+
+
+string? smtpPassword = configuration["SMTP_Password"]??Environment.GetEnvironmentVariable("SMTP_PASSWORD");
+if (smtpPassword==null) throw new Exception("SMTP password is null");
+SMTPSettings smtpSettings = new("mashkovna2905@gmail.com", "HomeEntertainmentAdvisorAdmin", smtpPassword, "smtp.gmail.com", 587);
+builder.Services.AddTransient<IEmailSender, EmailSender>(serviceProvider => new(smtpSettings));
+
 
 builder.Services.AddTransient<IAuthorizationHandler, ReviewOwnerAuthorizationHandler>();
 builder.Services.AddAuthorization(options =>
