@@ -10,12 +10,12 @@ namespace HomeEntertainmentAdvisor.Services
     public class ImageService : IImageService
     {
         private readonly IReviewImagesRepo imagesRepo;
-        private readonly Cloudinary cloudinary;
-        public ImageService(IReviewImagesRepo imagesRepo)
+        private readonly IImageCloud imageCloud;
+
+        public ImageService(IReviewImagesRepo imagesRepo, IImageCloud imageCloud)
         {
             this.imagesRepo=imagesRepo;
-            //Tecт!!!
-            cloudinary=new Cloudinary("");
+            this.imageCloud=imageCloud;
         }
 
         public async Task<ImageUploadResult> UploadImage(IBrowserFile file, Guid reviewId)
@@ -27,7 +27,7 @@ namespace HomeEntertainmentAdvisor.Services
                 {
                     File=new FileDescription(file.Name, stream)
                 };
-                result=await cloudinary.UploadAsync(uploadParams);
+                result=await imageCloud.UploadAsync(uploadParams);
             }
             ReviewImage reviewImage = new()
             {
@@ -41,7 +41,7 @@ namespace HomeEntertainmentAdvisor.Services
         }
         public async Task<bool> RemoveImage(ReviewImage reviewImage)
         {
-            DelResResult delResResult = await cloudinary.DeleteResourcesAsync(new string[] { reviewImage.CloudinaryPublicId.ToString() });
+            DelResResult delResResult = await imageCloud.DeleteResourcesAsync(new string[] { reviewImage.CloudinaryPublicId.ToString() });
             if (delResResult.Deleted.First().Value!="deleted") return false;
             await imagesRepo.Delete(reviewImage);
             return true;

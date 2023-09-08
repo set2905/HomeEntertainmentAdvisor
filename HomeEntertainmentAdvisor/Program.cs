@@ -1,5 +1,4 @@
 using Blazored.LocalStorage;
-using CloudinaryDotNet;
 using HomeEntertainmentAdvisor.Areas.Identity;
 using HomeEntertainmentAdvisor.Data;
 using HomeEntertainmentAdvisor.Domain.Repo;
@@ -9,6 +8,7 @@ using HomeEntertainmentAdvisor.Localization;
 using HomeEntertainmentAdvisor.Middleware;
 using HomeEntertainmentAdvisor.MiddleWare;
 using HomeEntertainmentAdvisor.Models;
+using HomeEntertainmentAdvisor.Models.Options;
 using HomeEntertainmentAdvisor.Services;
 using HomeEntertainmentAdvisor.Services.Authorizarion;
 using HomeEntertainmentAdvisor.Services.Interfaces;
@@ -18,10 +18,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
-using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -55,9 +53,7 @@ fbSecret=configuration["Authentication:Facebook:AppSecret"]??Environment.GetEnvi
 googleId=configuration["Authentication:Google:ClientId"]??Environment.GetEnvironmentVariable("GOOGLE_CLIENTID");
 googleSecret=configuration["Authentication:Google:ClientSecret"]??Environment.GetEnvironmentVariable("GOOGLE_CLIENTSECRET");
 
-//Cloudinary cloudinary = new Cloudinary(configuration["CloudinaryUrl"]??Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
 cloudinaryUrl= configuration["CloudinaryUrl"]??Environment.GetEnvironmentVariable("CLOUDINARY_URL");
-//cloudinary.Api.Secure = true;
 
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddBlazoredLocalStorage(config => config.JsonSerializerOptions.WriteIndented = true);
@@ -117,6 +113,7 @@ builder.Services.AddTransient<ITagService, TagService>();
 builder.Services.AddTransient<IReviewLikeService, ReviewLikeService>();
 builder.Services.AddTransient<IReviewCommentsService, ReviewCommentsService>();
 builder.Services.AddTransient<IImageService, ImageService>();
+builder.Services.AddTransient<IImageCloud, ImageCloud>(serviceProvider => new (cloudinaryUrl));
 
 builder.Services.AddTransient<IAuthorizationHandler, ReviewOwnerAuthorizationHandler>();
 builder.Services.AddAuthorization(options =>
