@@ -8,7 +8,6 @@ using HomeEntertainmentAdvisor.Localization;
 using HomeEntertainmentAdvisor.Middleware;
 using HomeEntertainmentAdvisor.MiddleWare;
 using HomeEntertainmentAdvisor.Models;
-using HomeEntertainmentAdvisor.Models.Options;
 using HomeEntertainmentAdvisor.Services;
 using HomeEntertainmentAdvisor.Services.Authorizarion;
 using HomeEntertainmentAdvisor.Services.Interfaces;
@@ -113,7 +112,7 @@ builder.Services.AddTransient<ITagService, TagService>();
 builder.Services.AddTransient<IReviewLikeService, ReviewLikeService>();
 builder.Services.AddTransient<IReviewCommentsService, ReviewCommentsService>();
 builder.Services.AddTransient<IImageService, ImageService>();
-builder.Services.AddTransient<IImageCloud, ImageCloud>(serviceProvider => new (cloudinaryUrl));
+builder.Services.AddTransient<IImageCloud, ImageCloud>(serviceProvider => new(cloudinaryUrl));
 
 builder.Services.AddTransient<IAuthorizationHandler, ReviewOwnerAuthorizationHandler>();
 builder.Services.AddAuthorization(options =>
@@ -137,7 +136,11 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Shared/Reso
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<User>>();
 builder.Services.AddTransient<MudLocalizer, ResXMudLocalizer>();
 
-builder.Services.AddMudServices();
+builder.Services.AddMudServices(config =>
+{
+    config.SnackbarConfiguration.PreventDuplicates = false;
+
+});
 builder.Services.AddMudMarkdownServices();
 var app = builder.Build();
 

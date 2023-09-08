@@ -3,6 +3,7 @@
     public class ReviewImage
     {
         public const int MAXIMAGES_PERREVIEW = 5;
+        public const int MAXIMAGESISZE = 500*1024;
         public ReviewImage()
         {
             CloudinaryPublicId=string.Empty;

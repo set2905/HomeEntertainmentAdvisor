@@ -21,7 +21,7 @@ namespace HomeEntertainmentAdvisor.Services
         public async Task<ImageUploadResult> UploadImage(IBrowserFile file, Guid reviewId)
         {
             ImageUploadResult result = new();
-            using (var stream = file.OpenReadStream())
+            using (Stream stream = file.OpenReadStream())
             {
                 ImageUploadParams uploadParams = new()
                 {

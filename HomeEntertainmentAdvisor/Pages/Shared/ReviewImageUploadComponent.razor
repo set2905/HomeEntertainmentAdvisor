@@ -1,6 +1,7 @@
 ﻿@using CloudinaryDotNet.Actions;
 @using HomeEntertainmentAdvisor.Models;
 @using HomeEntertainmentAdvisor.Services.Interfaces;
+@using System.Text;
 @inject IImageService imageService;
 @inject ISnackbar snackBar;
 
@@ -45,7 +46,12 @@
         var files = e.GetMultipleFiles();
         if (allFiles.Count() + files.Count()+existingImages.Count() > ReviewImage.MAXIMAGES_PERREVIEW)
         {
-            snackBar.Add($"You cannot upload more than {ReviewImage.MAXIMAGES_PERREVIEW} files");
+            snackBar.Add($"You cannot upload more than {ReviewImage.MAXIMAGES_PERREVIEW} files", Severity.Error);
+            return;
+        }
+        if (files.Any(x => x.Size>ReviewImage.MAXIMAGESISZE))
+        {
+            snackBar.Add($"Maximum file size is {ReviewImage.MAXIMAGESISZE/1024}KB", Severity.Error);
             return;
         }
         foreach (IBrowserFile file in files)
@@ -65,7 +71,8 @@
     {
         if (Review.Id == default) return Enumerable.Empty<ImageUploadResult>();
         await DeleteImages();
-        var uploadedImageResults = await Task.WhenAll(allFiles.Select(x => imageService.UploadImage(x, Review.Id)));
+        IEnumerable<ImageUploadResult> uploadedImageResults = await Task.WhenAll(allFiles.Select(x => imageService.UploadImage(x, Review.Id)));
+
         snackBar.Add($"{uploadedImageResults.Where(x => x.StatusCode==System.Net.HttpStatusCode.OK).Count()} images uploaded!");
         return uploadedImageResults;
     }
