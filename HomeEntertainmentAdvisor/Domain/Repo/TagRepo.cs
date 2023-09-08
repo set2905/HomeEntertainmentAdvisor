@@ -11,7 +11,14 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
         public TagRepo(IDbContextFactory<ApplicationDbContext> contextFactory) : base(contextFactory)
         {
         }
-
+        public async Task<List<Tag>> GetTags(int skip = 0, int take = 10, CancellationToken cancellationToken = default)
+        {
+            using (var context = contextFactory.CreateDbContext())
+            {
+                var dbSet = context.Set<Tag>();
+                return await context.Tags.OrderBy(x => x.Name).Skip(skip).Take(take).ToListAsync(cancellationToken);
+            }
+        }
         public async Task<Tag?> GetByName(string name)
         {
             using (var context = contextFactory.CreateDbContext())

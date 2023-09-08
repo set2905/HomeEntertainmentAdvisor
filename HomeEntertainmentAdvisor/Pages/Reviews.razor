@@ -4,10 +4,17 @@
 @using HomeEntertainmentAdvisor.Pages.Shared
 @using HomeEntertainmentAdvisor.Services.Interfaces;
 @inject IReviewService reviewService
+@inject ITagService tagService
 
 <PageTitle>Review</PageTitle>
 <MudGrid Justify="Justify.Center">
     <MudItem xs="12" md="10">
+        <MudChipSet MultiSelection SelectedChipsChanged="HandleSelectionChanged">
+            @foreach (var tag in tags)
+            {
+                <MudChip CloseIcon="" Text="@tag.Name" Value="@tag" />
+            }
+        </MudChipSet>
         <MudList>
             @foreach (Review rev in reviews)
             {
@@ -26,19 +33,32 @@
     public string? Search { get; set; }
     private int perPage = 10;
 
-    private int currentPage;
+    private int currentPage = 0;
     private List<Review> reviews = new();
+    private List<Tag> tags = new();
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnInitializedAsync();
-        if (Search!=null)
-            reviews = await reviewService.Search(Search, currentPage, perPage);
-        else
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
         {
-            reviews = await reviewService.GetNewest();
+            if (Search!=null)
+                reviews = await reviewService.Search(Search, currentPage, perPage);
+            else
+            {
+                reviews = await reviewService.GetNewest();
+            }
+            tags = await tagService.GetTags();
+            StateHasChanged();
         }
+    }
 
+    private async Task HandleSelectionChanged(MudChip[] chips)
+    {
+        if (chips.Length == 0) return;
+        IEnumerable<Tag> selectedTags = chips.Select(x => (Tag)x.Value);
+        reviews = await reviewService.SearchByTags(currentPage, perPage, selectedTags);
+        StateHasChanged();
     }
 
 }

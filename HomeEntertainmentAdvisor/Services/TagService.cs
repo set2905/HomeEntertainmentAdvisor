@@ -16,9 +16,13 @@ namespace HomeEntertainmentAdvisor.Services
             this.reviewsRepo=reviewsRepo;
             this.reviewsTagRelationsRepo=reviewsTagRelationsRepo;
         }
-        public async Task<List<Tag>> GetReviewTags(Guid reviewId)
+        public async Task<List<Tag>> GetTags(int skip = 0, int take = 10, CancellationToken cancellationToken = default)
         {
-            return await reviewsTagRelationsRepo.GetTagsByReviewId(reviewId);
+            return await tagRepo.GetTags(skip, take, cancellationToken);
+        }
+        public async Task<List<Tag>> GetReviewTags(Guid reviewId, int take = 0)
+        {
+            return await reviewsTagRelationsRepo.GetTagsByReviewId(reviewId, take);
         }
         public async Task<IEnumerable<string>> SearchByName(string query)
         {

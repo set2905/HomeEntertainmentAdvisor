@@ -40,12 +40,17 @@ namespace HomeEntertainmentAdvisor.Services
         }
         public async Task<List<Review>> GetNewest()
         {
-            return await reviewsRepo.GetPage(1, 10);
+            return await reviewsRepo.GetPage(0, 10);
         }
         public async Task<List<Review>> Search(string query, int page = 0, int perPage = 10)
         {
             return await reviewsRepo.GetPage(page, perPage, query);
         }
+        public async Task<List<Review>> SearchByTags(int page, int recordsPerPage, IEnumerable<Tag> tags)
+        {
+            return await reviewsRepo.GetPage(page, recordsPerPage, tags);
+        }
+
         public async Task<(Guid id, bool succeeded, string message)> TrySaveReview(Review review)
         {
             AuthenticationState authState = await GetAuthState();

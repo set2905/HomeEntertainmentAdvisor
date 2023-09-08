@@ -1,4 +1,7 @@
 ﻿@using HomeEntertainmentAdvisor.Models;
+@using HomeEntertainmentAdvisor.Services.Interfaces;
+@inject ITagService tagService;
+
 <MudContainer Class="my-4" Style="height:150px">
     <MudStack Class="pa-2" Style="height:100%;" Row="true">
         <MudImage Class="rounded-lg d-none d-sm-block" ObjectFit="ObjectFit.Fill" Src="https://cdn.shazoo.ru/c330x180/707447_ZWvHp2x_starfield.jpg" />
@@ -10,13 +13,13 @@
                 @Review.Name
             </MudText>
             <MudStack Row="true">
-                <MudRating  Size="Size.Small" MaxValue="@Rating.MAX_RATING" ReadOnly="true" SelectedValue="@Review.Rating.Grade" />
+                <MudRating Size="Size.Small" MaxValue="@Rating.MAX_RATING" ReadOnly="true" SelectedValue="@Review.Rating.Grade" />
                 <MudText>
                     @gradeText
                 </MudText>
             </MudStack>
             <MudStack Style="width:100%;" Row="true" Justify="Justify.SpaceBetween">
-                <MudText  Class="d-none d-sm-block text-truncate" >
+                <MudText Class="d-none d-sm-block text-truncate">
                     @if (Review.Rating.Author!=null)
                         @Review.Rating.Author.UserName
                     </MudText>
@@ -28,15 +31,32 @@
                     </MudStack>
                 </MudStack>
             </MudStack>
-        </MudStack>
-        <MudDivider />
-    </MudContainer>
+            <MudChipSet Class="d-none d-sm-flex text-truncate flex-column align-items-end" ReadOnly="true">
+                    @foreach (var tag in tags)
+                    {
+                <MudChip Label="true" Class="mx-1" Style="width:150px; overflow: hidden" Text="@tag.Name" />
+                    }
+            </MudChipSet>
 
-    @code
-    {
+    </MudStack>
+
+    <MudDivider />
+</MudContainer>
+
+@code
+{
+
     [Parameter]
     public Review Review { get; set; } = new();
+    private const int TAGCOUNT = 3;
     private MudMarkdownStyling Styling { get; } = new();
     private string gradeText { get => $"{Review.Rating.Grade}/{Rating.MAX_RATING}"; }
+    private List<Tag> tags = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        tags = await tagService.GetReviewTags(Review.Id, TAGCOUNT);
+    }
 
 }

@@ -11,12 +11,15 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
         {
         }
 
-        public async Task<List<Tag>> GetTagsByReviewId(Guid reviewId)
+        public async Task<List<Tag>> GetTagsByReviewId(Guid reviewId, int take = 0)
         {
             using (var context = contextFactory.CreateDbContext())
             {
                 var dbSet = context.Set<ReviewTagRelation>();
-                return await dbSet.Where(x => x.ReviewId==reviewId).Include(x => x.Tag).Select(x => x.Tag).ToListAsync();
+                var reviewTagsQuery = dbSet.Where(x => x.ReviewId==reviewId);
+                if (take>0 && take<await reviewTagsQuery.CountAsync())
+                    reviewTagsQuery=reviewTagsQuery.Take(take);
+                return await reviewTagsQuery.Include(x => x.Tag).Select(x => x.Tag).ToListAsync();
             }
         }
         public async Task<bool> RemoveByReviewId(Guid reviewId)
