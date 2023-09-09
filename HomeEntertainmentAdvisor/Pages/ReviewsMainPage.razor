@@ -19,12 +19,13 @@
                  ApplyEffectsToContainer="true" Class="mt-8" PanelClass="pa-6">
             <MudTabPanel Icon="fas fa-certificate" Text="Newest">
                 <ReviewList Reviews="@newest" />
+                <MudButton Disabled="@loadMoreNewestButtonDisabled" OnClick="()=>LoadMoreNewest()">Load more</MudButton>
             </MudTabPanel>
             <MudTabPanel Icon="fas fa-up-long" Text="Top">
                 <ReviewList Reviews="@top" />
+                <MudButton Disabled="@loadMoreTopButtonDisabled" OnClick="()=>LoadMoreTop()">Load more</MudButton>
             </MudTabPanel>
         </MudTabs>
-
     </MudItem>
 </MudGrid>
 
@@ -34,18 +35,21 @@
     // public string? Search { get; set; }
     private int perPage = 10;
 
-    private int currentPage = 0;
+    private int currentNewestPage = 0;
+    private int currentTopPage = 0;
     private List<Review> newest = new();
     private List<Review> top = new();
     private List<Tag> tags = new();
-
+    private List<Tag> selectedTags = new();
+    private bool loadMoreNewestButtonDisabled = false;
+    private bool loadMoreTopButtonDisabled = false;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
         if (firstRender)
         {
-            newest = await reviewService.GetPage(currentPage, perPage, order: Domain.Repo.ReviewOrder.Date);
-            top = await reviewService.GetPage(currentPage, perPage, order: Domain.Repo.ReviewOrder.Likes);
+            newest = await reviewService.GetPage(currentNewestPage, perPage, order: Domain.Repo.ReviewOrder.Date);
+            top = await reviewService.GetPage(currentTopPage, perPage, order: Domain.Repo.ReviewOrder.Likes);
 
             tags = await tagService.GetTags();
             StateHasChanged();
@@ -54,11 +58,28 @@
 
     private async Task HandleSelectionChanged(MudChip[] chips)
     {
-        // if (chips.Length == 0) return;
-        IEnumerable<Tag> selectedTags = chips.Select(x => (Tag)x.Value);
-        newest = await reviewService.GetPage(currentPage, perPage, order: Domain.Repo.ReviewOrder.Date, tags: selectedTags);
-        top = await reviewService.GetPage(currentPage, perPage, order: Domain.Repo.ReviewOrder.Likes, tags: selectedTags);
+        selectedTags = chips.Select(x => (Tag)x.Value).ToList();
+        newest = await reviewService.GetPage(currentNewestPage, perPage, order: Domain.Repo.ReviewOrder.Date, tags: selectedTags);
+        top = await reviewService.GetPage(currentTopPage, perPage, order: Domain.Repo.ReviewOrder.Likes, tags: selectedTags);
         StateHasChanged();
     }
+    private async Task LoadMoreTop()
+    {
+        currentTopPage++;
+        List<Review> loaded = await reviewService.GetPage(currentTopPage, perPage, order: Domain.Repo.ReviewOrder.Likes, tags: selectedTags);
+        if (loaded.Count == 0)
+            loadMoreTopButtonDisabled = true;
+        top.AddRange(loaded);
+        StateHasChanged();
 
+    }
+    private async Task LoadMoreNewest()
+    {
+        currentNewestPage++;
+        List<Review> loaded = await reviewService.GetPage(currentNewestPage, perPage, order: Domain.Repo.ReviewOrder.Date, tags: selectedTags);
+        if (loaded.Count == 0)
+            loadMoreNewestButtonDisabled = true;
+        newest.AddRange(loaded);
+        StateHasChanged();
+    }
 }

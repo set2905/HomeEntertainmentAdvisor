@@ -2,6 +2,7 @@
 using HomeEntertainmentAdvisor.Domain.Repo.Interfaces;
 using HomeEntertainmentAdvisor.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace HomeEntertainmentAdvisor.Domain.Repo
 {
@@ -36,7 +37,7 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
                     IQueryable<Guid> foundIds = GetSearchQuery(context, searchQuery);
                     result = result.Where(x => foundIds.Contains(x.Id));
                 }
-                if (tags!=null)
+                if (!tags.IsNullOrEmpty())
                 {
                     result = result.Intersect(context.ReviewTagRelations
                     .Include(x => x.Tag)
