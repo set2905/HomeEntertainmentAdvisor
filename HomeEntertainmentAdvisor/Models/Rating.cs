@@ -6,6 +6,12 @@ namespace HomeEntertainmentAdvisor.Models
     public class Rating
     {
         public const int MAX_RATING = 10;
+
+        public Rating()
+        {
+            MediaPiece=new();
+        }
+
         public Guid Id { get; set; }
         public virtual User? Author { get; set; }
         public string? AuthorId { get; set; }

@@ -44,8 +44,8 @@
         await base.OnAfterRenderAsync(firstRender);
         if (firstRender)
         {
-            newest = await reviewService.GetOrdered(currentPage, perPage, Domain.Repo.ReviewOrder.Date);
-            top = await reviewService.GetOrdered(currentPage, perPage, Domain.Repo.ReviewOrder.Likes);
+            newest = await reviewService.GetPage(currentPage, perPage, order: Domain.Repo.ReviewOrder.Date);
+            top = await reviewService.GetPage(currentPage, perPage, order: Domain.Repo.ReviewOrder.Likes);
 
             tags = await tagService.GetTags();
             StateHasChanged();
@@ -54,9 +54,10 @@
 
     private async Task HandleSelectionChanged(MudChip[] chips)
     {
-        if (chips.Length == 0) return;
+        // if (chips.Length == 0) return;
         IEnumerable<Tag> selectedTags = chips.Select(x => (Tag)x.Value);
-        newest = await reviewService.SearchByTags(currentPage, perPage, selectedTags);
+        newest = await reviewService.GetPage(currentPage, perPage, order: Domain.Repo.ReviewOrder.Date, tags: selectedTags);
+        top = await reviewService.GetPage(currentPage, perPage, order: Domain.Repo.ReviewOrder.Likes, tags: selectedTags);
         StateHasChanged();
     }
 

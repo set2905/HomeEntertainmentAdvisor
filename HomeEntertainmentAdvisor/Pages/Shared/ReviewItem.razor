@@ -7,7 +7,7 @@
     <MudStack Class="pa-2" Style="height:100%;" Row="true">
         <MudImage Class="rounded-lg d-none d-sm-block" ObjectFit="ObjectFit.Fill" Src="https://cdn.shazoo.ru/c330x180/707447_ZWvHp2x_starfield.jpg" />
         <MudStack Style="width:100%;" Justify="Justify.SpaceBetween">
-            <MudText Class="d-none d-sm-block text-truncate" Color="Color.Surface" Typo="Typo.h4">
+            <MudText Class="d-none d-sm-block text-truncate" Color="Color.Surface" Typo="Typo.h5">
                 @Review.Name
             </MudText>
             <MudText Class="d-sm-none text-truncate" Color="Color.Surface" Typo="Typo.h6">
@@ -21,24 +21,27 @@
             </MudStack>
             <MudStack Style="width:100%;" Row="true" Justify="Justify.FlexStart">
 
-                    <MudText>
-                        @Review.CachedLikes
-                    </MudText>
+                <MudText>
+                    @Review.CachedLikes
+                </MudText>
                 <MudIcon Icon="@Icons.Material.Filled.ThumbUp" Size="Size.Small" />
 
                 <MudText Typo="Typo.overline" Class="d-none d-sm-block text-truncate">
                     @if (Review.Rating.Author!=null)
                         @Review.Rating.Author.UserName
 
+
                     </MudText>
                 </MudStack>
             </MudStack>
-            <MudChipSet Class="d-none d-md-flex text-truncate flex-column align-items-end" ReadOnly="true">
-                @foreach (var tag in tags)
-            {
-                <MudChip Variant="Variant.Filled" Label="true" Class="mx-1" Style="width:150px; overflow: hidden" Text="@tag.Name" />
-            }
-        </MudChipSet>
+            <MudContainer Style="width:200px">
+                <MudChipSet Class="d-none d-md-flex text-truncate flex-column align-items-end" ReadOnly="true">
+                    @foreach (var tag in tags)
+                {
+                    <MudChip Variant="Variant.Filled" Label="true" Class="mx-1" Style="overflow: hidden" Text="@tag.Name" />
+                }
+            </MudChipSet>
+        </MudContainer>
 
     </MudStack>
 

@@ -39,18 +39,16 @@ namespace HomeEntertainmentAdvisor.Services
         {
             return await reviewsRepo.GetById(id);
         }
-        public async Task<List<Review>> GetOrdered(int page = 0, int recordsPerPage = 10, ReviewOrder order = ReviewOrder.Date)
+        public async Task<List<Review>> GetPage(int page,
+                                                int recordsPerPage,
+                                                string? searchQuery = null,
+                                                IEnumerable<Tag>? tags = null,
+                                                ReviewOrder order = ReviewOrder.Date)
         {
-            return await reviewsRepo.GetPage(page, recordsPerPage, order);
+            return await reviewsRepo.GetPage(page, recordsPerPage, searchQuery, tags, order);
         }
-        public async Task<List<Review>> Search(string query, int page = 0, int perPage = 10)
-        {
-            return await reviewsRepo.GetPage(page, perPage, query);
-        }
-        public async Task<List<Review>> SearchByTags(int page, int recordsPerPage, IEnumerable<Tag> tags)
-        {
-            return await reviewsRepo.GetPage(page, recordsPerPage, tags);
-        }
+
+
 
         public async Task<(Guid id, bool succeeded, string message)> TrySaveReview(Review review)
         {

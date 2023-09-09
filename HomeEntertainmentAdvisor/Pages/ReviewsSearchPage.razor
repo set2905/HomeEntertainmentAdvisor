@@ -7,8 +7,8 @@
 <PageTitle>Review</PageTitle>
 <MudGrid Justify="Justify.Center">
     <MudItem xs="12" md="10">
-        <MudText Typo="Typo.h3"> 
-            Search results by @Search: 
+        <MudText Typo="Typo.h3">
+            Search results by @Search:
         </MudText>
         <ReviewList Reviews="@reviews" />
 
@@ -29,10 +29,10 @@
         if (firstRender)
         {
             if (Search!=null)
-                reviews = await reviewService.Search(Search, currentPage, perPage);
+                reviews = await reviewService.GetPage(currentPage, perPage, searchQuery: Search);
             else
             {
-                reviews = await reviewService.GetOrdered(currentPage, perPage, Domain.Repo.ReviewOrder.Date);
+                reviews = await reviewService.GetPage(currentPage, perPage, order: Domain.Repo.ReviewOrder.Date);
             }
             StateHasChanged();
         }

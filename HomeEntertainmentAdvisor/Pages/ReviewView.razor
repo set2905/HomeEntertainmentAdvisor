@@ -11,9 +11,10 @@
 @inject ISnackbar snackBar
 
 <PageTitle>Review</PageTitle>
-<MudText>
+<MudText Typo="Typo.h2">
     @review.Name
 </MudText>
+
 <MudMarkdown Value="@review.Content"
              Styling="Styling"
              TableCellMinWidth="100"
@@ -21,6 +22,10 @@
 <ReviewImageCarousel Images="@images" />
 
 <LikeButton @ref=@likeButton Review="@review" />
+<MudText Typo="Typo.h6">
+    Rate @review.Rating.MediaPiece.Name
+</MudText>
+<MudRating MaxValue="5" />
 <CommentSection Review="@review" />
 @code
 {

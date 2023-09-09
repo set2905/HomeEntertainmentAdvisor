@@ -5,12 +5,12 @@
 @inject IReviewService reviewService
 
 @implements IDisposable
-
-
-<MudText>
-    @likeCount
+<MudText Typo="Typo.h6">
+    Was this review helpful?
 </MudText>
-<MudIconButton Icon="@Icons.Material.Filled.ThumbUp" Color="@likeButtonColor" OnClick="HandleLikeClicked" />
+<MudButton EndIcon="@Icons.Material.Filled.ThumbUp" IconColor="@likeButtonColor" OnClick="HandleLikeClicked">
+    @likeCount
+</MudButton>
 @code {
     [Parameter]
     public Review? Review { get; set; }

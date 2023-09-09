@@ -24,36 +24,27 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
                 return await dbSet.Include(r => r.Rating).Where(x => x.Rating.AuthorId==userId).ToListAsync();
             }
         }
-        public async Task<List<Review>> GetPage(int page, int recordsPerPage, ReviewOrder order = ReviewOrder.Date)
+
+        public async Task<List<Review>> GetPage(int page, int recordsPerPage, string? searchQuery = null, IEnumerable<Tag>? tags = null, ReviewOrder order = ReviewOrder.Date)
         {
             using (var context = contextFactory.CreateDbContext())
             {
                 var dbSet = context.Set<Review>();
-                return await GetPageQuery(dbSet, page, recordsPerPage, context, order).ToListAsync();
-            }
-        }
-        public async Task<List<Review>> GetPage(int page, int recordsPerPage, IEnumerable<Tag> tags)
-        {
-            using (ApplicationDbContext context = contextFactory.CreateDbContext())
-            {
-                IQueryable<Review> sourceQuery = context.ReviewTagRelations
+                IQueryable<Review> result = dbSet;
+                if (searchQuery!=null)
+                {
+                    IQueryable<Guid> foundIds = GetSearchQuery(context, searchQuery);
+                    result = result.Where(x => foundIds.Contains(x.Id));
+                }
+                if (tags!=null)
+                {
+                    result = result.Intersect(context.ReviewTagRelations
                     .Include(x => x.Tag)
                     .Where(x => tags.Contains(x.Tag))
                     .Select(x => x.Review)
-                    .Distinct();
-
-                return await GetPageQuery(sourceQuery, page, recordsPerPage, context).ToListAsync();
-            }
-        }
-
-        public async Task<List<Review>> GetPage(int page, int recordsPerPage, string searchQuery)
-        {
-            using (var context = contextFactory.CreateDbContext())
-            {
-                var dbSet = context.Set<Review>();
-                IQueryable<Guid> foundIds = GetSearchQuery(context, searchQuery);
-                IQueryable<Review> found = dbSet.Where(x => foundIds.Contains(x.Id));
-                return await GetPageQuery(found, page, recordsPerPage, context).ToListAsync();
+                    .Distinct());
+                }
+                return await GetPageQuery(result, page, recordsPerPage, context, order).ToListAsync();
             }
         }
         private IQueryable<Review> GetPageQuery(IQueryable<Review> sourceQuery, int page, int recordsPerPage, ApplicationDbContext context, ReviewOrder order = ReviewOrder.Date)
@@ -80,10 +71,11 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
         }
         private IQueryable<Guid> GetSearchQuery(ApplicationDbContext context, string searchQuery)
         {
+            var foundByNameIds = context.Reviews.Where(x => x.Name.StartsWith(searchQuery)).Select(x => x.Id);
             var foundInReviewsIds = context.Reviews.Where(x => EF.Functions.FreeText(x.Content, searchQuery)).Select(x => x.Id);
             var foundInCommentsIds = context.Comments.Where(x => EF.Functions.FreeText(x.Content, searchQuery)).Select(x => x.ReviewId);
             var foundByTagIds = GetSearchByTagQuery(context, searchQuery);
-            IQueryable<Guid> foundIds = foundInReviewsIds.Union(foundInCommentsIds).Union(foundByTagIds).Distinct();
+            IQueryable<Guid> foundIds = foundInReviewsIds.Union(foundInCommentsIds).Union(foundByTagIds).Union(foundByNameIds).Distinct();
             return foundIds;
         }
 
