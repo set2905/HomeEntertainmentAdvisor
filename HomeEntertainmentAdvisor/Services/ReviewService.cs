@@ -12,10 +12,12 @@ namespace HomeEntertainmentAdvisor.Services
     public class ReviewService : AuthServiceBase, IReviewService
     {
         private readonly IReviewsRepo reviewsRepo;
+        private readonly IRatingRepo ratingRepo;
 
-        public ReviewService(IReviewsRepo reviewsRepo, AuthenticationStateProvider authenticationStateProvider, UserManager<User> userManager, IAuthorizationService authorizationService) : base(authenticationStateProvider, userManager, authorizationService)
+        public ReviewService(IReviewsRepo reviewsRepo, IRatingRepo ratingRepo, AuthenticationStateProvider authenticationStateProvider, UserManager<User> userManager, IAuthorizationService authorizationService) : base(authenticationStateProvider, userManager, authorizationService)
         {
             this.reviewsRepo = reviewsRepo;
+            this.ratingRepo=ratingRepo;
         }
 
         public async Task SetStatus(IEnumerable<Review> toDelete, ReviewStatus status)
@@ -65,6 +67,8 @@ namespace HomeEntertainmentAdvisor.Services
                     return (Guid.Empty, false, "You are not the owner of this resource");
                 }
             }
+            Guid ratingId = await ratingRepo.Save(review.Rating);
+            review.RatingId=ratingId;
             return (await reviewsRepo.Save(review), true, "Review saved");
         }
 

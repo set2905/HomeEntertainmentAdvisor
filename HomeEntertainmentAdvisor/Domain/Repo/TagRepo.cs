@@ -16,7 +16,7 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
             using (var context = contextFactory.CreateDbContext())
             {
                 var dbSet = context.Set<Tag>();
-                return await context.Tags.OrderBy(x => x.Name).Skip(skip).Take(take).ToListAsync(cancellationToken);
+                return await context.Tags.OrderByDescending(x => x.Popularity).Skip(skip).Take(take).ToListAsync(cancellationToken);
             }
         }
         public async Task<Tag?> GetByName(string name)

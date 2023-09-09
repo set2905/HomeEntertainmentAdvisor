@@ -117,7 +117,7 @@
     private async Task SubmitValidForm()
     {
         review.Status = ReviewStatus.Published;
-        review.RatingId = await ratingService.SaveRating(review.Rating);
+       // review.RatingId = await ratingService.SaveRating(review.Rating);
         var saveReviewResult = await reviewService.TrySaveReview(review);
         if (!saveReviewResult.succeeded)
         {

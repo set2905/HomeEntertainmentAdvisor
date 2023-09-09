@@ -43,8 +43,17 @@ namespace HomeEntertainmentAdvisor.Services
                 Guid tagId = found!=null ? found.Id : default;
                 if (found == null || tagId==default)
                     tagId = await tagRepo.Save(new() { Name=tagName });
-                if (await reviewsTagRelationsRepo.GetById((reviewId, tagId))==null)
+                ReviewTagRelation? relation = await reviewsTagRelationsRepo.GetById((reviewId, tagId));
+                if (relation==null)
+                {
                     await reviewsTagRelationsRepo.Save(new() { ReviewId=reviewId, TagId=tagId });
+                    var tag = await tagRepo.GetById(tagId);
+                    if (tag!=null)
+                    {
+                        tag.Popularity++;
+                        await tagRepo.Save(tag);
+                    }
+                }
             }
             return true;
 

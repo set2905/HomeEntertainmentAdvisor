@@ -27,11 +27,13 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
             using (var context = contextFactory.CreateDbContext())
             {
                 var dbSet = context.Set<ReviewTagRelation>();
-                IQueryable<ReviewTagRelation> found = dbSet.Where(x => x.ReviewId==reviewId);
+                List<ReviewTagRelation> found = await dbSet.Where(x => x.ReviewId==reviewId).Include(x => x.Tag).ToListAsync();
                 if (found.Count()==0) return false;
                 foreach (ReviewTagRelation r in found)
                 {
                     await Delete(r);
+                    r.Tag.Popularity-=1;
+                    await context.SaveChangesAsync();
                 }
                 return true;
             }
