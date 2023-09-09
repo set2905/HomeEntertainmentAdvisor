@@ -1,0 +1,15 @@
+﻿@using HomeEntertainmentAdvisor.Models;
+<MudList>
+    @foreach (Review rev in Reviews)
+    {
+        string href = $"Review/{rev.Id.ToString()}";
+        <MudListItem Href="@href">
+            <ReviewItem Review="@rev" />
+        </MudListItem>
+    }
+</MudList>
+@code {
+    [Parameter]
+    public List<Review> Reviews { get; set; } = new();
+
+}

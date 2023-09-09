@@ -1,11 +1,15 @@
 ﻿using HomeEntertainmentAdvisor.Data;
 using HomeEntertainmentAdvisor.Domain.Repo.Interfaces;
 using HomeEntertainmentAdvisor.Models;
-using MailKit.Search;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeEntertainmentAdvisor.Domain.Repo
 {
+    public enum ReviewOrder
+    {
+        Date,
+        Likes
+    }
     public class ReviewsRepo : RepoBase<Review, Guid>, IReviewsRepo
     {
         public ReviewsRepo(IDbContextFactory<ApplicationDbContext> contextFactory) : base(contextFactory)
@@ -20,53 +24,67 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
                 return await dbSet.Include(r => r.Rating).Where(x => x.Rating.AuthorId==userId).ToListAsync();
             }
         }
+        public async Task<List<Review>> GetPage(int page, int recordsPerPage, ReviewOrder order = ReviewOrder.Date)
+        {
+            using (var context = contextFactory.CreateDbContext())
+            {
+                var dbSet = context.Set<Review>();
+                return await GetPageQuery(dbSet, page, recordsPerPage, context, order).ToListAsync();
+            }
+        }
         public async Task<List<Review>> GetPage(int page, int recordsPerPage, IEnumerable<Tag> tags)
         {
-            using (var context = contextFactory.CreateDbContext())
+            using (ApplicationDbContext context = contextFactory.CreateDbContext())
             {
-                return await context.ReviewTagRelations.Include(x => x.Tag)
+                IQueryable<Review> sourceQuery = context.ReviewTagRelations
+                    .Include(x => x.Tag)
                     .Where(x => tags.Contains(x.Tag))
                     .Select(x => x.Review)
-                    .Distinct()
-                    .OrderBy(x => x.CreatedDate)
-                    .Skip(page*recordsPerPage)
-                    .Take(recordsPerPage)
-                    .ToListAsync();
+                    .Distinct();
+
+                return await GetPageQuery(sourceQuery, page, recordsPerPage, context).ToListAsync();
             }
         }
 
-        public async Task<List<Review>> GetPage(int page, int recordsPerPage)
+        public async Task<List<Review>> GetPage(int page, int recordsPerPage, string searchQuery)
         {
             using (var context = contextFactory.CreateDbContext())
             {
                 var dbSet = context.Set<Review>();
-                return await dbSet.Where(x => x.Status==ReviewStatus.Published)
-                    .OrderBy(x => x.CreatedDate)
-                    .Skip(page*recordsPerPage)
-                    .Take(recordsPerPage)
-                    .Include(r => r.Rating)
-                    .ThenInclude(r => r.Author)
-                    .ToListAsync();
+                IQueryable<Guid> foundIds = GetSearchQuery(context, searchQuery);
+                IQueryable<Review> found = dbSet.Where(x => foundIds.Contains(x.Id));
+                return await GetPageQuery(found, page, recordsPerPage, context).ToListAsync();
             }
         }
-
-        public async Task<List<Review>> GetPage(int page, int recordsPerPage, string searhQuery)
+        private IQueryable<Review> GetPageQuery(IQueryable<Review> sourceQuery, int page, int recordsPerPage, ApplicationDbContext context, ReviewOrder order = ReviewOrder.Date)
         {
-            using (var context = contextFactory.CreateDbContext())
+            IOrderedQueryable<Review> ordered;
+            switch (order)
             {
-                var dbSet = context.Set<Review>();
-                var foundInReviewsIds = dbSet.Where(x => EF.Functions.FreeText(x.Content, searhQuery)).Select(x => x.Id);
-                var foundInCommentsIds = context.Comments.Where(x => EF.Functions.FreeText(x.Content, searhQuery)).Select(x => x.ReviewId);
-                var foundByTagIds = GetSearchByTagQuery(context, searhQuery);
-                var foundIds = foundInReviewsIds.Union(foundInCommentsIds).Union(foundByTagIds).Distinct();
-                IQueryable<Review> found = dbSet.Where(x => foundIds.Contains(x.Id)&&x.Status==ReviewStatus.Published);
-                return await found.OrderBy(x => x.CreatedDate)
-                    .Skip(page*recordsPerPage)
-                    .Take(recordsPerPage)
-                    .Include(r => r.Rating)
-                    .ThenInclude(r => r.Author)
-                    .ToListAsync();
+                case ReviewOrder.Date:
+                    ordered=sourceQuery.OrderByDescending(x => x.CreatedDate);
+                    break;
+                case ReviewOrder.Likes:
+                    ordered=sourceQuery.OrderByDescending(x => x.CachedLikes);
+
+                    break;
+                default:
+                    ordered=sourceQuery.OrderByDescending(x => x.CreatedDate);
+                    break;
             }
+            return ordered.Where(x => x.Status==ReviewStatus.Published)
+                .Skip(page*recordsPerPage)
+                .Take(recordsPerPage)
+                .Include(r => r.Rating)
+                .ThenInclude(r => r.Author);
+        }
+        private IQueryable<Guid> GetSearchQuery(ApplicationDbContext context, string searchQuery)
+        {
+            var foundInReviewsIds = context.Reviews.Where(x => EF.Functions.FreeText(x.Content, searchQuery)).Select(x => x.Id);
+            var foundInCommentsIds = context.Comments.Where(x => EF.Functions.FreeText(x.Content, searchQuery)).Select(x => x.ReviewId);
+            var foundByTagIds = GetSearchByTagQuery(context, searchQuery);
+            IQueryable<Guid> foundIds = foundInReviewsIds.Union(foundInCommentsIds).Union(foundByTagIds).Distinct();
+            return foundIds;
         }
 
         private IQueryable<Guid> GetSearchByTagQuery(ApplicationDbContext context, string searchQuery)

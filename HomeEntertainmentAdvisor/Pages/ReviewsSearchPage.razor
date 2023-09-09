@@ -1,0 +1,40 @@
+﻿@page "/{Search}"
+@using HomeEntertainmentAdvisor.Models;
+@using HomeEntertainmentAdvisor.Pages.Shared
+@using HomeEntertainmentAdvisor.Services.Interfaces;
+@inject IReviewService reviewService
+
+<PageTitle>Review</PageTitle>
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="12" md="10">
+        <MudText Typo="Typo.h3"> 
+            Search results by @Search: 
+        </MudText>
+        <ReviewList Reviews="@reviews" />
+
+    </MudItem>
+</MudGrid>
+
+@code
+{
+    [Parameter]
+    public string? Search { get; set; }
+    private int perPage = 10;
+    private int currentPage = 0;
+    private List<Review> reviews = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            if (Search!=null)
+                reviews = await reviewService.Search(Search, currentPage, perPage);
+            else
+            {
+                reviews = await reviewService.GetOrdered(currentPage, perPage, Domain.Repo.ReviewOrder.Date);
+            }
+            StateHasChanged();
+        }
+    }
+}

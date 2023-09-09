@@ -1,4 +1,5 @@
-﻿using HomeEntertainmentAdvisor.Domain.Repo.Interfaces;
+﻿using HomeEntertainmentAdvisor.Domain.Repo;
+using HomeEntertainmentAdvisor.Domain.Repo.Interfaces;
 using HomeEntertainmentAdvisor.Models;
 using HomeEntertainmentAdvisor.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -38,9 +39,9 @@ namespace HomeEntertainmentAdvisor.Services
         {
             return await reviewsRepo.GetById(id);
         }
-        public async Task<List<Review>> GetNewest()
+        public async Task<List<Review>> GetOrdered(int page = 0, int recordsPerPage = 10, ReviewOrder order = ReviewOrder.Date)
         {
-            return await reviewsRepo.GetPage(0, 10);
+            return await reviewsRepo.GetPage(page, recordsPerPage, order);
         }
         public async Task<List<Review>> Search(string query, int page = 0, int perPage = 10)
         {

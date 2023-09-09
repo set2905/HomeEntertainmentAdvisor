@@ -1,4 +1,5 @@
-﻿using HomeEntertainmentAdvisor.Models;
+﻿using HomeEntertainmentAdvisor.Domain.Repo;
+using HomeEntertainmentAdvisor.Models;
 using MudBlazor;
 
 namespace HomeEntertainmentAdvisor.Services.Interfaces
@@ -6,7 +7,7 @@ namespace HomeEntertainmentAdvisor.Services.Interfaces
     public interface IReviewService
     {
         Task<List<Review>> Search(string query, int page = 0, int perPage = 10);
-        Task<List<Review>> GetNewest();
+        Task<List<Review>> GetOrdered(int page = 0, int recordsPerPage = 10, ReviewOrder order = ReviewOrder.Date);
         Task<Review?> GetById(Guid id);
         Task<(Guid id, bool succeeded, string message)> TrySaveReview(Review review);
         Task<List<Review>> GetMyReviews();

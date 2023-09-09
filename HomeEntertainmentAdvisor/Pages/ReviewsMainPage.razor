@@ -1,4 +1,4 @@
-﻿@page "/{Search}"
+﻿@*@page "/{Search}"*@
 @page "/"
 @using HomeEntertainmentAdvisor.Models;
 @using HomeEntertainmentAdvisor.Pages.Shared
@@ -15,26 +15,28 @@
                 <MudChip CloseIcon="" Text="@tag.Name" Value="@tag" />
             }
         </MudChipSet>
-        <MudList>
-            @foreach (Review rev in reviews)
-            {
-                string href = $"Review/{rev.Id.ToString()}";
-                <MudListItem Href="@href">
-                    <ReviewItem Review="@rev" />
-                </MudListItem>
-            }
-        </MudList>
+        <MudTabs Outlined="true" Position="Position.Top" Rounded="false" Border="true"
+                 ApplyEffectsToContainer="true" Class="mt-8" PanelClass="pa-6">
+            <MudTabPanel Icon="fas fa-certificate" Text="Newest">
+                <ReviewList Reviews="@newest" />
+            </MudTabPanel>
+            <MudTabPanel Icon="fas fa-up-long" Text="Top">
+                <ReviewList Reviews="@top" />
+            </MudTabPanel>
+        </MudTabs>
+
     </MudItem>
 </MudGrid>
 
 @code
 {
-    [Parameter]
-    public string? Search { get; set; }
+    //   [Parameter]
+    // public string? Search { get; set; }
     private int perPage = 10;
 
     private int currentPage = 0;
-    private List<Review> reviews = new();
+    private List<Review> newest = new();
+    private List<Review> top = new();
     private List<Tag> tags = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -42,12 +44,9 @@
         await base.OnAfterRenderAsync(firstRender);
         if (firstRender)
         {
-            if (Search!=null)
-                reviews = await reviewService.Search(Search, currentPage, perPage);
-            else
-            {
-                reviews = await reviewService.GetNewest();
-            }
+            newest = await reviewService.GetOrdered(currentPage, perPage, Domain.Repo.ReviewOrder.Date);
+            top = await reviewService.GetOrdered(currentPage, perPage, Domain.Repo.ReviewOrder.Likes);
+
             tags = await tagService.GetTags();
             StateHasChanged();
         }
@@ -57,7 +56,7 @@
     {
         if (chips.Length == 0) return;
         IEnumerable<Tag> selectedTags = chips.Select(x => (Tag)x.Value);
-        reviews = await reviewService.SearchByTags(currentPage, perPage, selectedTags);
+        newest = await reviewService.SearchByTags(currentPage, perPage, selectedTags);
         StateHasChanged();
     }
 
