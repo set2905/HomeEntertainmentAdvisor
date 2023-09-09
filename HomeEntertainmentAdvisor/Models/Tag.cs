@@ -12,5 +12,6 @@ namespace HomeEntertainmentAdvisor.Models
         public Guid Id { get; set; }
         [StringLength(128, MinimumLength = 1)]
         public string Name { get; set; }
+        public int Popularity { get; set; }
     }
 }
