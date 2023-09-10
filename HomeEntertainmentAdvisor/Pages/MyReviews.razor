@@ -15,11 +15,13 @@
 {
     private List<Review> reviews = new();
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnInitializedAsync();
-        reviews = await reviewService.GetMyReviews();
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            reviews = await reviewService.GetMyReviews();
+            StateHasChanged();
+        }
     }
-
-
 }

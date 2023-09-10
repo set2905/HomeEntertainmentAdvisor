@@ -3,15 +3,7 @@
 @inject IReviewService reviewService
 @inject ISnackbar snackBar
 
-<MudTable Items="@Reviews" MultiSelection="true" @bind-SelectedItems="selectedItems" Hover="true" Bordered="true" Striped="false" SelectOnRowClick="true">
-    <ToolBarContent>
-        <MudButton OnClick="@DeleteSelected" EndIcon="@Icons.Material.Filled.Delete" Color="Color.Surface">
-            Delete selected
-        </MudButton>
-        <MudButton OnClick="@RestoreSelected" EndIcon="@Icons.Material.Filled.Restore" Color="Color.Surface">
-            Restore selected
-        </MudButton>
-    </ToolBarContent>
+<MudTable Items="@Reviews" Hover="true" Bordered="true" Striped="false">
     <HeaderContent>
         <MudTh>№</MudTh>
         <MudTh>Name</MudTh>
@@ -29,14 +21,21 @@
         <MudTd DataLabel="Likes">@context.CachedLikes</MudTd>
         <MudTd DataLabel="Status">@context.Status.ToString()</MudTd>
         <MudTd DataLabel="Actions">
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" Href="@GetEditHref(context)" />
+            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Surface" Href="@GetHref(context)" />
+            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Edit" Color="Color.Surface" Href="@GetEditHref(context)" />
+            <MudIconButton Size="Size.Small" OnClick="()=>HandleDeleteReviewClicked(context)" Icon="@GetDeleteIconButton(context)" Color="Color.Surface" />
         </MudTd>
     </RowTemplate>
 </MudTable>
 @code {
     [Parameter]
     public List<Review> Reviews { get; set; } = new();
-    private HashSet<Review> selectedItems = new();
+
+    private string GetDeleteIconButton(Review context)
+    {
+        if (context.Status == ReviewStatus.Deleted) return Icons.Material.Filled.Restore;
+        return Icons.Material.Filled.Delete;
+    }
 
     private string GetHref(Review context)
     {
@@ -46,15 +45,18 @@
     {
         return $"Review/Edit/{context.Id}";
     }
-    private async Task DeleteSelected()
+    private async Task HandleDeleteReviewClicked(Review review)
     {
-        await reviewService.SetStatus(selectedItems,ReviewStatus.Deleted);
-        snackBar.Add($"{selectedItems.Count} reviews deleted!");
+        if (review.Status != ReviewStatus.Deleted)
+        {
+            await reviewService.SetStatus(review, ReviewStatus.Deleted);
+            snackBar.Add($"{review.Name} deleted!");
+        }
+        else
+        {
+            await reviewService.SetStatus(review, ReviewStatus.Draft);
+            snackBar.Add($"{review.Name} restored!");
+        }
     }
-    private async Task RestoreSelected()
-    {
-        await reviewService.SetStatus(selectedItems, ReviewStatus.Draft);
-        snackBar.Add($"{selectedItems.Count} reviews restored!");
-
-    }
+  
 }

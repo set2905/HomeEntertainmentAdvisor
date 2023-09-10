@@ -3,9 +3,8 @@
 @using HomeEntertainmentAdvisor.Pages.Shared
 @using HomeEntertainmentAdvisor.Services.Interfaces;
 @inject IReviewService reviewService
-
 @attribute [Authorize(Roles = "admin")]
-<PageTitle>User Reviews</PageTitle>
+<PageTitle>Review</PageTitle>
 <MudGrid Justify="Justify.Center">
     <MudItem xs="12" md="10">
         <ReviewsTable Reviews="@reviews" />
@@ -16,12 +15,11 @@
 {
     [Parameter]
     public string UserId { get; set; } = string.Empty;
-
     private List<Review> reviews = new();
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        await base.OnInitializedAsync();
+        await base.OnParametersSetAsync();
         reviews = await reviewService.GetUserReviews(UserId);
     }
 

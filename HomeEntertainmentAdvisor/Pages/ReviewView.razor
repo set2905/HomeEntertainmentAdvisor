@@ -11,9 +11,14 @@
 @inject ISnackbar snackBar
 
 <PageTitle>Review</PageTitle>
-<MudText Typo="Typo.h2">
-    @review.Name
-</MudText>
+<MudStack Row="true">
+    <MudText Typo="Typo.h2">
+        @review.Name
+    </MudText>
+    <AuthorizeView Roles="admin">
+        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Edit" Href="@GetEditHref(review)" />
+    </AuthorizeView>
+</MudStack>
 
 <MudMarkdown Value="@review.Content"
              Styling="Styling"
@@ -30,23 +35,25 @@
 @code
 {
     [Parameter]
-    public string? ReviewId { get; set; }
+    public string ReviewId { get; set; } = string.Empty;
     private Review review = new();
     private LikeButton likeButton = new();
 
     private MudMarkdownStyling Styling { get; } = new();
 
     private List<ReviewImage> images = new();
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
         if (firstRender)
+        {
             await SetReview();
+        }
     }
-
     private async Task SetReview()
     {
-        if (ReviewId!=null)
+        if (ReviewId.Length!=0&&review.Id==default)
         {
             Guid reviewGuid;
             if (Guid.TryParse(ReviewId, out reviewGuid))
@@ -62,6 +69,10 @@
                 StateHasChanged();
             }
         }
+    }
+    private string GetEditHref(Review context)
+    {
+        return $"Review/Edit/{context.Id}";
     }
 
 }

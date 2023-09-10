@@ -72,8 +72,9 @@
         if (Review.Id == default) return Enumerable.Empty<ImageUploadResult>();
         await DeleteImages();
         IEnumerable<ImageUploadResult> uploadedImageResults = await Task.WhenAll(allFiles.Select(x => imageService.UploadImage(x, Review.Id)));
-
-        snackBar.Add($"{uploadedImageResults.Where(x => x.StatusCode==System.Net.HttpStatusCode.OK).Count()} images uploaded!");
+        int uploadedCount = uploadedImageResults.Where(x => x.StatusCode == System.Net.HttpStatusCode.OK).Count();
+        if (uploadedCount>0)
+            snackBar.Add($"{uploadedCount} images uploaded!");
         return uploadedImageResults;
     }
     private async Task DeleteImages()

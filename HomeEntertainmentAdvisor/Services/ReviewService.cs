@@ -19,12 +19,15 @@ namespace HomeEntertainmentAdvisor.Services
             this.reviewsRepo = reviewsRepo;
             this.ratingRepo=ratingRepo;
         }
-
-        public async Task SetStatus(IEnumerable<Review> toDelete, ReviewStatus status)
+        public async Task SetStatus(Review review, ReviewStatus status)
         {
-            foreach (Review review in toDelete)
+            await reviewsRepo.SetStatus(review, status);
+        }
+        public async Task SetStatus(IEnumerable<Review> reviews, ReviewStatus status)
+        {
+            foreach (Review review in reviews)
             {
-                await reviewsRepo.SetStatus(review, status);
+                await SetStatus(review, status);
             }
         }
         public async Task<List<Review>> GetMyReviews()

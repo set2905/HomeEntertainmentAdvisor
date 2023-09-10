@@ -12,5 +12,6 @@ namespace HomeEntertainmentAdvisor.Services.Interfaces
         Task<List<Review>> GetUserReviews(string id);
         Task SetStatus(IEnumerable<Review> toDelete, ReviewStatus status);
         Task<List<Review>> GetPage(int page, int recordsPerPage, string? searchQuery = null, IEnumerable<Tag>? tags = null, ReviewOrder order = ReviewOrder.Date);
+        Task SetStatus(Review review, ReviewStatus status);
     }
 }

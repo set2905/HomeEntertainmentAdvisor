@@ -99,7 +99,10 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
             using (var context = contextFactory.CreateDbContext())
             {
                 if (entity.Id == default)
+                {
                     context.Entry(entity).State = EntityState.Added;
+                    entity.CreatedDate = DateTime.Now;
+                }
                 else
                     context.Entry(entity).State = EntityState.Modified;
                 await context.SaveChangesAsync(cancellationToken);
@@ -115,7 +118,7 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
                     return false;
                 }
                 entity.Status=status;
-                await context.SaveChangesAsync();
+                await Save(entity);
                 return true;
             }
         }
