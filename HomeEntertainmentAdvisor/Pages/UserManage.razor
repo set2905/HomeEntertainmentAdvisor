@@ -3,6 +3,7 @@
 @using HomeEntertainmentAdvisor.Pages.Shared
 @using HomeEntertainmentAdvisor.Services.Interfaces;
 @inject IAccountService accountService;
+@inject ISnackbar snackBar;
 
 @attribute [Authorize(Roles = "admin")]
 @attribute [Authorize(Policy = "IsNotBlocked")]
@@ -14,7 +15,6 @@
         <MudToolBar>
             <MudButton OnClick="@BlockSelected" Variant="Variant.Text" Color="Color.Surface">Block</MudButton>
             <MudIconButton OnClick="@UnblockSelected" Icon="@Icons.Material.Filled.LockReset" Color="Color.Surface" />
-            <MudIconButton OnClick="@DeleteSelected" Icon="@Icons.Material.Filled.DeleteOutline" Color="Color.Surface" />
         </MudToolBar>
     </MudPaper>
     <MudTable T="User" Items="@users" MultiSelection="true" @bind-SelectedItems="selectedItems" Hover="true" Bordered="true" Striped="false"
@@ -25,6 +25,7 @@
             <MudTh>Email</MudTh>
             <MudTh>Last login</MudTh>
             <MudTh>Registration date</MudTh>
+            <MudTh>Role</MudTh>
             <MudTh>Status</MudTh>
         </HeaderContent>
         <RowTemplate Context="user">
@@ -33,6 +34,14 @@
             <MudTd DataLabel="Email">@user.Email</MudTd>
             <MudTd DataLabel="Last login">@user.LastLoginDate</MudTd>
             <MudTd DataLabel="Registration date">@user.RegistrationDate</MudTd>
+            <MudTd DataLabel="Role">
+                <MudSelect T="string" Disabled="@isRoleSetInProgress" MultiSelection="true" @bind-SelectedValues="@usersRoles[user]" OnClose="async ()=>await SetRoles(user)" CloseIcon="@Icons.Material.Filled.Close" AdornmentColor="Color.Tertiary">
+                    @foreach (string? role in roles)
+                    {
+                        <MudSelectItem Value="@role" />
+                    }
+                </MudSelect>
+            </MudTd>
             <MudTd DataLabel="Status">@(user.IsBlocked ? "Blocked" : "Active")</MudTd>
             </RowTemplate>
             <PagerContent>
@@ -45,7 +54,10 @@
     @code
     {
     private List<User> users = new();
+    private Dictionary<User, IEnumerable<string>> usersRoles = new();
+    private List<string?> roles = new();
     private HashSet<User> selectedItems = new();
+    private bool isRoleSetInProgress = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -53,19 +65,28 @@
         if (firstRender)
         {
             users = await accountService.GetUsers() ?? new();
+            roles = await accountService.GetAllRoles();
+            usersRoles = new();
+            foreach (User user in users)
+            {
+                usersRoles.Add(user, await accountService.GetUserRoles(user));
+            }
             StateHasChanged();
         }
     }
-
-    protected async Task DeleteSelected()
+    private async Task SetRoles(User user)
     {
-
-        IEnumerable<string>? result = await accountService.DeleteUsers(selectedItems.Select(x => x.Id));
-        if (result==null)
+        IEnumerable<string> roles = usersRoles[user];
+        if (isRoleSetInProgress)
         {
+            snackBar.Add("Role set already in progress", Severity.Error);
             return;
         }
-        users = users.Where(x => !result.Contains(x.Id)).ToList();
+        isRoleSetInProgress = true;
+        var result = await accountService.OverwriteRoles(user.Id, roles);
+        if (result.Succeeded) usersRoles[user] = roles;
+        isRoleSetInProgress = false;
+
     }
 
     protected async Task BlockSelected()
