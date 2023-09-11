@@ -19,10 +19,9 @@ namespace HomeEntertainmentAdvisor.Services
         {
             return await commentsRepo.GetById(id);
         }
-        public async Task<List<Comment>> GetCommentPage(Guid reviewId, int page = 1, int pageSize = 10)
+        public async Task<List<Comment>> GetPage(Guid reviewId, int page = 0, int pageSize = 10)
         {
-            if (page<1) page=1;
-            return await commentsRepo.GetComments(reviewId, page-1, pageSize);
+            return await commentsRepo.GetComments(reviewId, page*pageSize, pageSize);
         }
         public async Task<Guid> AddComment(string content, Guid reviewId)
         {

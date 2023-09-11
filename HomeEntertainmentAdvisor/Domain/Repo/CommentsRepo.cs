@@ -15,7 +15,7 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
         {
             using (var context = contextFactory.CreateDbContext())
             {
-                return await context.Set<Comment>().Where(x => x.ReviewId==reviewId).OrderBy(x => x.CreatedDate).Skip(skip).Take(take).Include(x => x.Author).ToListAsync();
+                return await context.Set<Comment>().Where(x => x.ReviewId==reviewId).OrderByDescending(x => x.CreatedDate).Skip(skip).Take(take).Include(x => x.Author).ToListAsync();
             }
         }
         public override async Task<Comment?> GetById(Guid id)

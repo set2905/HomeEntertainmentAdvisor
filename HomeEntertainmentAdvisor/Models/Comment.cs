@@ -17,4 +17,23 @@ namespace HomeEntertainmentAdvisor.Models
         public string Content { get; set; }
         public DateTime CreatedDate { get; set; }
     }
+    class CommentComparer : IEqualityComparer<Comment>
+    {
+        public bool Equals(Comment? x, Comment? y)
+        {
+            if (x == null || y == null)
+                return false;
+
+            if (ReferenceEquals(x, y))
+                return true;
+            return x.Id == y.Id;
+        }
+
+        public int GetHashCode(Comment? obj)
+        {
+            if (obj == null || obj.Id == default)
+                return 0;
+            return obj.Id.GetHashCode();
+        }
+    }
 }

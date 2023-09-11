@@ -18,11 +18,11 @@
                  ApplyEffectsToContainer="true" Class="mt-8" PanelClass="pa-6">
             <MudTabPanel Icon="fas fa-certificate" Text="Newest">
                 <ReviewList Reviews="@newest" />
-                <MudButton Disabled="@loadMoreNewestButtonDisabled" OnClick="()=>LoadMoreNewest()">Load more</MudButton>
+                <MudButton Class="mud-width-full" Disabled="@loadMoreNewestButtonDisabled" OnClick="()=>LoadMoreNewest()">Load more</MudButton>
             </MudTabPanel>
             <MudTabPanel Icon="fas fa-up-long" Text="Top">
                 <ReviewList Reviews="@top" />
-                <MudButton Disabled="@loadMoreTopButtonDisabled" OnClick="()=>LoadMoreTop()">Load more</MudButton>
+                <MudButton Color="Color.Primary" Class="mud-width-full" Disabled="@loadMoreTopButtonDisabled" OnClick="()=>LoadMoreTop()">Load more</MudButton>
             </MudTabPanel>
         </MudTabs>
     </MudItem>
@@ -30,8 +30,6 @@
 
 @code
 {
-    //   [Parameter]
-    // public string? Search { get; set; }
     private int perPage = 10;
 
     private int currentNewestPage = 0;

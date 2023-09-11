@@ -7,7 +7,7 @@
 @implements IAsyncDisposable
 <MudPaper Class="pa-6">
     <AuthorizeView>
-        <MudTextField @bind-Value="commentFieldValue" Label="Standard" Variant="Variant.Text" MaxLength="Comment.MAX_LENGTH"></MudTextField>
+        <MudTextField @bind-Value="commentFieldValue" Label="" Variant="Variant.Text" MaxLength="Comment.MAX_LENGTH"></MudTextField>
         <MudButton OnClick="@AddComment">
             Leave comment
         </MudButton>
@@ -27,6 +27,8 @@
                 @comment.Content
             </MudText>
         }
+        <MudButton Color="Color.Primary" Class="mud-width-full" Disabled="@loadMoreCommentsButtonDisabled" OnClick="()=>LoadMoreComments()">Load more</MudButton>
+
     }
     else
     {
@@ -41,7 +43,10 @@
     public Review Review { get; set; } = new();
     private List<Comment> comments = new();
     private string commentFieldValue = string.Empty;
+    private int currentPage=0;
+    private int perPage=10;
 
+    private bool loadMoreCommentsButtonDisabled = false;
     private HubConnection? hubConnection;
 
     protected override async Task OnInitializedAsync()
@@ -55,7 +60,7 @@
         {
             if (comment.ReviewId != default && comment.ReviewId == Review.Id)
             {
-                comments.Add(comment);
+                comments.Insert(0,comment);
                 InvokeAsync(StateHasChanged);
             }
         });
@@ -64,7 +69,19 @@
     }
     protected override async Task OnParametersSetAsync()
     {
-        await SetComments();
+        await InitComments();
+    }
+
+    private async Task LoadMoreComments()
+    {
+        currentPage++;
+        List<Comment> loaded = await commentService.GetPage(Review.Id,currentPage, perPage);
+        if (loaded.Count == 0)
+            loadMoreCommentsButtonDisabled = true;
+        comments.AddRange(loaded);
+        comments = comments.Distinct(new CommentComparer()).ToList();
+        StateHasChanged();
+
     }
     private async Task Send(Comment comment)
     {
@@ -73,11 +90,11 @@
             await hubConnection.SendAsync("SendComment", comment);
         }
     }
-    private async Task SetComments()
+    private async Task InitComments()
     {
         if (Review == null||Review.Id==default) return;
 
-        comments = await commentService.GetCommentPage(Review.Id);
+        comments = await commentService.GetPage(Review.Id, currentPage, perPage);
         StateHasChanged();
     }
     private async Task AddComment()

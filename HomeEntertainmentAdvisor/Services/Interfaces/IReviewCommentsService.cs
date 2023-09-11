@@ -6,6 +6,6 @@ namespace HomeEntertainmentAdvisor.Services.Interfaces
     {
         Task<Guid> AddComment(string content, Guid reviewId);
         Task<Comment?> GetById(Guid id);
-        Task<List<Comment>> GetCommentPage(Guid reviewId, int page = 1, int pageSize = 10);
+        Task<List<Comment>> GetPage(Guid reviewId, int page = 1, int pageSize = 10);
     }
 }
