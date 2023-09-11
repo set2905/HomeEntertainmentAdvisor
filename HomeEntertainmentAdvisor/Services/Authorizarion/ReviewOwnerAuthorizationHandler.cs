@@ -23,7 +23,6 @@ namespace HomeEntertainmentAdvisor.Services.Authorizarion
             {
                 context.Succeed(requirement);
             }
-            //return Task.CompletedTask;
         }
     }
     public class UserIsAuthorRequirement : IAuthorizationRequirement { }

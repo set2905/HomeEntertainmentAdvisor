@@ -1,0 +1,80 @@
+﻿@page "/UserManage"
+@using HomeEntertainmentAdvisor.Models;
+@using HomeEntertainmentAdvisor.Pages.Shared
+@using HomeEntertainmentAdvisor.Services.Interfaces;
+@inject IAccountService accountService;
+
+@attribute [Authorize(Roles = "admin")]
+@attribute [Authorize(Policy = "IsNotBlocked")]
+
+<PageTitle>Users</PageTitle>
+<MudContainer MaxWidth="MaxWidth.Large">
+    <h1>Users</h1>
+    <MudPaper Elevation="25">
+        <MudToolBar>
+            <MudButton OnClick="@BlockSelected" Variant="Variant.Text" Color="Color.Surface">Block</MudButton>
+            <MudIconButton OnClick="@UnblockSelected" Icon="@Icons.Material.Filled.LockReset" Color="Color.Surface" />
+            <MudIconButton OnClick="@DeleteSelected" Icon="@Icons.Material.Filled.DeleteOutline" Color="Color.Surface" />
+        </MudToolBar>
+    </MudPaper>
+    <MudTable T="User" Items="@users" MultiSelection="true" @bind-SelectedItems="selectedItems" Hover="true" Bordered="true" Striped="false"
+              SelectOnRowClick="true">
+        <HeaderContent>
+            <MudTh>Id</MudTh>
+            <MudTh>Name</MudTh>
+            <MudTh>Email</MudTh>
+            <MudTh>Last login</MudTh>
+            <MudTh>Registration date</MudTh>
+            <MudTh>Status</MudTh>
+        </HeaderContent>
+        <RowTemplate Context="user">
+            <MudTd DataLabel="Id">@user.Id</MudTd>
+            <MudTd DataLabel="Name">@user.UserName</MudTd>
+            <MudTd DataLabel="Email">@user.Email</MudTd>
+            <MudTd DataLabel="Last login">@user.LastLoginDate</MudTd>
+            <MudTd DataLabel="Registration date">@user.RegistrationDate</MudTd>
+            <MudTd DataLabel="Status">@(user.IsBlocked ? "Blocked" : "Active")</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="new int[]{10, 25, 50, 100}" />
+            </PagerContent>
+            <FooterContent>
+            </FooterContent>
+        </MudTable>
+    </MudContainer>
+    @code
+    {
+    private List<User> users = new();
+    private HashSet<User> selectedItems = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            users = await accountService.GetUsers() ?? new();
+            StateHasChanged();
+        }
+    }
+
+    protected async Task DeleteSelected()
+    {
+
+        IEnumerable<string>? result = await accountService.DeleteUsers(selectedItems.Select(x => x.Id));
+        if (result==null)
+        {
+            return;
+        }
+        users = users.Where(x => !result.Contains(x.Id)).ToList();
+    }
+
+    protected async Task BlockSelected()
+    {
+        await accountService.SetBlock(selectedItems.Select(x => x.Id), true);
+    }
+
+    protected async Task UnblockSelected()
+    {
+        await accountService.SetBlock(selectedItems.Select(x => x.Id), false);
+    }
+}

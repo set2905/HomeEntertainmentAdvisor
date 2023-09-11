@@ -16,6 +16,7 @@
 
 
 @attribute [Authorize]
+@attribute [Authorize(Policy ="IsNotBlocked")]
 <PageTitle>Edit review</PageTitle>
 
 <EditForm Model="@review" OnValidSubmit="@SubmitValidForm">

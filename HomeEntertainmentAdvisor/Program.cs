@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using MudBlazor;
 using MudBlazor.Services;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -114,6 +115,7 @@ builder.Services.AddTransient<ITagService, TagService>();
 builder.Services.AddTransient<IReviewLikeService, ReviewLikeService>();
 builder.Services.AddTransient<IReviewCommentsService, ReviewCommentsService>();
 builder.Services.AddTransient<IImageService, ImageService>();
+builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddTransient<IImageCloud, ImageCloud>(serviceProvider => new(cloudinaryUrl));
 
 
@@ -124,9 +126,11 @@ builder.Services.AddTransient<IEmailSender, EmailSender>(serviceProvider => new(
 
 
 builder.Services.AddTransient<IAuthorizationHandler, ReviewOwnerAuthorizationHandler>();
+builder.Services.AddTransient<IAuthorizationHandler, IsNotBlockedAuthorizationHandler>();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("UserIsAuthor", policy => policy.Requirements.Add(new UserIsAuthorRequirement()));
+    options.AddPolicy("IsNotBlocked", policy => policy.Requirements.Add(new IsNotBlockedRequirement()));
 });
 
 builder.Services.AddRazorPages();
