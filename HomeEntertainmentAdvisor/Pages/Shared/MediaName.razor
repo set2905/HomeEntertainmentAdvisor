@@ -1,0 +1,14 @@
+﻿@using HomeEntertainmentAdvisor.Models;
+<MudBadge Content="@GetRatingText()" Color="Color.Primary" Overlap="true" >
+    <MudText Typo="Typo.h4">
+        @Media.Name
+    </MudText>
+</MudBadge>
+@code {
+    [Parameter]
+    public MediaPiece Media { get; set; } = new();
+    private string GetRatingText()
+    {
+        return $"{Media.CachedRating}/{Rating.MAX_RATING}";
+    }
+}

@@ -12,6 +12,10 @@
 @inject ISnackbar snackBar
 
 <PageTitle>Review</PageTitle>
+<MudText Typo="Typo.h4">
+    <MediaName Media="@review.Rating.MediaPiece" /> review
+</MudText>
+
 <MudStack Row="true">
     <MudText Typo="Typo.h2">
         @review.Name
@@ -19,6 +23,7 @@
     <AuthorizeView Roles="admin">
         <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Edit" Href="@GetEditHref(review)" />
     </AuthorizeView>
+
 </MudStack>
 
 <MudMarkdown Value="@review.Content"
@@ -27,9 +32,9 @@
              CodeBlockTheme="CodeBlockTheme.DraculaBase16" />
 <ReviewImageCarousel Images="@images" />
 
+<MediaRate Media="@review.Rating.MediaPiece" UserId="@userId" />
 <LikeButton @ref=@likeButton Review="@review" UserId="@userId" />
 
-<MediaRate Media="@review.Rating.MediaPiece" UserId="@userId" />
 <CommentSection Review="@review" />
 @code
 {
