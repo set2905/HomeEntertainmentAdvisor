@@ -7,6 +7,7 @@
 @inject IMediaService mediaService
 @inject IRatingService ratingService
 @inject IImageService imageService;
+@inject AuthenticationStateProvider authenticationStateProvider
 
 @inject ISnackbar snackBar
 
@@ -26,17 +27,16 @@
              CodeBlockTheme="CodeBlockTheme.DraculaBase16" />
 <ReviewImageCarousel Images="@images" />
 
-<LikeButton @ref=@likeButton Review="@review" />
-<MudText Typo="Typo.h6">
-    Rate @review.Rating.MediaPiece.Name
-</MudText>
-<MudRating MaxValue="5" />
+<LikeButton @ref=@likeButton Review="@review" UserId="@userId" />
+
+<MediaRate Media="@review.Rating.MediaPiece" UserId="@userId" />
 <CommentSection Review="@review" />
 @code
 {
     [Parameter]
     public string ReviewId { get; set; } = string.Empty;
     private Review review = new();
+    private string? userId;
     private LikeButton likeButton = new();
 
     private MudMarkdownStyling Styling { get; } = new();
@@ -48,6 +48,9 @@
         await base.OnAfterRenderAsync(firstRender);
         if (firstRender)
         {
+            var user = (await authenticationStateProvider.GetAuthenticationStateAsync()).User;
+            if (user!=null)
+                userId = user.FindFirst(c => c.Type.Contains("nameidentifier"))?.Value;
             await SetReview();
         }
     }

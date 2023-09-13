@@ -14,6 +14,8 @@
 @code {
     [Parameter]
     public Review? Review { get; set; }
+    [Parameter]
+    public string UserId { get; set; } = string.Empty;
     private int likeCount;
     private Color likeButtonColor = Color.Surface;
     private bool liked = false;
@@ -30,7 +32,7 @@
         CancelAndResetLikeToken();
         if (!liked)
         {
-            if (!await likeService.LikeReview(Review.Id, likeCancellationTokenSource.Token))
+            if (!await likeService.LikeReview(Review.Id, UserId, likeCancellationTokenSource.Token))
                 snackBar.Add("Like couldnt be added");
             else
             {
@@ -41,7 +43,7 @@
         }
         else
         {
-            if (!await likeService.RemoveLikeReview(Review.Id, likeCancellationTokenSource.Token))
+            if (!await likeService.RemoveLikeReview(Review.Id, UserId, likeCancellationTokenSource.Token))
                 snackBar.Add("Like couldnt be removed");
             else
             {
@@ -57,7 +59,7 @@
     {
         if (Review == null||Review.Id==default) return;
 
-        if (await likeService.IsLikedByUser(Review))
+        if (await likeService.IsLikedByUser(Review, UserId))
         {
             liked = true;
             likeButtonColor = Color.Success;

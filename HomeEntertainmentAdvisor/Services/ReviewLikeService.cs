@@ -7,29 +7,27 @@ using Microsoft.AspNetCore.Identity;
 
 namespace HomeEntertainmentAdvisor.Services
 {
-    public class ReviewLikeService : AuthServiceBase, IReviewLikeService
+    public class ReviewLikeService : IReviewLikeService
     {
         private const int LIKECOUNT_UPDATE_SECONDS = 3600;
 
         private readonly IReviewLikesRepo reviewLikesRepo;
         private readonly IReviewService reviewService;
 
-        public ReviewLikeService(IReviewLikesRepo reviewLikesRepo, IReviewService reviewService, AuthenticationStateProvider authenticationStateProvider, UserManager<User> userManager, IAuthorizationService authorizationService) : base(authenticationStateProvider, userManager, authorizationService)
+        public ReviewLikeService(IReviewLikesRepo reviewLikesRepo, IReviewService reviewService)
         {
             this.reviewService = reviewService;
             this.reviewLikesRepo= reviewLikesRepo;
         }
-        public async Task<bool> IsLikedByUser(Review review)
+        public async Task<bool> IsLikedByUser(Review review, string userId)
         {
-            User? user = await GetUser(await GetAuthState());
-            if (user == null) return false;
-            ReviewLike? like = await reviewLikesRepo.GetById((review.Id, user.Id));
+            ReviewLike? like = await reviewLikesRepo.GetById((review.Id, userId));
             if (like == null) return false;
             return true;
         }
         public async Task<int> UpdateLikeCount(Review review)
         {
-            
+
             if (review.LastCacheUpdate < DateTime.Now-TimeSpan.FromSeconds(3600))
             {
                 int likeCount = await reviewLikesRepo.GetLikeCount(review.Id);
@@ -41,25 +39,21 @@ namespace HomeEntertainmentAdvisor.Services
             else
                 return review.CachedLikes;
         }
-        public async Task<bool> LikeReview(Guid reviewId, CancellationToken cancellationToken = default)
+        public async Task<bool> LikeReview(Guid reviewId, string userId, CancellationToken cancellationToken = default)
         {
-            User? user = await GetUser(await GetAuthState());
-            if (user == null) return false;
             Review? review = await reviewService.GetById(reviewId);
             if (review == null) return false;
-            ReviewLike? like = await reviewLikesRepo.GetById((reviewId, user.Id));
+            ReviewLike? like = await reviewLikesRepo.GetById((reviewId, userId));
             if (like != null) return false;
-            await reviewLikesRepo.Save(new() { UserId=user.Id, ReviewId=reviewId }, cancellationToken);
+            await reviewLikesRepo.Save(new() { UserId=userId, ReviewId=reviewId }, cancellationToken);
             return true;
 
         }
-        public async Task<bool> RemoveLikeReview(Guid reviewId, CancellationToken cancellationToken = default)
+        public async Task<bool> RemoveLikeReview(Guid reviewId, string userId, CancellationToken cancellationToken = default)
         {
-            User? user = await GetUser(await GetAuthState());
-            if (user == null) return false;
             Review? review = await reviewService.GetById(reviewId);
             if (review == null) return false;
-            ReviewLike? like = await reviewLikesRepo.GetById((reviewId, user.Id));
+            ReviewLike? like = await reviewLikesRepo.GetById((reviewId, userId));
             if (like == null) return false;
             return await reviewLikesRepo.Delete(like, cancellationToken);
         }

@@ -20,6 +20,15 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
             }
         }
 
+        public async Task<Rating?> GetByMedia(string userId, Guid mediaId)
+        {
+            using (var context = contextFactory.CreateDbContext())
+            {
+                var dbSet = context.Set<Rating>();
+                return await dbSet.FirstOrDefaultAsync(x => x.AuthorId==userId&&x.MediaPieceId==mediaId);
+            }
+        }
+
         public override async Task<Guid> Save(Rating entity, CancellationToken cancellationToken = default)
         {
             using (var context = contextFactory.CreateDbContext())
