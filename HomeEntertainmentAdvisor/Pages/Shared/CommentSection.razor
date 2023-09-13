@@ -5,7 +5,11 @@
 @inject IReviewCommentsService commentService;
 
 @implements IAsyncDisposable
+<MudText Typo="Typo.h3">
+    Comments
+</MudText>
 <MudPaper Class="pa-6">
+
     <AuthorizeView>
         <MudTextField @bind-Value="commentFieldValue" Label="" Variant="Variant.Text" MaxLength="Comment.MAX_LENGTH"></MudTextField>
         <MudButton OnClick="@AddComment">
@@ -43,8 +47,8 @@
     public Review Review { get; set; } = new();
     private List<Comment> comments = new();
     private string commentFieldValue = string.Empty;
-    private int currentPage=0;
-    private int perPage=10;
+    private int currentPage = 0;
+    private int perPage = 10;
 
     private bool loadMoreCommentsButtonDisabled = false;
     private HubConnection? hubConnection;
@@ -60,7 +64,7 @@
         {
             if (comment.ReviewId != default && comment.ReviewId == Review.Id)
             {
-                comments.Insert(0,comment);
+                comments.Insert(0, comment);
                 InvokeAsync(StateHasChanged);
             }
         });
@@ -75,7 +79,7 @@
     private async Task LoadMoreComments()
     {
         currentPage++;
-        List<Comment> loaded = await commentService.GetPage(Review.Id,currentPage, perPage);
+        List<Comment> loaded = await commentService.GetPage(Review.Id, currentPage, perPage);
         if (loaded.Count == 0)
             loadMoreCommentsButtonDisabled = true;
         comments.AddRange(loaded);
