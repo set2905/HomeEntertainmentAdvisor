@@ -19,8 +19,16 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
                 return await dbSet.SingleOrDefaultAsync(x => x.Id == id);
             }
         }
+        public async Task<double> GetAvgMediaRating(Guid mediaPieceId)
+        {
+            using (var context = contextFactory.CreateDbContext())
+            {
+                var dbSet = context.Set<Rating>();
+                return await dbSet.Where(x => x.MediaPieceId== mediaPieceId).AverageAsync(x => x.Grade);
+            }
+        }
 
-        public async Task<Rating?> GetByMedia(string userId, Guid mediaId)
+        public async Task<Rating?> GetByMediaAndUser(string userId, Guid mediaId)
         {
             using (var context = contextFactory.CreateDbContext())
             {

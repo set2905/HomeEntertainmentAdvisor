@@ -1,0 +1,28 @@
+﻿@using HomeEntertainmentAdvisor.Models;
+@using HomeEntertainmentAdvisor.Services.Interfaces;
+@inject IReviewLikeService likeService;
+<MudBadge Visible="@visible" Content="@likeCount" Color="Color.Primary" Overlap="true">
+    <MudText Typo="@Typo" Class="d-none d-sm-block text-truncate">
+        @if (user!=null)
+            @user.UserName
+        </MudText>
+    </MudBadge>
+    @code {
+    [Parameter]
+    public string UserId { get; set; } = string.Empty;
+    [Parameter]
+    public Typo Typo { get; set; } = Typo.overline;
+    private User? user;
+    private int likeCount;
+    private bool visible = true;
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        if (UserId.Length>0&& UserId!=Guid.Empty.ToString())
+            user = await likeService.TryUpdateUserLikes(UserId);
+        if (user != null)
+            likeCount = user.CachedLikes;
+
+        visible = user != null;
+    }
+}

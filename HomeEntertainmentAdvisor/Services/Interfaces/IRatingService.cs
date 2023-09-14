@@ -7,5 +7,6 @@ namespace HomeEntertainmentAdvisor.Services.Interfaces
         Task<Rating?> GetById(Guid id);
         Task<Rating?> GetByMedia(MediaPiece media, string user);
         Task<Guid> SaveRating(Rating rating, string user);
+        Task<double> TryUpdateMediaRating(MediaPiece media);
     }
 }

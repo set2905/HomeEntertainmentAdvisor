@@ -12,10 +12,8 @@
 @inject ISnackbar snackBar
 
 <PageTitle>Review</PageTitle>
-<MudText Typo="Typo.h4">
-    <MediaName Media="@review.Rating.MediaPiece" /> review
-</MudText>
-
+<MediaName Media="@review.Rating.MediaPiece" />
+<AuthorName UserId="@authorId" Typo="Typo.overline" />
 <MudStack Row="true">
     <MudText Typo="Typo.h2">
         @review.Name
@@ -32,8 +30,8 @@
              CodeBlockTheme="CodeBlockTheme.DraculaBase16" />
 <ReviewImageCarousel Images="@images" />
 
-<MediaRate Media="@review.Rating.MediaPiece" UserId="@userId" />
-<LikeButton @ref=@likeButton Review="@review" UserId="@userId" />
+<MediaRate Media="@review.Rating.MediaPiece" UserId="@currentUserId" />
+<LikeButton @ref=@likeButton Review="@review" UserId="@currentUserId" />
 
 <CommentSection Review="@review" />
 @code
@@ -41,11 +39,11 @@
     [Parameter]
     public string ReviewId { get; set; } = string.Empty;
     private Review review = new();
-    private string? userId;
+    private string authorId = string.Empty;
+    private string? currentUserId;
     private LikeButton likeButton = new();
 
     private MudMarkdownStyling Styling { get; } = new();
-
     private List<ReviewImage> images = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -55,13 +53,13 @@
         {
             var user = (await authenticationStateProvider.GetAuthenticationStateAsync()).User;
             if (user!=null)
-                userId = user.FindFirst(c => c.Type.Contains("nameidentifier"))?.Value;
+                currentUserId = user.FindFirst(c => c.Type.Contains("nameidentifier"))?.Value;
             await SetReview();
         }
     }
     private async Task SetReview()
     {
-        if (ReviewId.Length!=0&&review.Id==default)
+        if (ReviewId.Length!=0 && review.Id==default)
         {
             Guid reviewGuid;
             if (Guid.TryParse(ReviewId, out reviewGuid))
@@ -73,7 +71,10 @@
                     return;
                 }
                 review = found;
+                if (review.Rating.AuthorId!=null)
+                    authorId = review.Rating.AuthorId;
                 images = await imageService.GetImagesForReview(reviewGuid);
+
                 StateHasChanged();
             }
         }

@@ -69,7 +69,7 @@
             liked = false;
             likeButtonColor = Color.Surface;
         }
-        likeCount = await likeService.UpdateLikeCount(Review);
+        likeCount = await likeService.TryUpdateReviewLikeCount(Review);
         StateHasChanged();
     }
 

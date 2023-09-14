@@ -19,6 +19,14 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
                 return await dbSet.Where(x => x.ReviewId==reviewId).CountAsync();
             }
         }
+        public async Task<int> GetUserLikesCount(string userId)
+        {
+            using (var context = contextFactory.CreateDbContext())
+            {
+                var dbSet = context.Set<ReviewLike>();
+                return await dbSet.Include(x=>x.Review).ThenInclude(x=>x.Rating).Where(x => x.Review.Rating.AuthorId==userId).CountAsync();
+            }
+        }
         public override async Task<ReviewLike?> GetById((Guid, string) id)
         {
             using (var context = contextFactory.CreateDbContext())

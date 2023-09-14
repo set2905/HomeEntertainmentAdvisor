@@ -7,5 +7,7 @@ namespace HomeEntertainmentAdvisor.Models
         public bool IsBlocked { get; set; }
         public DateTime RegistrationDate { get; set; }
         public DateTime LastLoginDate { get; set; }
+        public DateTime LastCacheUpdate { get; set; }
+        public int CachedLikes { get; set; }
     }
 }

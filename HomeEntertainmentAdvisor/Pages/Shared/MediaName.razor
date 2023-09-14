@@ -1,14 +1,27 @@
 ﻿@using HomeEntertainmentAdvisor.Models;
-<MudBadge Content="@GetRatingText()" Color="Color.Primary" Overlap="true" >
-    <MudText Typo="Typo.h4">
+@using HomeEntertainmentAdvisor.Services.Interfaces;
+@inject IRatingService ratingService;
+<MudBadge Content="@ratingText" Color="Color.Primary" Overlap="true">
+    <MudText Typo="@Typo">
         @Media.Name
     </MudText>
 </MudBadge>
 @code {
     [Parameter]
     public MediaPiece Media { get; set; } = new();
-    private string GetRatingText()
+    [Parameter]
+    public Typo Typo { get; set; } = new();
+    private string ratingText = "?/10";
+    protected override async Task OnParametersSetAsync()
     {
-        return $"{Media.CachedRating}/{Rating.MAX_RATING}";
+        await base.OnParametersSetAsync();
+        if (Media.Id!=default)
+            ratingText = await GetRatingText();
+    }
+    private async Task<string> GetRatingText()
+    {
+        if (Media.Id == default) return "0";
+        double avg = await ratingService.TryUpdateMediaRating(Media);
+        return $"{avg.ToString("G4")}/{Rating.MAX_RATING}";
     }
 }

@@ -30,6 +30,8 @@
                     @if (Review.Rating.Author!=null)
                         @Review.Rating.Author.UserName
                     </MudText>
+                    <MediaName Media="@media" Typo="Typo.overline" />
+
                 </MudStack>
             </MudStack>
             <MudContainer Style="width:200px">
@@ -51,6 +53,7 @@
 
     [Parameter]
     public Review Review { get; set; } = new();
+    private MediaPiece media = new();
     private const int TAGCOUNT = 3;
     private MudMarkdownStyling Styling { get; } = new();
     private string gradeText { get => $"{Review.Rating.Grade}/{Rating.MAX_RATING}"; }
@@ -60,6 +63,7 @@
     {
         await base.OnParametersSetAsync();
         tags = await tagService.GetReviewTags(Review.Id, TAGCOUNT);
+        media = Review.Rating.MediaPiece;
     }
 
 }

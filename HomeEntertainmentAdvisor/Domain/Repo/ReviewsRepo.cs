@@ -68,7 +68,9 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
                 .Skip(page*recordsPerPage)
                 .Take(recordsPerPage)
                 .Include(r => r.Rating)
-                .ThenInclude(r => r.Author);
+                .ThenInclude(r => r.Author)
+                .Include(r=>r.Rating)
+                .ThenInclude(r=>r.MediaPiece);
         }
         private IQueryable<Guid> GetSearchQuery(ApplicationDbContext context, string searchQuery)
         {
@@ -90,7 +92,10 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
             using (var context = contextFactory.CreateDbContext())
             {
                 var dbSet = context.Set<Review>();
-                return await context.Reviews.Include(x => x.Rating).ThenInclude(x => x.MediaPiece).SingleOrDefaultAsync(x => x.Id == id);
+                return await context.Reviews.Include(x => x.Rating)
+                    .ThenInclude(x => x.MediaPiece)
+                    .Include(x => x.Rating)
+                    .SingleOrDefaultAsync(x => x.Id == id);
             }
         }
 
