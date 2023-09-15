@@ -13,7 +13,6 @@
 
 <PageTitle>Review</PageTitle>
 <MediaName Media="@review.Rating.MediaPiece" />
-<AuthorName UserId="@authorId" Typo="Typo.overline" />
 <MudStack Row="true">
     <MudText Typo="Typo.h2">
         @review.Name
@@ -21,17 +20,17 @@
     <AuthorizeView Roles="admin">
         <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Edit" Href="@GetEditHref(review)" />
     </AuthorizeView>
-
-</MudStack>
+    </MudStack>
 
 <MudMarkdown Value="@review.Content"
              Styling="Styling"
              TableCellMinWidth="100"
              CodeBlockTheme="CodeBlockTheme.DraculaBase16" />
 <ReviewImageCarousel Images="@images" />
+<AuthorName UserId="@authorId" Typo="Typo.overline" />
 
-<MediaRate Media="@review.Rating.MediaPiece" UserId="@currentUserId" />
 <LikeButton @ref=@likeButton Review="@review" UserId="@currentUserId" />
+<MediaRate Media="@review.Rating.MediaPiece" UserId="@currentUserId" />
 
 <CommentSection Review="@review" />
 @code

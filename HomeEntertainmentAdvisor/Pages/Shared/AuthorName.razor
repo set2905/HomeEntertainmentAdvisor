@@ -1,12 +1,16 @@
 ﻿@using HomeEntertainmentAdvisor.Models;
 @using HomeEntertainmentAdvisor.Services.Interfaces;
 @inject IReviewLikeService likeService;
-<MudBadge Visible="@visible" Content="@likeCount" Color="Color.Primary" Overlap="true">
-    <MudText Typo="@Typo" Class="d-none d-sm-block text-truncate">
+<MudStack Row=true Class="d-none d-sm-block">
+    <MudText Typo="@Typo">
         @if (user!=null)
             @user.UserName
         </MudText>
-    </MudBadge>
+        <MudText Typo="@Typo" >
+            <MudIcon Icon="fab fa-gratipay" Size="Size.Small" />  @likeCount
+        </MudText>
+    </MudStack>
+
     @code {
     [Parameter]
     public string UserId { get; set; } = string.Empty;

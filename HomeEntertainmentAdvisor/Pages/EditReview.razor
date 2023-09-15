@@ -16,7 +16,7 @@
 
 
 @attribute [Authorize]
-@attribute [Authorize(Policy ="IsNotBlocked")]
+@attribute [Authorize(Policy = "IsNotBlocked")]
 <PageTitle>Edit review</PageTitle>
 
 <EditForm Model="@review" OnValidSubmit="@SubmitValidForm">
@@ -47,6 +47,7 @@
                             <MudProgressLinear Size="Size.Small" Indeterminate="true" />
                         </ProgressIndicatorTemplate>
                     </MudAutocomplete>
+                    <AddMediaPieceControl />
                     <MudText>Name: </MudText>
                     <MudTextField @bind-Value="@review.Name" />
 
@@ -118,7 +119,7 @@
     private async Task SubmitValidForm()
     {
         review.Status = ReviewStatus.Published;
-       // review.RatingId = await ratingService.SaveRating(review.Rating);
+        // review.RatingId = await ratingService.SaveRating(review.Rating);
         var saveReviewResult = await reviewService.TrySaveReview(review);
         if (!saveReviewResult.succeeded)
         {
