@@ -1,7 +1,7 @@
 ﻿@using HomeEntertainmentAdvisor.Models;
 @using HomeEntertainmentAdvisor.Services.Interfaces;
 @inject IReviewLikeService likeService;
-<MudStack Row=true Class="d-none d-sm-block">
+<MudStack Row=true Class="d-flex justify-end">
     <MudText Typo="@Typo">
         @if (user!=null)
             @user.UserName
@@ -9,7 +9,7 @@
         <MudText Typo="@Typo" >
             <MudIcon Icon="fab fa-gratipay" Size="Size.Small" />  @likeCount
         </MudText>
-    </MudStack>
+</MudStack>
 
     @code {
     [Parameter]

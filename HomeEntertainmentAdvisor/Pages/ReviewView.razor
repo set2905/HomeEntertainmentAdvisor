@@ -12,27 +12,31 @@
 @inject ISnackbar snackBar
 
 <PageTitle>Review</PageTitle>
-<MediaName Media="@review.Rating.MediaPiece" />
-<MudStack Row="true">
-    <MudText Typo="Typo.h2">
-        @review.Name
-    </MudText>
-    <AuthorizeView Roles="admin">
-        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Edit" Href="@GetEditHref(review)" />
-    </AuthorizeView>
-    </MudStack>
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="12" md="10">
+        <MediaName Media="@review.Rating.MediaPiece" />
+        <MudStack Row="true">
+            <MudText Typo="Typo.h2">
+                @review.Name
+            </MudText>
+            <AuthorizeView Roles="admin">
+                <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Edit" Href="@GetEditHref(review)" />
+            </AuthorizeView>
+        </MudStack>
 
-<MudMarkdown Value="@review.Content"
-             Styling="Styling"
-             TableCellMinWidth="100"
-             CodeBlockTheme="CodeBlockTheme.DraculaBase16" />
-<ReviewImageCarousel Images="@images" />
-<AuthorName UserId="@authorId" Typo="Typo.overline" />
+        <MudMarkdown Value="@review.Content"
+                     Styling="Styling"
+                     TableCellMinWidth="100"
+                     CodeBlockTheme="CodeBlockTheme.DraculaBase16" />
+        <ReviewImageCarousel Images="@images" />
+        <AuthorName UserId="@authorId" Typo="Typo.overline" />
 
-<LikeButton @ref=@likeButton Review="@review" UserId="@currentUserId" />
-<MediaRate Media="@review.Rating.MediaPiece" UserId="@currentUserId" />
+        <LikeButton @ref=@likeButton Review="@review" UserId="@currentUserId" />
+        <MediaRate Media="@review.Rating.MediaPiece" UserId="@currentUserId" />
 
-<CommentSection Review="@review" />
+        <CommentSection Review="@review" />
+    </MudItem>
+</MudGrid>
 @code
 {
     [Parameter]

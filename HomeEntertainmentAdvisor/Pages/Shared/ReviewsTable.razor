@@ -3,12 +3,29 @@
 @inject IReviewService reviewService
 @inject ISnackbar snackBar
 
-<MudTable Items="@Reviews" Hover="true" Bordered="true" Striped="false">
+<MudTable Items="@Reviews" Filter="new Func<Review,bool>(FilterFunc1)" Hover="true" Bordered="true" Striped="false">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Your reviews</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
     <HeaderContent>
         <MudTh>№</MudTh>
-        <MudTh>Name</MudTh>
-        <MudTh>Likes</MudTh>
-        <MudTh>Status</MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<Review, object>(x=>x.Name)">
+                Name
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<Review, object>(x=>x.CachedLikes)">
+                Likes
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<Review, object>(x=>x.Status)">
+                Status
+            </MudTableSortLabel>
+        </MudTh>
         <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
@@ -30,6 +47,7 @@
 @code {
     [Parameter]
     public List<Review> Reviews { get; set; } = new();
+    private string searchString1 = "";
 
     private string GetDeleteIconButton(Review context)
     {
@@ -58,5 +76,16 @@
             snackBar.Add($"{review.Name} restored!");
         }
     }
-  
+
+    private bool FilterFunc1(Review review) => FilterFunc(review, searchString1);
+
+    private bool FilterFunc(Review review, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (review.Name.StartsWith(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
 }
