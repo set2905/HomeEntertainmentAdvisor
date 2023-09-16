@@ -2,9 +2,9 @@
 
 namespace HomeEntertainmentAdvisor.Domain.Repo.Interfaces
 {
-    public interface IRatingRepo : IRepo<Rating, Guid>
+    public interface IRatingRepo : IRepo<Rating, (string,Guid)>
     {
         Task<double> GetAvgMediaRating(Guid mediaPieceId);
-        Task<Rating?> GetByMediaAndUser(string userId, Guid mediaId);
+        Task<Rating?> GetRating(string userId, Guid mediaId);
     }
 }

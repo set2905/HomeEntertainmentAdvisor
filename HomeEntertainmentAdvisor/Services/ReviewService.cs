@@ -70,8 +70,9 @@ namespace HomeEntertainmentAdvisor.Services
                     return (Guid.Empty, false, "You are not the owner of this resource");
                 }
             }
-            Guid ratingId = await ratingRepo.Save(review.Rating);
-            review.RatingId=ratingId;
+            var ratingId = await ratingRepo.Save(review.Rating);
+            review.RatingAuthorId=ratingId.Item1;
+            review.RatingMediaPieceId=ratingId.Item2;
             return (await reviewsRepo.Save(review), true, "Review saved");
         }
 

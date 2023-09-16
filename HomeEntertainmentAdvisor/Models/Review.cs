@@ -9,7 +9,7 @@ namespace HomeEntertainmentAdvisor.Models
     {
         Published,
         Draft,
-        Deleted    
+        Deleted
     }
     public class Review
     {
@@ -18,7 +18,6 @@ namespace HomeEntertainmentAdvisor.Models
         public Review()
         {
             Rating=new();
-            RatingId=Rating.Id;
             Name=string.Empty;
             Content=string.Empty;
             Id=Guid.Empty;
@@ -31,7 +30,8 @@ namespace HomeEntertainmentAdvisor.Models
         public string Content { get; set; }
         public int CachedLikes { get; set; }
         public virtual Rating Rating { get; set; }
-        public Guid RatingId { get; set; }
+        public string? RatingAuthorId { get; set; }
+        public Guid RatingMediaPieceId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime LastCacheUpdate { get; set; }
         public ReviewStatus Status { get; set; }

@@ -51,7 +51,7 @@
                 MediaPieceId = Media.Id,
                 Grade = ConvertFromUserRating(grade)
             };
-        Guid savedId = await ratingService.SaveRating(rating, UserId);
+        var savedId = await ratingService.SaveRating(rating, UserId);
         if (savedId != default)
             snackBar.Add($"{Media.Name} rated succesfully", Severity.Success);
         else

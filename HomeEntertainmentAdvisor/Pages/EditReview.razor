@@ -28,12 +28,11 @@
                 <MudStack>
                     <MudText Typo="Typo.h4">Edit review </MudText>
                     <MudText>Tags: </MudText>
-                    <MudAutocomplete T="string" @bind-Value="tagInputValue" SearchFunc="@tagService.SearchByName" Immediate="true"
+                    <MudAutocomplete @ref=@tagAutocomplete T="string" @bind-Value="tagInputValue" SearchFunc="@tagService.SearchByName" Immediate="true"
                                      ResetValueOnEmptyText="false"
                                      CoerceText="false" CoerceValue="true"
-                                     AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" 
-                                     OnBlur="@AddTag"/>
-                    @*<MudButton Variant="Variant.Filled"  FullWidth=false OnClick="@AddTag">Add tag</MudButton>*@
+                                     AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary"
+                                     OnBlur="@AddTag" />
                     <MudChipSet AllClosable="true" OnClose="HandleTagRemoved">
                         @foreach (string t in tags)
                         {
@@ -76,7 +75,7 @@
     private List<string> tags = new();
     private string tagInputValue = string.Empty;
     private ReviewImageUploadComponent imageUpload = new();
-
+    private MudAutocomplete<string> tagAutocomplete = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -110,8 +109,11 @@
 
     private void AddTag()
     {
-        if (tagInputValue.Length!=0&&!tags.Contains(tagInputValue))
+        if (tagInputValue.Length != 0 && !tags.Contains(tagInputValue))
+        {
             tags.Add(tagInputValue);
+            tagAutocomplete.Clear();
+        }
     }
     private void HandleTagRemoved(MudChip chip)
     {

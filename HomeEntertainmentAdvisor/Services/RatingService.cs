@@ -30,18 +30,18 @@ namespace HomeEntertainmentAdvisor.Services
             else
                 return media.CachedRating;
         }
-        public async Task<Rating?> GetById(Guid id)
+        public async Task<Rating?> GetById((string,Guid) id)
         {
             return await ratingRepo.GetById(id);
         }
         public async Task<Rating?> GetByMedia(MediaPiece media, string userId)
         {
-            return await ratingRepo.GetByMediaAndUser(userId, media.Id);
+            return await ratingRepo.GetRating(userId, media.Id);
         }
-        public async Task<Guid> SaveRating(Rating rating, string userId)
+        public async Task<(string, Guid)> SaveRating(Rating rating, string userId)
         {
             rating.AuthorId=userId;
-            Guid id = await ratingRepo.Save(rating);
+            (string, Guid) id = await ratingRepo.Save(rating);
             return id;
         }
     }

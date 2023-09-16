@@ -1,8 +1,11 @@
 ﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace HomeEntertainmentAdvisor.Models
 {
+    [PrimaryKey(nameof(AuthorId), nameof(MediaPieceId))]
+
     public class Rating
     {
         public const int MAX_RATING = 10;
@@ -12,7 +15,6 @@ namespace HomeEntertainmentAdvisor.Models
             MediaPiece=new();
         }
 
-        public Guid Id { get; set; }
         public virtual User? Author { get; set; }
         public string? AuthorId { get; set; }
         public virtual MediaPiece MediaPiece { get; set; }

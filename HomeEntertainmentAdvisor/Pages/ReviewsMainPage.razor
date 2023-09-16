@@ -23,7 +23,7 @@
             </MudTabPanel>
             <MudTabPanel Icon="fas fa-up-long" Text="@localizer["best"]">
                 <ReviewList Reviews="@top" />
-                <MudButton Color="Color.Primary" Class="mud-width-full" Disabled="@loadMoreTopButtonDisabled" OnClick="()=>LoadMoreTop()">@localizer["loadmore"]</MudButton>
+                <MudButton Class="mud-width-full" Disabled="@loadMoreTopButtonDisabled" OnClick="()=>LoadMoreTop()">@localizer["loadmore"]</MudButton>
             </MudTabPanel>
         </MudTabs>
     </MudItem>

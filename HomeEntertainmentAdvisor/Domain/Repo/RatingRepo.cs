@@ -5,18 +5,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeEntertainmentAdvisor.Domain.Repo
 {
-    public class RatingRepo : RepoBase<Rating, Guid>, IRatingRepo
+    public class RatingRepo : RepoBase<Rating, (string, Guid)>, IRatingRepo
     {
         public RatingRepo(IDbContextFactory<ApplicationDbContext> contextFactory) : base(contextFactory)
         {
         }
 
-        public override async Task<Rating?> GetById(Guid id)
+        public override async Task<Rating?> GetById((string, Guid) id)
         {
             using (var context = contextFactory.CreateDbContext())
             {
                 var dbSet = context.Set<Rating>();
-                return await dbSet.SingleOrDefaultAsync(x => x.Id == id);
+                return await dbSet.SingleOrDefaultAsync(x => x.AuthorId==id.Item1 && x.MediaPieceId == id.Item2);
             }
         }
         public async Task<double> GetAvgMediaRating(Guid mediaPieceId)
@@ -28,7 +28,7 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
             }
         }
 
-        public async Task<Rating?> GetByMediaAndUser(string userId, Guid mediaId)
+        public async Task<Rating?> GetRating(string userId, Guid mediaId)
         {
             using (var context = contextFactory.CreateDbContext())
             {
@@ -37,17 +37,18 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
             }
         }
 
-        public override async Task<Guid> Save(Rating entity, CancellationToken cancellationToken = default)
+        public override async Task<(string, Guid)> Save(Rating entity, CancellationToken cancellationToken = default)
         {
             using (var context = contextFactory.CreateDbContext())
             {
                 var dbSet = context.Set<Rating>();
-                if (entity.Id == default)
+                if (entity.AuthorId==null) return default;
+                if (await GetById((entity.AuthorId, entity.MediaPieceId)) == null)
                     context.Entry(entity).State = EntityState.Added;
                 else
                     context.Entry(entity).State = EntityState.Modified;
                 await context.SaveChangesAsync(cancellationToken);
-                return entity.Id;
+                return (entity.AuthorId, entity.MediaPieceId);
             }
         }
     }
