@@ -26,13 +26,14 @@
         <MudItem md="10" xs="12">
             <MudPaper Class="pa-4">
                 <MudStack>
-                    <MudText>Tags: </MudText>
                     <MudText Typo="Typo.h4">Edit review </MudText>
+                    <MudText>Tags: </MudText>
                     <MudAutocomplete T="string" @bind-Value="tagInputValue" SearchFunc="@tagService.SearchByName" Immediate="true"
                                      ResetValueOnEmptyText="false"
                                      CoerceText="false" CoerceValue="true"
-                                     AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" />
-                    <MudButton OnClick="@AddTag">Add</MudButton>
+                                     AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" 
+                                     OnBlur="@AddTag"/>
+                    @*<MudButton Variant="Variant.Filled"  FullWidth=false OnClick="@AddTag">Add tag</MudButton>*@
                     <MudChipSet AllClosable="true" OnClose="HandleTagRemoved">
                         @foreach (string t in tags)
                         {
@@ -109,7 +110,7 @@
 
     private void AddTag()
     {
-        if (!tags.Contains(tagInputValue))
+        if (tagInputValue.Length!=0&&!tags.Contains(tagInputValue))
             tags.Add(tagInputValue);
     }
     private void HandleTagRemoved(MudChip chip)

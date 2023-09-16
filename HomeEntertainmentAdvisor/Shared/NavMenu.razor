@@ -1,24 +1,28 @@
-﻿<MudNavMenu>
+﻿@inject IStringLocalizer<NavMenu> localizer
+
+<MudNavMenu>
     <MudNavLink Href="" Match="NavLinkMatch.All" IconColor="Color.Surface" Icon="@Icons.Material.Filled.Home">
         <MudText Typo="Typo.body1">
-            Home
+           @localizer["home"]
         </MudText>
     </MudNavLink>
-    <MudNavGroup Title="Dashboard" Icon="@Icons.Material.Filled.Dashboard" Expanded="true">
-        <MudNavLink Href="Review/Edit" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.Add">
-            <MudText Typo="Typo.body1">
-                Add Review
-            </MudText>
-        </MudNavLink>
-        <MudNavLink Href="MyReviews" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.List">
-            <MudText Typo="Typo.body1">
-                My Reviews
-            </MudText>
-        </MudNavLink>        
-        <MudNavLink Href="UserManage" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.List">
-            <MudText Typo="Typo.body1">
-                Manage Users
-            </MudText>
-        </MudNavLink>
-    </MudNavGroup>
+    <AuthorizeView>
+        <MudNavGroup Title=@localizer["dashboard"] Icon="@Icons.Material.Filled.Dashboard" Expanded="true">
+            <MudNavLink Href="Review/Edit" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.Add">
+                <MudText Typo="Typo.body1">
+                    @localizer["add"]
+                </MudText>
+            </MudNavLink>
+            <MudNavLink Href="MyReviews" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.List">
+                <MudText Typo="Typo.body1">
+                    @localizer["myreviews"]
+                </MudText>
+            </MudNavLink>
+            <MudNavLink Href="UserManage" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.People">
+                <MudText Typo="Typo.body1">
+                    @localizer["manageusers"]
+                </MudText>
+            </MudNavLink>
+        </MudNavGroup>
+    </AuthorizeView>
 </MudNavMenu>

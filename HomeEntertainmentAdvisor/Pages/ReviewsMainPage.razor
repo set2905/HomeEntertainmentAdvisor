@@ -4,8 +4,9 @@
 @using HomeEntertainmentAdvisor.Services.Interfaces;
 @inject IReviewService reviewService
 @inject ITagService tagService
+@inject IStringLocalizer<ReviewsMainPage> localizer
 
-<PageTitle>Review</PageTitle>
+<PageTitle>@localizer["pagename"]</PageTitle>
 <MudGrid Justify="Justify.Center">
     <MudItem xs="12" md="10">
         <MudChipSet MultiSelection SelectedChipsChanged="HandleSelectionChanged">
@@ -16,13 +17,13 @@
         </MudChipSet>
         <MudTabs Outlined="true" Position="Position.Top" Rounded="false" Border="true"
                  ApplyEffectsToContainer="true" Class="mt-8" PanelClass="pa-6">
-            <MudTabPanel Icon="fas fa-certificate" Text="Newest">
+            <MudTabPanel Icon="fas fa-certificate" Text="@localizer["newest"]">
                 <ReviewList Reviews="@newest" />
-                <MudButton Class="mud-width-full" Disabled="@loadMoreNewestButtonDisabled" OnClick="()=>LoadMoreNewest()">Load more</MudButton>
+                <MudButton Class="mud-width-full" Disabled="@loadMoreNewestButtonDisabled" OnClick="()=>LoadMoreNewest()">@localizer["loadmore"]</MudButton>
             </MudTabPanel>
-            <MudTabPanel Icon="fas fa-up-long" Text="Top">
+            <MudTabPanel Icon="fas fa-up-long" Text="@localizer["best"]">
                 <ReviewList Reviews="@top" />
-                <MudButton Color="Color.Primary" Class="mud-width-full" Disabled="@loadMoreTopButtonDisabled" OnClick="()=>LoadMoreTop()">Load more</MudButton>
+                <MudButton Color="Color.Primary" Class="mud-width-full" Disabled="@loadMoreTopButtonDisabled" OnClick="()=>LoadMoreTop()">@localizer["loadmore"]</MudButton>
             </MudTabPanel>
         </MudTabs>
     </MudItem>

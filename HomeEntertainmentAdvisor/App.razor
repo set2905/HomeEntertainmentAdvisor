@@ -1,13 +1,25 @@
-﻿<CascadingAuthenticationState>
+﻿@inject IStringLocalizer<App> localizer
+<CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <Authorizing>
+                    <MudProgressLinear Color="Color.Primary" Size="Size.Medium" Indeterminate="true" Class="my-7">
+
+                    </MudProgressLinear>
+                </Authorizing>
+                <NotAuthorized>
+
+                    <MudText>@localizer["notauthorized"]</MudText>
+
+                </NotAuthorized>
+            </AuthorizeRouteView>
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
         </Found>
         <NotFound>
-            <PageTitle>Not found</PageTitle>
+            <PageTitle>@localizer["notfound"]</PageTitle>
             <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
+                <MudText>@localizer["nothing"]</MudText>
             </LayoutView>
         </NotFound>
     </Router>

@@ -1,7 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject NavigationManager navManager
-
+@inject IStringLocalizer<MainLayout> localizer
 <MudThemeProvider @bind-IsDarkMode="@isDarkMode" Theme="theme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
@@ -21,7 +21,7 @@
     </MudAppBar>
     <MudDrawer @bind-Open="@drawerOpen" Elevation="1">
         <MudDrawerHeader>
-            <MudText Typo="Typo.h6">Menu</MudText>
+            <MudText Typo="Typo.h6">@localizer["menu"]</MudText>
         </MudDrawerHeader>
         <MudContainer Class="d-block d-md-none pa-0">
             <LoginDisplay />
