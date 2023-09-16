@@ -7,6 +7,7 @@ namespace HomeEntertainmentAdvisor.Services.Interfaces
     public interface IImageService
     {
         Task<ReviewImage?> GetById(Guid id);
+        Task<string?> GetFirstImageUrl(Guid reviewId);
         Task<List<ReviewImage>> GetImagesForReview(Guid reviewId);
         Task<bool> RemoveImage(ReviewImage reviewImage);
         Task<Guid> SaveReviewImage(ReviewImage reviewImage);

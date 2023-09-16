@@ -33,6 +33,7 @@ namespace HomeEntertainmentAdvisor.Models
                .LessThanOrEqualTo(Rating.MAX_RATING).WithMessage($"Rating should not be greater than {Rating.MAX_RATING}");
             RuleFor(r => r.MediaPiece.Id)
                 .NotEqual(Guid.Empty).WithMessage("Select media piece to review");
+
         }
 
     }

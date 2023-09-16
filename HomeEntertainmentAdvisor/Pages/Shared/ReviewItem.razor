@@ -3,9 +3,20 @@
 @inject ITagService tagService;
 @inject IImageService imageService;
 
-<MudContainer Class="my-4" Style="height:150px">
-    <MudStack Class="pa-2" Style="height:100%;" Row="true">
-        <MudImage Class="rounded-lg d-none d-sm-block" ObjectFit="ObjectFit.Fill" Src="https://cdn.shazoo.ru/c330x180/707447_ZWvHp2x_starfield.jpg" />
+<MudContainer Class="my-4">
+    <MudStack Class="pa-2" Row="true">
+        @if (imageSrc.Length > 0)
+        {
+            <MudPaper Elevation="0" Outlined=false>
+                <MudImage Width="192" Height="108" Class="rounded-lg d-none d-sm-block" ObjectFit="ObjectFit.Cover" Src="@imageSrc" />
+            </MudPaper>
+        }
+        else
+        {
+            <MudPaper Class="d-none d-sm-flex justify-center align-center flex-nowrap" Outlined=true MinHeight="108px" MinWidth="192px" Height="108px" Width="192px">
+                <MudIcon Color="Color.Surface" Size="Size.Large" Icon="@Icons.Material.Filled.ImageNotSupported" />
+            </MudPaper>
+        }
         <MudStack Style="width:100%;" Justify="Justify.SpaceBetween">
             <MudText Class="d-none d-sm-block text-truncate" Color="Color.Surface" Typo="Typo.h5">
                 @Review.Name
@@ -29,19 +40,27 @@
                 <MudText Typo="Typo.overline" Class="d-none d-sm-block text-truncate">
                     @if (Review.Rating.Author!=null)
                         @Review.Rating.Author.UserName
+
+
                     </MudText>
                     <MediaName Media="@media" Typo="Typo.overline" />
-
                 </MudStack>
             </MudStack>
+            @if (tagsLoaded)
+        {
             <MudContainer Style="width:200px">
                 <MudChipSet Class="d-none d-md-flex text-truncate flex-column align-items-end" ReadOnly="true">
                     @foreach (var tag in tags)
-                {
-                    <MudChip Variant="Variant.Filled" Label="true" Class="mx-1" Style="overflow: hidden" Text="@tag.Name" />
-                }
-            </MudChipSet>
-        </MudContainer>
+                    {
+                        <MudChip Variant="Variant.Filled" Label="true" Class="mx-1" Style="overflow: hidden" Text="@tag.Name" />
+                    }
+                </MudChipSet>
+            </MudContainer>
+        }
+        else
+        {
+            <MudSkeleton Width="30%" Height="100px" Animation="Animation.Wave" />
+        }
 
     </MudStack>
 
@@ -58,12 +77,17 @@
     private MudMarkdownStyling Styling { get; } = new();
     private string gradeText { get => $"{Review.Rating.Grade}/{Rating.MAX_RATING}"; }
     private List<Tag> tags = new();
+    private bool tagsLoaded = false;
+    private string imageSrc = string.Empty;
 
     protected override async Task OnParametersSetAsync()
     {
+        tagsLoaded = false;
         await base.OnParametersSetAsync();
         tags = await tagService.GetReviewTags(Review.Id, TAGCOUNT);
+        tagsLoaded = true;
         media = Review.Rating.MediaPiece;
+        imageSrc = await imageService.GetFirstImageUrl(Review.Id)??string.Empty;
     }
 
 }

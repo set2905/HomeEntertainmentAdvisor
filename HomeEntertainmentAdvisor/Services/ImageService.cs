@@ -54,6 +54,10 @@ namespace HomeEntertainmentAdvisor.Services
         {
             return await imagesRepo.GetImagesForReview(reviewId);
         }
+        public async Task<string?> GetFirstImageUrl(Guid reviewId)
+        {
+            return await imagesRepo.GetFirstImageUrl(reviewId);
+        }
         public async Task<ReviewImage?> GetById(Guid id)
         {
             return await imagesRepo.GetById(id);

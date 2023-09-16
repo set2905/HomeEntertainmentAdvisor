@@ -9,7 +9,7 @@
 <PageTitle>@localizer["pagename"]</PageTitle>
 <MudGrid Justify="Justify.Center">
     <MudItem xs="12" md="10">
-        <MudChipSet MultiSelection SelectedChipsChanged="HandleSelectionChanged">
+        <MudChipSet MultiSelection SelectedChipsChanged="HandleTagSelectionChanged">
             @foreach (var tag in tags)
             {
                 <MudChip CloseIcon="" Text="@tag.Name" Value="@tag" />
@@ -54,7 +54,7 @@
         }
     }
 
-    private async Task HandleSelectionChanged(MudChip[] chips)
+    private async Task HandleTagSelectionChanged(MudChip[] chips)
     {
         selectedTags = chips.Select(x => (Tag)x.Value).ToList();
         newest = await reviewService.GetPage(currentNewestPage, perPage, order: Domain.Repo.ReviewOrder.Date, tags: selectedTags);

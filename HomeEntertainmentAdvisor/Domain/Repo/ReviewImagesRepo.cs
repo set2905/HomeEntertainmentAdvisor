@@ -27,7 +27,14 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
                 return await dbSet.Where(x => x.ReviewId==reviewId).ToListAsync();
             }
         }
-
+        public async Task<string?> GetFirstImageUrl(Guid reviewId)
+        {
+            using (var context = contextFactory.CreateDbContext())
+            {
+                var dbSet = context.Set<ReviewImage>();
+                return await dbSet.Where(x => x.ReviewId==reviewId).Select(x => x.Url).FirstOrDefaultAsync();
+            }
+        }
         public override async Task<Guid> Save(ReviewImage entity, CancellationToken cancellationToken = default)
         {
             using (var context = contextFactory.CreateDbContext())

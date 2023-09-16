@@ -24,7 +24,6 @@
 </MudOverlay>
 <EditForm Model="@review" OnValidSubmit="@SubmitValidForm">
     <FluentValidationValidator />
-    <ValidationSummary />
     <MudGrid Justify="Justify.Center">
         <MudItem md="10" xs="12">
             <MudPaper Class="pa-4">
@@ -62,6 +61,8 @@
                     <MudText>@localizer["images"]: </MudText>
 
                     <ReviewImageUploadComponent @ref="@imageUpload" Review="@review" />
+
+                    <ValidationSummary />
 
                     <MudButton Color="Color.Surface" StartIcon="@Icons.Material.Filled.Save" FullWidth="false" ButtonType="ButtonType.Submit">@localizer["publish"]</MudButton>
                 </MudStack>
