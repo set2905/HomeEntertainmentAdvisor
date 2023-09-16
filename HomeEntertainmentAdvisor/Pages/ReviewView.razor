@@ -8,32 +8,31 @@
 @inject IRatingService ratingService
 @inject IImageService imageService;
 @inject AuthenticationStateProvider authenticationStateProvider
-
+@inject IStringLocalizer<ReviewView> localizer
 @inject ISnackbar snackBar
 
-<PageTitle>Review</PageTitle>
+<PageTitle>@localizer["title"] - @review.Name</PageTitle>
 <MudGrid Justify="Justify.Center">
     <MudItem xs="12" md="10">
-        <MediaName Media="@review.Rating.MediaPiece" />
+
+
         <MudStack Row="true">
-            <MudText Typo="Typo.h2">
+            <MudText Typo="Typo.h3">
                 @review.Name
             </MudText>
             <AuthorizeView Roles="admin">
                 <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Edit" Href="@GetEditHref(review)" />
             </AuthorizeView>
         </MudStack>
-
+        <MediaName Typo=Typo.h6 Media="@review.Rating.MediaPiece" />
+        <MediaRate Media="@review.Rating.MediaPiece" UserId="@currentUserId" />
         <MudMarkdown Value="@review.Content"
                      Styling="Styling"
                      TableCellMinWidth="100"
                      CodeBlockTheme="CodeBlockTheme.DraculaBase16" />
         <ReviewImageCarousel Images="@images" />
-        <AuthorName UserId="@authorId" Typo="Typo.overline" />
-
-        <LikeButton @ref=@likeButton Review="@review" UserId="@currentUserId" />
-        <MediaRate Media="@review.Rating.MediaPiece" UserId="@currentUserId" />
-
+            <AuthorName UserId="@authorId" Typo="Typo.overline" />
+            <LikeButton @ref=@likeButton Review="@review" UserId="@currentUserId" />
         <CommentSection Review="@review" />
     </MudItem>
 </MudGrid>
@@ -70,7 +69,7 @@
                 Review? found = await reviewService.GetById(reviewGuid);
                 if (found == null)
                 {
-                    snackBar.Add("Review not found!", Severity.Error);
+                    snackBar.Add(localizer["notfound"], Severity.Error);
                     return;
                 }
                 review = found;

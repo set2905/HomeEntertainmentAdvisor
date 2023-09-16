@@ -2,7 +2,7 @@
 <MudCarousel SelectedIndex="0"  Class="@carouselClass" ItemsSource="@Images" Style="height:400px;" ShowArrows="true" ShowBullets="true" EnableSwipeGesture="true" AutoCycle="false">
     <ItemTemplate>
         <MudContainer Class="d-flex justify-center">
-            <MudImage ObjectPosition="ObjectPosition.Center" ObjectFit="ObjectFit.Contain" Src="@context.Url" />
+            <MudImage ObjectPosition="ObjectPosition.Center" ObjectFit="ObjectFit.Fill" Src="@context.Url" />
         </MudContainer>
     </ItemTemplate>
 </MudCarousel>

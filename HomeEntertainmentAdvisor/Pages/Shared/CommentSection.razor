@@ -3,17 +3,18 @@
 @using Microsoft.AspNetCore.SignalR.Client;
 @inject NavigationManager Navigation
 @inject IReviewCommentsService commentService;
+@inject IStringLocalizer<CommentSection> localizer;
 @implements IAsyncDisposable
 
 <MudText Typo="Typo.h3">
-    Comments
+    @localizer["comments"]
 </MudText>
 <MudPaper Class="pa-6">
 
     <AuthorizeView>
         <MudTextField @bind-Value="commentFieldValue" Label="" Variant="Variant.Text" MaxLength="Comment.MAX_LENGTH"></MudTextField>
-        <MudButton OnClick="@AddComment">
-            Leave comment
+        <MudButton Variant="Variant.Filled" OnClick="@AddComment">
+            @localizer["leavecomment"]
         </MudButton>
     </AuthorizeView>
     @if (comments.Count>0)
@@ -31,14 +32,15 @@
                 @comment.Content
             </MudText>
         }
-        <MudButton Color="Color.Primary" Class="mud-width-full" Disabled="@loadMoreCommentsButtonDisabled" OnClick="()=>LoadMoreComments()">Load more</MudButton>
+        <MudButton Color="Color.Primary" Class="mud-width-full" Disabled="@loadMoreCommentsButtonDisabled" OnClick="()=>LoadMoreComments()">
+            @localizer["loadmore"]</MudButton>
 
     }
     else
     {
-        <MudText>
-            There is no comments
-        </MudText>
+            <MudText>
+            @localizer["empty"]
+            </MudText>
     }
 </MudPaper>
 

@@ -3,10 +3,10 @@
 @inject IReviewLikeService likeService
 @inject ISnackbar snackBar
 @inject IReviewService reviewService
-
+@inject IStringLocalizer<LikeButton> localizer
 @implements IDisposable
-<MudText Typo="Typo.h6">
-    Was this review helpful?
+<MudText Typo="Typo.body2">
+    @localizer["ishelpfull"]
 </MudText>
 <MudButton EndIcon="@Icons.Material.Filled.ThumbUp" IconColor="@likeButtonColor" OnClick="HandleLikeClicked">
     @likeCount
@@ -33,7 +33,7 @@
         if (!liked)
         {
             if (!await likeService.LikeReview(Review.Id, UserId, likeCancellationTokenSource.Token))
-                snackBar.Add("Like couldnt be added");
+                snackBar.Add(localizer["failadd"]);
             else
             {
                 likeButtonColor = Color.Success;
@@ -44,7 +44,7 @@
         else
         {
             if (!await likeService.RemoveLikeReview(Review.Id, UserId, likeCancellationTokenSource.Token))
-                snackBar.Add("Like couldnt be removed");
+                snackBar.Add(localizer["failremove"]);
             else
             {
                 likeButtonColor = Color.Surface;

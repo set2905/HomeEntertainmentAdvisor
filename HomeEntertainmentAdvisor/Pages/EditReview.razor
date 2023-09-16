@@ -19,7 +19,9 @@
 @attribute [Authorize]
 @attribute [Authorize(Policy = "IsNotBlocked")]
 <PageTitle>@localizer["pagename"]</PageTitle>
-
+<MudOverlay @bind-Visible="isOverlayVisible" ZIndex="9999" DarkBackground="true" AutoClose="false">
+    <MudProgressCircular Size="Size.Large" Color="Color.Primary" Indeterminate="true" />
+</MudOverlay>
 <EditForm Model="@review" OnValidSubmit="@SubmitValidForm">
     <FluentValidationValidator />
     <ValidationSummary />
@@ -77,6 +79,7 @@
     private string tagInputValue = string.Empty;
     private ReviewImageUploadComponent imageUpload = new();
     private MudAutocomplete<string> tagAutocomplete = new();
+    private bool isOverlayVisible = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -122,6 +125,7 @@
     }
     private async Task SubmitValidForm()
     {
+        isOverlayVisible = true;
         review.Status = ReviewStatus.Published;
         var saveReviewResult = await reviewService.TrySaveReview(review);
         if (!saveReviewResult.succeeded)
@@ -131,6 +135,7 @@
         }
         await tagService.OverwriteTags(saveReviewResult.id, tags);
         var imageUploadResults = await imageUpload.Overwrite();
+        isOverlayVisible = false;
         snackBar.Add(saveReviewResult.message);
         navManager.NavigateTo($"Review/{saveReviewResult.id.ToString()}");
     }

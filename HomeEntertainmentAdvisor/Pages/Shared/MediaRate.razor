@@ -1,23 +1,23 @@
 ﻿@using HomeEntertainmentAdvisor.Models;
 @using HomeEntertainmentAdvisor.Services.Interfaces;
-
 @inject IRatingService ratingService;
 @inject ISnackbar snackBar;
+@inject IStringLocalizer<MediaRate> localizer
 <AuthorizeView>
-    <MudButton OnClick="OpenDialog" Size=Size.Small StartIcon="@Icons.Material.Filled.StarRate" Variant="Variant.Filled">
-        Rate @Media.Name
+    <MudButton Class="mx-6 mb-6" OnClick="OpenDialog" Size=Size.Small StartIcon="@Icons.Material.Filled.StarRate" Variant="Variant.Filled">
+        @localizer["rate"] @Media.Name
     </MudButton>
     <MudDialog @bind-IsVisible="visible" Options="dialogOptions">
         <TitleContent>
             <MudText Typo="Typo.h6">
-                Rate @Media.Name
+                @localizer["rate"] @Media.Name
             </MudText>
         </TitleContent>
         <DialogContent>
             <MudRating @bind-SelectedValue="grade" MaxValue="@MAX_USER_RATING" Class="mt-3" />
         </DialogContent>
         <DialogActions>
-           <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit" Class="px-10">Save rating</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit" Class="px-10">@localizer["save"]</MudButton>
         </DialogActions>
     </MudDialog>
 </AuthorizeView>
@@ -53,9 +53,9 @@
             };
         var savedId = await ratingService.SaveRating(rating, UserId);
         if (savedId != default)
-            snackBar.Add($"{Media.Name} rated succesfully", Severity.Success);
+            snackBar.Add($"{Media.Name} {localizer["success"]}", Severity.Success);
         else
-            snackBar.Add($"{Media.Name} couldnt be rated", Severity.Error);
+            snackBar.Add($"{Media.Name} {localizer["fail"]}", Severity.Error);
 
     }
     private int ConvertFromUserRating(int grade)
