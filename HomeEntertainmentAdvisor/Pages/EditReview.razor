@@ -13,11 +13,12 @@
 
 @inject ISnackbar snackBar
 @inject NavigationManager navManager
+@inject IStringLocalizer<EditReview> localizer
 
 
 @attribute [Authorize]
 @attribute [Authorize(Policy = "IsNotBlocked")]
-<PageTitle>Edit review</PageTitle>
+<PageTitle>@localizer["pagename"]</PageTitle>
 
 <EditForm Model="@review" OnValidSubmit="@SubmitValidForm">
     <FluentValidationValidator />
@@ -26,8 +27,8 @@
         <MudItem md="10" xs="12">
             <MudPaper Class="pa-4">
                 <MudStack>
-                    <MudText Typo="Typo.h4">Edit review </MudText>
-                    <MudText>Tags: </MudText>
+                    <MudText Typo="Typo.h4">@localizer["pagename"]</MudText>
+                    <MudText>@localizer["tags"]: </MudText>
                     <MudAutocomplete @ref=@tagAutocomplete T="string" @bind-Value="tagInputValue" SearchFunc="@tagService.SearchByName" Immediate="true"
                                      ResetValueOnEmptyText="false"
                                      CoerceText="false" CoerceValue="true"
@@ -39,7 +40,7 @@
                             <MudChip Value="@t" Text="@t"></MudChip>
                         }
                     </MudChipSet>
-                    <MudText>Media: </MudText>
+                    <MudText>@localizer["media"]: </MudText>
                     <MudAutocomplete T="MediaPiece" @bind-Value="review.Rating.MediaPiece" SearchFuncWithCancel="@SearchMediaPieces"
                                      ToStringFunc="@(e=> e!=null?e.Name:null)" Immediate="true"
                                      AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" ShowProgressIndicator="true">
@@ -48,19 +49,19 @@
                         </ProgressIndicatorTemplate>
                     </MudAutocomplete>
                     <AddMediaPieceControl />
-                    <MudText>Name: </MudText>
+                    <MudText>@localizer["reviewname"]: </MudText>
                     <MudTextField @bind-Value="@review.Name" />
 
-                    <MudText>Rating: </MudText>
+                    <MudText>@localizer["grade"]: </MudText>
                     <MudRating @bind-SelectedValue="@review.Rating.Grade" MaxValue="10" />
 
-                    <MudText>Content: </MudText>
+                    <MudText>@localizer["content"]: </MudText>
                     <MarkdownEditor Theme="easymde" @bind-Value="@review.Content" />
-                    <MudText>Images: </MudText>
+                    <MudText>@localizer["images"]: </MudText>
 
                     <ReviewImageUploadComponent @ref="@imageUpload" Review="@review" />
 
-                    <MudButton Color="Color.Surface" StartIcon="@Icons.Material.Filled.Save" FullWidth="false" ButtonType="ButtonType.Submit">Publish</MudButton>
+                    <MudButton Color="Color.Surface" StartIcon="@Icons.Material.Filled.Save" FullWidth="false" ButtonType="ButtonType.Submit">@localizer["publish"]</MudButton>
                 </MudStack>
             </MudPaper>
         </MudItem>
@@ -92,7 +93,7 @@
                 Review? found = await reviewService.GetById(reviewGuid);
                 if (found == null)
                 {
-                    snackBar.Add("Review not found!", Severity.Error);
+                    snackBar.Add(localizer["notfound"], Severity.Error);
                     return;
                 }
                 review = found;
@@ -122,7 +123,6 @@
     private async Task SubmitValidForm()
     {
         review.Status = ReviewStatus.Published;
-        // review.RatingId = await ratingService.SaveRating(review.Rating);
         var saveReviewResult = await reviewService.TrySaveReview(review);
         if (!saveReviewResult.succeeded)
         {
@@ -134,8 +134,6 @@
         snackBar.Add(saveReviewResult.message);
         navManager.NavigateTo($"Review/{saveReviewResult.id.ToString()}");
     }
-
-
 }
 
 <style>

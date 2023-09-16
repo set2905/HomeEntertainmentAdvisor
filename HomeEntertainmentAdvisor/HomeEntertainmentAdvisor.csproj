@@ -46,7 +46,6 @@
 
   <ItemGroup>
     <Folder Include="Domain\Migrations\" />
-    <Folder Include="Shared\Resources\Pages\Shared\" />
   </ItemGroup>
 
 </Project>

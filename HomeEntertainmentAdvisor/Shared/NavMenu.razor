@@ -3,10 +3,10 @@
 <MudNavMenu>
     <MudNavLink Href="" Match="NavLinkMatch.All" IconColor="Color.Surface" Icon="@Icons.Material.Filled.Home">
         <MudText Typo="Typo.body1">
-           @localizer["home"]
+            @localizer["home"]
         </MudText>
     </MudNavLink>
-    <AuthorizeView>
+    <AuthorizeView Context="authorizedNavMenuContext">
         <MudNavGroup Title=@localizer["dashboard"] Icon="@Icons.Material.Filled.Dashboard" Expanded="true">
             <MudNavLink Href="Review/Edit" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.Add">
                 <MudText Typo="Typo.body1">
@@ -18,11 +18,13 @@
                     @localizer["myreviews"]
                 </MudText>
             </MudNavLink>
-            <MudNavLink Href="UserManage" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.People">
-                <MudText Typo="Typo.body1">
-                    @localizer["manageusers"]
-                </MudText>
-            </MudNavLink>
+            <AuthorizeView Roles="admin">
+                <MudNavLink Href="UserManage" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.People">
+                    <MudText Typo="Typo.body1">
+                        @localizer["manageusers"]
+                    </MudText>
+                </MudNavLink>
+            </AuthorizeView>
         </MudNavGroup>
     </AuthorizeView>
 </MudNavMenu>

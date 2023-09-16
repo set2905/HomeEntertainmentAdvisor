@@ -3,23 +3,24 @@
 @using HomeEntertainmentAdvisor.Services.Interfaces;
 @inject IMediaService mediaService
 @inject ISnackbar snackBar
+@inject IStringLocalizer<AddMediaPieceControl> localizer
 <AuthorizeView Context="auth_context">
     <MudButton OnClick="OpenDialog" Size=Size.Small StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Filled">
-        New
+        @localizer["new"]
     </MudButton>
     <MudDialog @bind-IsVisible="visible" Options="dialogOptions">
         <TitleContent>
             <MudText Typo="Typo.h6">
-                Add new media
+                @localizer["title"]
             </MudText>
         </TitleContent>
         <DialogContent>
             <EditForm Model="@media" OnValidSubmit="@Submit">
                 <FluentValidationValidator />
                 <ValidationSummary />
-                <MudText Class="py-1">Name: </MudText>
+                <MudText Class="py-1">@localizer["name"]: </MudText>
                 <MudTextField Class="py-1" @bind-Value="@media.Name" />
-                <MudText Class="py-1">Group: </MudText>
+                <MudText Class="py-1">@localizer["group"]: </MudText>
                 <MudAutocomplete Class="py-1" T="MediaGroup" @bind-Value="media.MediaGroup" SearchFuncWithCancel="@SearchMediaGroups"
                                  ToStringFunc="@(e=> e!=null?e.Name:null)" Immediate="true"
                                  AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" ShowProgressIndicator="true">
@@ -27,7 +28,7 @@
                         <MudProgressLinear Size="Size.Small" Indeterminate="true" />
                     </ProgressIndicatorTemplate>
                 </MudAutocomplete>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" Class="px-10 py-2">Save</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" Class="px-10 py-2">@localizer["save"]</MudButton>
             </EditForm>
         </DialogContent>
     </MudDialog>
@@ -46,7 +47,7 @@
         media.MediaGroupId = media.MediaGroup.Id;
         await mediaService.Save(media);
         visible = false;
-        snackBar.Add("Media added succesfully");
+        snackBar.Add(localizer["success"]);
     }
     private async Task<IEnumerable<MediaGroup>> SearchMediaGroups(string value, CancellationToken token)
     {
