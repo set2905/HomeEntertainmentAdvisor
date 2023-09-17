@@ -42,7 +42,7 @@
                         }
                     </MudChipSet>
                     <MudText>@localizer["media"]: </MudText>
-                    <MudAutocomplete T="MediaPiece" @bind-Value="review.Rating.MediaPiece" SearchFuncWithCancel="@SearchMediaPieces"
+                    <MudAutocomplete Disabled="@mediaAutoCompleteDisabled" T="MediaPiece" @bind-Value="review.Rating.MediaPiece" SearchFuncWithCancel="@SearchMediaPieces"
                                      ToStringFunc="@(e=> e!=null?e.Name:null)" Immediate="true"
                                      AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" ShowProgressIndicator="true">
                         <ProgressIndicatorTemplate>
@@ -81,7 +81,7 @@
     private ReviewImageUploadComponent imageUpload = new();
     private MudAutocomplete<string> tagAutocomplete = new();
     private bool isOverlayVisible = false;
-
+    private bool mediaAutoCompleteDisabled = false;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -101,7 +101,7 @@
                     return;
                 }
                 review = found;
-
+                mediaAutoCompleteDisabled = true;
                 tags = (await tagService.GetReviewTags(reviewGuid)).Select(x => x.Name).ToList();
             }
         }
