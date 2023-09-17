@@ -5,7 +5,7 @@
 @inject IReviewService reviewService
 @inject ITagService tagService
 @inject IStringLocalizer<ReviewsMainPage> localizer
-
+@implements IDisposable
 <PageTitle>@localizer["pagename"]</PageTitle>
 <MudGrid Justify="Justify.Center">
     <MudItem xs="12" md="10">
@@ -41,6 +41,8 @@
     private List<Tag> selectedTags = new();
     private bool loadMoreNewestButtonDisabled = false;
     private bool loadMoreTopButtonDisabled = false;
+
+    private CancellationTokenSource tagFilterCancellationTokenSrc = new();
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -56,10 +58,32 @@
 
     private async Task HandleTagSelectionChanged(MudChip[] chips)
     {
+        CancelAndResetTagFilterToken();
         selectedTags = chips.Select(x => (Tag)x.Value).ToList();
-        newest = await reviewService.GetPage(currentNewestPage, perPage, order: Domain.Repo.ReviewOrder.Date, tags: selectedTags);
-        top = await reviewService.GetPage(currentTopPage, perPage, order: Domain.Repo.ReviewOrder.Likes, tags: selectedTags);
-        StateHasChanged();
+        ResetPages();
+        Task<List<Review>> getNewestTask = reviewService.GetPage(currentNewestPage, perPage, order: Domain.Repo.ReviewOrder.Date, tags: selectedTags, cancellationToken: tagFilterCancellationTokenSrc.Token);
+        Task<List<Review>> getTopTask = reviewService.GetPage(currentTopPage, perPage, order: Domain.Repo.ReviewOrder.Likes, tags: selectedTags, cancellationToken: tagFilterCancellationTokenSrc.Token);
+        List<Review>[] results = await Task.WhenAll(getNewestTask, getTopTask);
+        if (!getNewestTask.IsCanceled&&!getTopTask.IsCanceled)
+        {
+            newest = results[0];
+            top = results[1];
+            StateHasChanged();
+        }
+
+    }
+    private void ResetPages()
+    {
+        currentNewestPage = 0;
+        currentTopPage = 0;
+        loadMoreTopButtonDisabled = false;
+        loadMoreNewestButtonDisabled = false;
+    }
+    private void CancelAndResetTagFilterToken()
+    {
+        tagFilterCancellationTokenSrc.Cancel();
+        tagFilterCancellationTokenSrc.Dispose();
+        tagFilterCancellationTokenSrc = new();
     }
     private async Task LoadMoreTop()
     {
@@ -80,4 +104,11 @@
         newest.AddRange(loaded);
         StateHasChanged();
     }
+    #region IDisposable
+    public void Dispose()
+    {
+        tagFilterCancellationTokenSrc.Cancel();
+        tagFilterCancellationTokenSrc.Dispose();
+    }
+    #endregion
 }

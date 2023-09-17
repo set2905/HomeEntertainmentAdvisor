@@ -48,9 +48,10 @@ namespace HomeEntertainmentAdvisor.Services
                                                 int recordsPerPage,
                                                 string? searchQuery = null,
                                                 IEnumerable<Tag>? tags = null,
-                                                ReviewOrder order = ReviewOrder.Date)
+                                                ReviewOrder order = ReviewOrder.Date,
+                                                CancellationToken cancellationToken = default)
         {
-            return await reviewsRepo.GetPage(page, recordsPerPage, searchQuery, tags, order);
+            return await reviewsRepo.GetPage(page, recordsPerPage, searchQuery, tags, order, cancellationToken);
         }
 
 

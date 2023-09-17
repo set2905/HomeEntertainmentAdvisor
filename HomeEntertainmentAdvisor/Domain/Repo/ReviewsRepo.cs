@@ -34,7 +34,12 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
             }
         }
 
-        public async Task<List<Review>> GetPage(int page, int recordsPerPage, string? searchQuery = null, IEnumerable<Tag>? tags = null, ReviewOrder order = ReviewOrder.Date)
+        public async Task<List<Review>> GetPage(int page,
+                                                int recordsPerPage,
+                                                string? searchQuery = null,
+                                                IEnumerable<Tag>? tags = null,
+                                                ReviewOrder order = ReviewOrder.Date,
+                                                CancellationToken cancellationToken = default)
         {
             using (var context = contextFactory.CreateDbContext())
             {
@@ -53,10 +58,14 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
                     .Select(x => x.Review)
                     .Distinct());
                 }
-                return await GetPageQuery(result, page, recordsPerPage, context, order).ToListAsync();
+                return await GetPageQuery(result, page, recordsPerPage, context, order).ToListAsync(cancellationToken);
             }
         }
-        private IQueryable<Review> GetPageQuery(IQueryable<Review> sourceQuery, int page, int recordsPerPage, ApplicationDbContext context, ReviewOrder order = ReviewOrder.Date)
+        private IQueryable<Review> GetPageQuery(IQueryable<Review> sourceQuery,
+                                                int page,
+                                                int recordsPerPage,
+                                                ApplicationDbContext context,
+                                                ReviewOrder order = ReviewOrder.Date)
         {
             IOrderedQueryable<Review> ordered;
             switch (order)
