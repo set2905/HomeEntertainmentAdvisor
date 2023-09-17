@@ -63,6 +63,11 @@ namespace HomeEntertainmentAdvisor.Services
             {
                 return (Guid.Empty, false, "User could not be found!");
             }
+            Rating? existingRating = await ratingRepo.GetById((user.Id, review.Rating.MediaPiece.Id));
+            if (existingRating!=null && review.Id==default && await reviewsRepo.GetByRating(existingRating)!=null)
+            {
+                return (Guid.Empty, false, $"You already have a review for {review.Rating.MediaPiece.Name}");
+            }
             if (!TrySetReviewAuthor(user, review))
             {
                 if (!await IsUserAuthor(authState, review) && !await IsUserAdmin(user))

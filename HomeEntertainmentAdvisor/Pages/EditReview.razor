@@ -132,6 +132,7 @@
         if (!saveReviewResult.succeeded)
         {
             snackBar.Add(saveReviewResult.message, Severity.Error);
+            isOverlayVisible = false;
             return;
         }
         await tagService.OverwriteTags(saveReviewResult.id, tags);

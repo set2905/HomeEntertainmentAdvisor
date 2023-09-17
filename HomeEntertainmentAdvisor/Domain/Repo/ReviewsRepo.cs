@@ -25,6 +25,14 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
                 return await dbSet.Include(r => r.Rating).Where(x => x.Rating.AuthorId==userId).ToListAsync();
             }
         }
+        public async Task<Review?> GetByRating(Rating rating)
+        {
+            using (var context = contextFactory.CreateDbContext())
+            {
+                var dbSet = context.Set<Review>();
+                return await dbSet.Where(x => x.RatingMediaPieceId==rating.MediaPieceId&&x.RatingAuthorId==rating.AuthorId).FirstOrDefaultAsync();
+            }
+        }
 
         public async Task<List<Review>> GetPage(int page, int recordsPerPage, string? searchQuery = null, IEnumerable<Tag>? tags = null, ReviewOrder order = ReviewOrder.Date)
         {
@@ -69,8 +77,8 @@ namespace HomeEntertainmentAdvisor.Domain.Repo
                 .Take(recordsPerPage)
                 .Include(r => r.Rating)
                 .ThenInclude(r => r.Author)
-                .Include(r=>r.Rating)
-                .ThenInclude(r=>r.MediaPiece);
+                .Include(r => r.Rating)
+                .ThenInclude(r => r.MediaPiece);
         }
         private IQueryable<Guid> GetSearchQuery(ApplicationDbContext context, string searchQuery)
         {
