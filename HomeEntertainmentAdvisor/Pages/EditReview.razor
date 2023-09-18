@@ -6,6 +6,7 @@
 @using HomeEntertainmentAdvisor.Services.Interfaces;
 @using Markdig.Syntax.Inlines;
 @using Microsoft.AspNetCore.Identity;
+@using PSC.Blazor.Components.MarkdownEditor.Enums;
 @inject IReviewService reviewService
 @inject IMediaService mediaService
 @inject IRatingService ratingService
@@ -33,7 +34,7 @@
                     <MudAutocomplete @ref=@tagAutocomplete T="string" @bind-Value="tagInputValue" SearchFunc="@tagService.SearchByName" Immediate="true"
                                      ResetValueOnEmptyText="false"
                                      CoerceText="false" CoerceValue="true"
-                                     AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary"
+                                     AdornmentIcon="@Icons.Material.Filled.Add" AdornmentColor="Color.Primary"
                                      OnBlur="@AddTag" />
                     <MudChipSet AllClosable="true" OnClose="HandleTagRemoved">
                         @foreach (string t in tags)
@@ -57,7 +58,16 @@
                     <MudRating @bind-SelectedValue="@review.Rating.Grade" MaxValue="10" />
 
                     <MudText>@localizer["content"]: </MudText>
-                    <MarkdownEditor Theme="easymde" @bind-Value="@review.Content" />
+                    <MarkdownEditor Theme="easymde" @bind-Value="@review.Content">
+                        <Toolbar>
+                            <MarkdownToolbarButton Action="MarkdownAction.Bold" Icon="fa fa-bold" Title="@localizer["bold"]" />
+                            <MarkdownToolbarButton Action="MarkdownAction.Italic" Icon="fa fa-italic" Title="@localizer["italic"]" />
+                            <MarkdownToolbarButton Action="MarkdownAction.HeadingBigger"  Icon="fa fa-heading" Title="@localizer["heading"]" />
+                            <MarkdownToolbarButton Action="MarkdownAction.OrderedList" Icon="fa fa-list-ol" Title="@localizer["listol"]" />
+                            <MarkdownToolbarButton Action="MarkdownAction.Quote" Icon="fa fa-quote-left" Title="@localizer["quote"]" />
+                            @*<MarkdownToolbarButton Action="MarkdownAction.Preview" Icon="fa fa-eye" Title="@localizer["preview"]" />*@
+                        </Toolbar>
+                    </MarkdownEditor>
                     <MudText>@localizer["images"]: </MudText>
 
                     <ReviewImageUploadComponent @ref="@imageUpload" Review="@review" />

@@ -117,49 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="bold" xml:space="preserve">
-    <value>Жирный</value>
-  </data>
-  <data name="content" xml:space="preserve">
-    <value>Содержание обзора</value>
-  </data>
-  <data name="grade" xml:space="preserve">
-    <value>Оценка обзора</value>
-  </data>
-  <data name="heading" xml:space="preserve">
-    <value>Заголовок</value>
-  </data>
-  <data name="images" xml:space="preserve">
-    <value>Изображения</value>
-  </data>
-  <data name="italic" xml:space="preserve">
-    <value>Курсив</value>
-  </data>
-  <data name="listol" xml:space="preserve">
-    <value>Список</value>
-  </data>
   <data name="media" xml:space="preserve">
-    <value>Произведение</value>
-  </data>
-  <data name="notfound" xml:space="preserve">
-    <value>Обзор не найден</value>
-  </data>
-  <data name="pagename" xml:space="preserve">
-    <value>Редактировать обзор</value>
-  </data>
-  <data name="preview" xml:space="preserve">
-    <value>Предпросмотр</value>
-  </data>
-  <data name="publish" xml:space="preserve">
-    <value>Опубликовать</value>
-  </data>
-  <data name="quote" xml:space="preserve">
-    <value>Цитата</value>
-  </data>
-  <data name="reviewname" xml:space="preserve">
-    <value>Название обзора</value>
-  </data>
-  <data name="tags" xml:space="preserve">
-    <value>Тэги</value>
+    <value>Media</value>
   </data>
 </root>

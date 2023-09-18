@@ -117,14 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="bold" xml:space="preserve">
+    <value>Bold</value>
+  </data>
   <data name="content" xml:space="preserve">
     <value>Content</value>
   </data>
   <data name="grade" xml:space="preserve">
     <value>Reivew grade</value>
   </data>
+  <data name="heading" xml:space="preserve">
+    <value>Heading</value>
+  </data>
   <data name="images" xml:space="preserve">
     <value>Images</value>
+  </data>
+  <data name="italic" xml:space="preserve">
+    <value>Italic</value>
+  </data>
+  <data name="listol" xml:space="preserve">
+    <value>Ordered list</value>
   </data>
   <data name="media" xml:space="preserve">
     <value>Media</value>
@@ -135,8 +147,14 @@
   <data name="pagename" xml:space="preserve">
     <value>Edit review</value>
   </data>
+  <data name="preview" xml:space="preserve">
+    <value>Preview</value>
+  </data>
   <data name="publish" xml:space="preserve">
     <value>Publish</value>
+  </data>
+  <data name="quote" xml:space="preserve">
+    <value>Quote</value>
   </data>
   <data name="reviewname" xml:space="preserve">
     <value>Review name</value>

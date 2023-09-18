@@ -1,11 +1,14 @@
 ﻿@using HomeEntertainmentAdvisor.Models;
 @using HomeEntertainmentAdvisor.Services.Interfaces;
 @inject IRatingService ratingService;
-<MudBadge Content="@ratingText" Color="Color.Primary" Overlap="true">
-    <MudText Typo="@Typo">
-        @Media.Name
-    </MudText>
-</MudBadge>
+@inject IStringLocalizer<MediaName> localizer;
+<MudContainer Class="ma-0 pa-0">
+    <MudBadge Content="@ratingText" Color="Color.Primary" Overlap="true">
+        <MudText Class="text-nowrap" Typo="@Typo">
+            @localizer["media"]: @Media.Name
+        </MudText>
+    </MudBadge>
+</MudContainer>
 @code {
     [Parameter]
     public MediaPiece Media { get; set; } = new();
