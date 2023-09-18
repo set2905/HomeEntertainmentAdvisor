@@ -6,14 +6,14 @@
 @inject IStringLocalizer<CommentSection> localizer;
 @implements IAsyncDisposable
 
-<MudText Typo="Typo.h6">
-    @localizer["comments"]
-</MudText>
-<MudPaper Class="pa-6">
+<MudPaper Class="pa-6 d-flex flex-column" >
 
+    <MudText Typo="Typo.h6">
+        @localizer["comments"]
+    </MudText>
     <AuthorizeView>
-        <MudTextField @bind-Value="commentFieldValue" Label="" Variant="Variant.Text" MaxLength="Comment.MAX_LENGTH"></MudTextField>
-        <MudButton Variant="Variant.Filled" OnClick="@AddComment">
+        <MudTextField Class="my-2" @bind-Value="commentFieldValue" Label="" Variant="Variant.Outlined"  MaxLength="Comment.MAX_LENGTH"></MudTextField>
+        <MudButton Class="align-self-end" Variant="Variant.Filled" OnClick="@AddComment">
             @localizer["leavecomment"]
         </MudButton>
     </AuthorizeView>
@@ -32,13 +32,13 @@
                 @comment.Content
             </MudText>
         }
-        <MudButton Color="Color.Primary" Class="mud-width-full" Disabled="@loadMoreCommentsButtonDisabled" OnClick="()=>LoadMoreComments()">
+        <MudButton  Class="mud-width-full" Disabled="@loadMoreCommentsButtonDisabled" OnClick="()=>LoadMoreComments()">
             @localizer["loadmore"]</MudButton>
 
     }
     else
     {
-            <MudText>
+            <MudText Typo=Typo.h6 Align="Align.Center" Class="my-6">
             @localizer["empty"]
             </MudText>
     }

@@ -4,7 +4,7 @@
 @inject ISnackbar snackBar;
 @inject IStringLocalizer<MediaRate> localizer
 <AuthorizeView>
-    <MudButton Class="mx-6 mb-6" OnClick="OpenDialog" Size=Size.Small StartIcon="@Icons.Material.Filled.StarRate" Variant="Variant.Filled">
+    <MudButton Class="mx-0 mb-6" OnClick="OpenDialog" Size=Size.Small StartIcon="@Icons.Material.Filled.StarRate" Variant="Variant.Filled">
         @localizer["rate"] @Media.Name
     </MudButton>
     <MudDialog @bind-IsVisible="visible" Options="dialogOptions">

@@ -14,30 +14,36 @@
 <PageTitle>@localizer["title"] - @review.Name</PageTitle>
 <MudGrid Justify="Justify.Center">
     <MudItem xs="12" md="10">
-
-        <MediaName Typo=Typo.h6 Media="@review.Rating.MediaPiece" />
-        <MediaRate Media="@review.Rating.MediaPiece" UserId="@currentUserId" />
-        <MudStack Row="true">
-            <MudText Typo="Typo.h6">
-                @review.Name
-            </MudText>
-            <AuthorizeView Roles="admin">
-                <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Edit" Href="@GetEditHref(review)" />
-            </AuthorizeView>
-
-        </MudStack>
-        <MudPaper Class="pa-6 my-2">
-            <MudMarkdown Value="@review.Content"
-                         Styling="Styling"
-                         TableCellMinWidth="100"
-                         CodeBlockTheme="CodeBlockTheme.DraculaBase16" />
-        <ReviewImageCarousel Images="@images" />
-        </MudPaper>
-
-        <AuthorName UserId="@authorId" Typo="Typo.overline" />
-
-        <LikeButton @ref=@likeButton Review="@review" UserId="@currentUserId" />
-        <CommentSection Review="@review" />
+        @if (isLoading)
+        {
+            <MudProgressLinear Color="Color.Primary" Size="Size.Medium" Indeterminate=true Class="my-7" />
+        }
+        else
+        {
+            <MediaName Typo=Typo.h6 Media="@review.Rating.MediaPiece" />
+            <MediaRate Media="@review.Rating.MediaPiece" UserId="@currentUserId" />
+            <MudPaper Class="pa-6 my-2">
+                <MudStack Row="true">
+                    <MudText Typo="Typo.h6">
+                        @review.Name
+                    </MudText>
+                    <AuthorizeView Roles="admin">
+                        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Edit" Href="@GetEditHref(review)" />
+                    </AuthorizeView>
+                </MudStack>
+                <MudMarkdown Value="@review.Content"
+                             Styling="Styling"
+                             TableCellMinWidth="100"
+                             CodeBlockTheme="CodeBlockTheme.DraculaBase16" />
+                <ReviewImageCarousel Images="@images" />
+                <MudDivider Class="mt-2" />
+                <MudStack Row=true Justify="Justify.SpaceBetween" Class="mt-6">
+                    <LikeButton @ref=@likeButton Review="@review" UserId="@currentUserId" />
+                    <AuthorName UserId="@authorId" Typo="Typo.overline" />
+                </MudStack>
+            </MudPaper>
+            <CommentSection Review="@review" />
+        }
     </MudItem>
 </MudGrid>
 @code
@@ -51,7 +57,7 @@
 
     private MudMarkdownStyling Styling { get; } = new();
     private List<ReviewImage> images = new();
-
+    private bool isLoading = true;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -80,7 +86,7 @@
                 if (review.Rating.AuthorId!=null)
                     authorId = review.Rating.AuthorId;
                 images = await imageService.GetImagesForReview(reviewGuid);
-
+                isLoading = false;
                 StateHasChanged();
             }
         }

@@ -1,16 +1,18 @@
 ﻿@using HomeEntertainmentAdvisor.Models;
 @using HomeEntertainmentAdvisor.Services.Interfaces;
 @inject IReviewLikeService likeService;
-<MudStack Row=true Class="d-flex justify-end">
-    <MudText Typo="@Typo">
-        @if (user!=null)
-            @user.UserName
-        </MudText>
-        <MudText Typo="@Typo" >
-            <MudIcon Icon="fab fa-gratipay" Size="Size.Small" />  @likeCount
-        </MudText>
-</MudStack>
+<MudContainer>
+    <MudStack Row=true Class="d-flex justify-end">
+        <MudText Typo="@Typo">
+            @if (user!=null)
+                @user.UserName
 
+            </MudText>
+            <MudText Typo="@Typo">
+                <MudIcon Icon="fab fa-gratipay" Size="Size.Small" />  @likeCount
+            </MudText>
+        </MudStack>
+</MudContainer>
     @code {
     [Parameter]
     public string UserId { get; set; } = string.Empty;
