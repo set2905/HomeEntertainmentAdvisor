@@ -2,9 +2,9 @@
 @using HomeEntertainmentAdvisor.Services.Interfaces;
 @inject IRatingService ratingService;
 @inject IStringLocalizer<MediaName> localizer;
-<MudContainer Class="ma-0 pa-0">
+<MudContainer  Class="ma-0 pa-0">
     <MudBadge Content="@ratingText" Color="Color.Primary" Overlap="true">
-        <MudText Class="text-nowrap" Typo="@Typo">
+        <MudText Style="text-wrap: nowrap" Typo="@Typo">
             @localizer["media"]: @Media.Name
         </MudText>
     </MudBadge>

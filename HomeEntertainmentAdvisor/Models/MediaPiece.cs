@@ -21,7 +21,7 @@ namespace HomeEntertainmentAdvisor.Models
         {
             RuleFor(r => r.Name)
                .NotEmpty().WithMessage("You must enter the name of the media")
-               .MaximumLength(Review.MAX_NAME).WithMessage($"Name should not be longer than {Review.MAX_NAME} chars");
+               .MaximumLength(Review.MAX_NAME).WithMessage($"Name should not be longer than {Review.MAX_NAME}");
             RuleFor(r => r.MediaGroup)
                 .NotNull().WithMessage("You must enter the group of the media");
         }

@@ -7,23 +7,27 @@
     <MudStack Class="pa-2" Row="true">
         @if (imageSrc.Length > 0)
         {
-            <MudPaper Class="d-none d-sm-flex" Width="192px" Height="108px" Elevation="0" Outlined=false>
-                <MudImage Width="192" Height="108" Class="rounded-lg d-none d-sm-block" ObjectFit="ObjectFit.Cover" Src="@imageSrc" />
-            </MudPaper>
+            <MudLink Href="@href">
+                <MudPaper Class="d-none d-sm-flex" Width="192px" Height="108px" Elevation="0" Outlined=false>
+                    <MudImage Width="192" Height="108" Class="rounded-lg d-none d-sm-block" ObjectFit="ObjectFit.Cover" Src="@imageSrc" />
+                </MudPaper>
+            </MudLink>
         }
         else
         {
-            <MudPaper Class="d-none d-sm-flex justify-center align-center flex-nowrap" Outlined=true MinHeight="108px" MinWidth="192px" Height="108px" Width="192px">
-                <MudIcon Color="Color.Surface" Size="Size.Large" Icon="@Icons.Material.Filled.ImageNotSupported" />
-            </MudPaper>
+            <MudLink Href="@href">
+                <MudPaper Class="d-none d-sm-flex justify-center align-center flex-nowrap" Outlined=true MinHeight="108px" MinWidth="192px" Height="108px" Width="192px">
+                    <MudIcon Color="Color.Surface" Size="Size.Large" Icon="@Icons.Material.Filled.ImageNotSupported" />
+                </MudPaper>
+            </MudLink>
         }
-        <MudStack Class="mud-width-full align-items-start" Justify="Justify.SpaceBetween">
-            <MudText Class="d-none d-sm-block text-truncate" Color="Color.Surface" Typo="Typo.h5">
+        <MudStack Class="mud-width-full align-items-start overflow-hidden" Style="max-width: 550px;" Justify="Justify.SpaceBetween">
+            <MudLink Underline="Underline.None" Href="@href" Class="d-none d-sm-block text-truncate overflow-hidden" Color="Color.Surface" Typo="Typo.h5">
                 @Review.Name
-            </MudText>
-            <MudText Class="d-sm-none text-truncate" Color="Color.Surface" Typo="Typo.h6">
+            </MudLink>
+            <MudLink Underline="Underline.None" Href="@href" Class="d-sm-none text-truncate overflow-hidden"  Color="Color.Surface" Typo="Typo.h6">
                 @Review.Name
-            </MudText>
+            </MudLink>
 
             <MudStack Row="true">
                 <MudRating Size="Size.Small" MaxValue="@Rating.MAX_RATING" ReadOnly="true" SelectedValue="@Review.Rating.Grade" />
@@ -46,11 +50,11 @@
             </MudStack>
             @if (tagsLoaded)
         {
-            <MudContainer Style="width:200px">
-                <MudChipSet Class="d-none d-md-flex text-truncate flex-column align-items-end" ReadOnly="true">
+            <MudContainer Class="d-none d-lg-flex" Style="width:200px">
+                <MudChipSet Class="d-none d-lg-flex flex-column align-items-end" ReadOnly="true">
                     @foreach (var tag in tags)
                     {
-                        <MudChip Variant="Variant.Filled" Label="true" Class="mx-1" Style="overflow: hidden" Text="@tag.Name" />
+                        <MudChip Variant="Variant.Filled" Label="true" Class="mx-1 overflow-hidden" Text="@tag.Name" />
                     }
                 </MudChipSet>
             </MudContainer>
@@ -77,7 +81,7 @@
     private List<Tag> tags = new();
     private bool tagsLoaded = false;
     private string imageSrc = string.Empty;
-
+    string href => $"Review/{Review.Id.ToString()}";
     protected override async Task OnParametersSetAsync()
     {
         tagsLoaded = false;
