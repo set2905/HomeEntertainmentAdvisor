@@ -16,12 +16,12 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                 <label>Email</label>
                 <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                    <input asp-for="Input.Email" class="form-control textfield" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                     <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
                 <label>@Localizer["password"]</label>
                 <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                    <input asp-for="Input.Password" class="form-control textfield" autocomplete="current-password" aria-required="true" placeholder="password" />
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>
                 <div class="checkbox mb-3">
@@ -80,6 +80,18 @@
         </section>
     </div>
 </div>
+
+<style>
+    .textfield  {
+        color: var(--mud-palette-text-primary);
+        background: var(--mud-palette-surface);
+    }
+
+        .textfield:focus {
+            color: var(--mud-palette-text-primary);
+            background: var(--mud-palette-surface);
+        }
+</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
