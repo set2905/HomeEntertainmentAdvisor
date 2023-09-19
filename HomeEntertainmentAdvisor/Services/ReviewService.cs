@@ -19,17 +19,13 @@ namespace HomeEntertainmentAdvisor.Services
             this.reviewsRepo = reviewsRepo;
             this.ratingRepo=ratingRepo;
         }
-        public async Task SetStatus(Review review, ReviewStatus status)
+        public async Task<bool> SetStatus(Review review, ReviewStatus status)
         {
+            if (!await IsUserNotBlocked()) return false;
             await reviewsRepo.SetStatus(review, status);
+            return true;
         }
-        public async Task SetStatus(IEnumerable<Review> reviews, ReviewStatus status)
-        {
-            foreach (Review review in reviews)
-            {
-                await SetStatus(review, status);
-            }
-        }
+
         public async Task<List<Review>> GetMyReviews()
         {
             User? user = await GetUser(await GetAuthState());

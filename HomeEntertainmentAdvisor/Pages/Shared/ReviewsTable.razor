@@ -67,13 +67,21 @@
     {
         if (review.Status != ReviewStatus.Deleted)
         {
-            await reviewService.SetStatus(review, ReviewStatus.Deleted);
-            snackBar.Add($"{review.Name} deleted!");
+            if (await reviewService.SetStatus(review, ReviewStatus.Deleted))
+                snackBar.Add($"{review.Name} deleted!");
+            else
+                snackBar.Add($"{review.Name} could not be deleted!", Severity.Error);
+
         }
         else
         {
-            await reviewService.SetStatus(review, ReviewStatus.Draft);
-            snackBar.Add($"{review.Name} restored!");
+            if (await reviewService.SetStatus(review, ReviewStatus.Draft))
+                snackBar.Add($"{review.Name} restored!");
+            else
+            {
+                snackBar.Add($"{review.Name} could not be restored!", Severity.Error);
+
+            }
         }
     }
 

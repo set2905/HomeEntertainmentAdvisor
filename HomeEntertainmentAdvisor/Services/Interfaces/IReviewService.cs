@@ -10,8 +10,7 @@ namespace HomeEntertainmentAdvisor.Services.Interfaces
         Task<(Guid id, bool succeeded, string message)> TrySaveReview(Review review);
         Task<List<Review>> GetMyReviews();
         Task<List<Review>> GetUserReviews(string id);
-        Task SetStatus(IEnumerable<Review> toDelete, ReviewStatus status);
         Task<List<Review>> GetPage(int page, int recordsPerPage, string? searchQuery = null, IEnumerable<Tag>? tags = null, ReviewOrder order = ReviewOrder.Date, CancellationToken cancellationToken = default);
-        Task SetStatus(Review review, ReviewStatus status);
+        Task<bool> SetStatus(Review review, ReviewStatus status);
     }
 }

@@ -4,7 +4,6 @@
 @using HomeEntertainmentAdvisor.Services.Interfaces;
 @inject IReviewService reviewService
 @attribute [Authorize]
-@attribute [Authorize(Policy = "IsNotBlocked")]
 <PageTitle>Review</PageTitle>
 <MudGrid Justify="Justify.Center">
     <MudItem xs="12" md="10">

@@ -21,7 +21,6 @@ namespace HomeEntertainmentAdvisor.Services.Authorizarion
             {
                 return;
             }
-
             if (user.IsBlocked==false)
             {
                 context.Succeed(requirement);

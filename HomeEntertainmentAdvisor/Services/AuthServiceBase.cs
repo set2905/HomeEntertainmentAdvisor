@@ -8,7 +8,7 @@ namespace HomeEntertainmentAdvisor.Services
     public abstract class AuthServiceBase
     {
         private readonly AuthenticationStateProvider authenticationStateProvider;
-        private readonly UserManager<User> userManager;
+        protected readonly UserManager<User> userManager;
         private readonly IAuthorizationService authorizationService;
 
         protected AuthServiceBase(AuthenticationStateProvider authenticationStateProvider, UserManager<User> userManager, IAuthorizationService authorizationService)
@@ -35,6 +35,12 @@ namespace HomeEntertainmentAdvisor.Services
         protected async Task<bool> IsUserAdmin(User user)
         {
             return await userManager.IsInRoleAsync(user, "admin");
+        }
+        protected async Task<bool> IsUserNotBlocked()
+        {
+            var authState = await GetAuthState();
+            var authorizationResult = await authorizationService.AuthorizeAsync(authState.User, "IsNotBlocked");
+            return authorizationResult.Succeeded;
         }
     }
 }

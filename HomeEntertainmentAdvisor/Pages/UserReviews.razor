@@ -5,15 +5,21 @@
 @inject IReviewService reviewService
 
 @attribute [Authorize(Roles = "admin")]
-@attribute [Authorize(Policy = "IsNotBlocked")]
+@*@attribute [Authorize(Policy = "IsNotBlocked")]*@
 
 <PageTitle>Review</PageTitle>
-<MudGrid Justify="Justify.Center">
-    <MudItem xs="12" md="10">
-        <ReviewsTable Reviews="@reviews" />
-    </MudItem>
-</MudGrid>
-
+<AuthorizeView Policy="IsNotBlocked" Context="authContext">
+    <Authorized>
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="12" md="10">
+                <ReviewsTable Reviews="@reviews" />
+            </MudItem>
+        </MudGrid>
+    </Authorized>
+    <NotAuthorized>
+        <YouAreBlockedMessage />
+    </NotAuthorized>
+</AuthorizeView>
 @code
 {
     [Parameter]

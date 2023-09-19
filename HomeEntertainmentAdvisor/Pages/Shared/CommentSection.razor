@@ -6,13 +6,13 @@
 @inject IStringLocalizer<CommentSection> localizer;
 @implements IAsyncDisposable
 
-<MudPaper Class="pa-6 d-flex flex-column" >
+<MudPaper Class="pa-6 d-flex flex-column">
 
     <MudText Typo="Typo.h6">
         @localizer["comments"]
     </MudText>
     <AuthorizeView>
-        <MudTextField Class="my-2" @bind-Value="commentFieldValue" Label="" Variant="Variant.Outlined"  MaxLength="Comment.MAX_LENGTH"></MudTextField>
+        <MudTextField Class="my-2" @bind-Value="commentFieldValue" Label="" Variant="Variant.Outlined" MaxLength="Comment.MAX_LENGTH"></MudTextField>
         <MudButton Class="align-self-end" Variant="Variant.Filled" OnClick="@AddComment">
             @localizer["leavecomment"]
         </MudButton>
@@ -21,26 +21,30 @@
     {
         foreach (Comment comment in comments)
         {
-            <MudText Typo="Typo.h6">
-                @comment.Author.UserName
-            </MudText>
-            <MudText>
-                @comment.CreatedDate.ToString("dd.MM.yy HH:mm")
-            </MudText>
-
-            <MudText>
-                @comment.Content
-            </MudText>
+            <MudContainer Class="mt-1 mb-5 mx-0 px-0">
+                <MudStack Class="py-0 my-0" Row=true>
+                    <MudText Typo="Typo.overline">
+                        @comment.Author.UserName
+                    </MudText>
+                    <MudText Typo="Typo.subtitle1">
+                        @comment.CreatedDate.ToString("dd.MM.yy HH:mm")
+                    </MudText>
+                </MudStack>
+                <MudText Typo="Typo.body1">
+                    @comment.Content
+                </MudText>
+            </MudContainer>
         }
-        <MudButton  Class="mud-width-full" Disabled="@loadMoreCommentsButtonDisabled" OnClick="()=>LoadMoreComments()">
-            @localizer["loadmore"]</MudButton>
+        <MudButton Class="mud-width-full" Disabled="@loadMoreCommentsButtonDisabled" OnClick="()=>LoadMoreComments()">
+            @localizer["loadmore"]
+        </MudButton>
 
     }
     else
     {
-            <MudText Typo=Typo.h6 Align="Align.Center" Class="my-6">
+        <MudText Typo=Typo.h6 Align="Align.Center" Class="my-6">
             @localizer["empty"]
-            </MudText>
+        </MudText>
     }
 </MudPaper>
 

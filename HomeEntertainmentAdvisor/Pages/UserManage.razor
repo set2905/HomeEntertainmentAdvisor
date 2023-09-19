@@ -6,15 +6,15 @@
 @inject ISnackbar snackBar;
 
 @attribute [Authorize(Roles = "admin")]
-@attribute [Authorize(Policy = "IsNotBlocked")]
 
 <PageTitle>Users</PageTitle>
+
 <MudContainer MaxWidth="MaxWidth.Large">
     <h1>Users</h1>
     <MudPaper Elevation="25">
         <MudToolBar>
-            <MudButton OnClick="@BlockSelected" Variant="Variant.Text" Color="Color.Surface">Block</MudButton>
-            <MudIconButton OnClick="@UnblockSelected" Icon="@Icons.Material.Filled.LockReset" Color="Color.Surface" />
+            <MudButton OnClick="async ()=> await SetBlockSelected(true)" Variant="Variant.Text" Color="Color.Surface">Block</MudButton>
+            <MudIconButton OnClick="async ()=> await SetBlockSelected(false)" Icon="@Icons.Material.Filled.LockReset" Color="Color.Surface" />
         </MudToolBar>
     </MudPaper>
     <MudTable T="User" Items="@users" MultiSelection="true" @bind-SelectedItems="selectedItems" Hover="true" Bordered="true" Striped="false"
@@ -51,6 +51,7 @@
             </FooterContent>
         </MudTable>
     </MudContainer>
+
     @code
     {
     private List<User> users = new();
@@ -85,17 +86,24 @@
         isRoleSetInProgress = true;
         var result = await accountService.OverwriteRoles(user.Id, roles);
         if (result.Succeeded) usersRoles[user] = roles;
+        else
+        {
+            snackBar.Add(result.Errors.First().Description, Severity.Error);
+        }
         isRoleSetInProgress = false;
 
     }
 
-    protected async Task BlockSelected()
+    protected async Task SetBlockSelected(bool blocked)
     {
-        await accountService.SetBlock(selectedItems.Select(x => x.Id), true);
-    }
-
-    protected async Task UnblockSelected()
-    {
-        await accountService.SetBlock(selectedItems.Select(x => x.Id), false);
+        IEnumerable<string> selected = selectedItems.Select(x => x.Id);
+        if (await accountService.SetBlock(selected, blocked))
+        {
+            snackBar.Add($"{selected.Count()} users blocked");
+        }
+        else
+        {
+            snackBar.Add($"{selected.Count()} users could not be unblocked", Severity.Error);
+        }
     }
 }

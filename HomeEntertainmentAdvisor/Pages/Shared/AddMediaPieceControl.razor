@@ -19,7 +19,7 @@
                 <FluentValidationValidator />
                 <ValidationSummary />
                 <MudText Class="py-1">@localizer["name"]: </MudText>
-                <MudTextField Class="py-1" @bind-Value="@media.Name" />
+                <MudTextField MaxLength="@MediaPiece.MAX_NAME" Class="py-1" @bind-Value="@media.Name" />
                 <MudText Class="py-1">@localizer["group"]: </MudText>
                 <MudAutocomplete Class="py-1" T="MediaGroup" @bind-Value="media.MediaGroup" SearchFuncWithCancel="@SearchMediaGroups"
                                  ToStringFunc="@(e=> e!=null?e.Name:null)" Immediate="true"
@@ -36,7 +36,6 @@
 @code
 {
     private bool visible;
-    private int grade;
     private void OpenDialog() => visible = true;
     private DialogOptions dialogOptions = new() { FullWidth = true };
     private MediaPiece media = new();

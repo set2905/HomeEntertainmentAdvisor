@@ -16,70 +16,76 @@
 @inject NavigationManager navManager
 @inject IStringLocalizer<EditReview> localizer
 
-
 @attribute [Authorize]
-@attribute [Authorize(Policy = "IsNotBlocked")]
+@*@attribute [Authorize(Policy = "IsNotBlocked")]*@
 <PageTitle>@localizer["pagename"]</PageTitle>
 <MudOverlay @bind-Visible="isOverlayVisible" ZIndex="9999" DarkBackground="true" AutoClose="false">
     <MudProgressCircular Size="Size.Large" Color="Color.Primary" Indeterminate="true" />
 </MudOverlay>
-<EditForm Model="@review" OnValidSubmit="@SubmitValidForm">
-    <FluentValidationValidator />
-    <MudGrid Justify="Justify.Center">
-        <MudItem md="10" xs="12">
-            <MudPaper Class="pa-4">
-                <MudStack>
-                    <MudText Typo="Typo.h4">@localizer["pagename"]</MudText>
-                    <MudText>@localizer["tags"]: </MudText>
-                    <MudAutocomplete @ref=@tagAutocomplete T="string" @bind-Value="tagInputValue" SearchFunc="@tagService.SearchByName" Immediate="true"
-                                     ResetValueOnEmptyText="false"
-                                     CoerceText="false" CoerceValue="true"
-                                     AdornmentIcon="@Icons.Material.Filled.Add" AdornmentColor="Color.Primary"
-                                     OnBlur="@AddTag" />
-                    <MudChipSet AllClosable="true" OnClose="HandleTagRemoved">
-                        @foreach (string t in tags)
-                        {
-                            <MudChip Value="@t" Text="@t"></MudChip>
-                        }
-                    </MudChipSet>
-                    <MudText>@localizer["media"]: </MudText>
-                    <MudAutocomplete Disabled="@mediaAutoCompleteDisabled" T="MediaPiece" @bind-Value="review.Rating.MediaPiece" SearchFuncWithCancel="@SearchMediaPieces"
-                                     ToStringFunc="@(e=> e!=null?e.Name:null)" Immediate="true"
-                                     AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" ShowProgressIndicator="true">
-                        <ProgressIndicatorTemplate>
-                            <MudProgressLinear Size="Size.Small" Indeterminate="true" />
-                        </ProgressIndicatorTemplate>
-                    </MudAutocomplete>
-                    <AddMediaPieceControl />
-                    <MudText>@localizer["reviewname"]: </MudText>
-                    <MudTextField @bind-Value="@review.Name" />
+<AuthorizeView Policy="IsNotBlocked" Context="authContext">
+    <Authorized>
+        <EditForm Model="@review" OnValidSubmit="@SubmitValidForm">
+            <FluentValidationValidator />
+            <MudGrid Justify="Justify.Center">
+                <MudItem md="10" xs="12">
+                    <MudPaper Class="pa-4">
+                        <MudStack>
+                            <MudText Typo="Typo.h4">@localizer["pagename"]</MudText>
+                            <MudText>@localizer["tags"]: </MudText>
+                            <MudAutocomplete @ref=@tagAutocomplete T="string" @bind-Value="tagInputValue" SearchFunc="@tagService.SearchByName" Immediate="true"
+                                             ResetValueOnEmptyText="false"
+                                             CoerceText="false" CoerceValue="true"
+                                             AdornmentIcon="@Icons.Material.Filled.Add" AdornmentColor="Color.Primary"
+                                             OnBlur="@AddTag" />
+                            <MudChipSet AllClosable="true" OnClose="HandleTagRemoved">
+                                @foreach (string t in tags)
+                                {
+                                    <MudChip Value="@t" Text="@t"></MudChip>
+                                }
+                            </MudChipSet>
+                            <MudText>@localizer["media"]: </MudText>
+                            <MudAutocomplete Disabled="@mediaAutoCompleteDisabled" T="MediaPiece" @bind-Value="review.Rating.MediaPiece" SearchFuncWithCancel="@SearchMediaPieces"
+                                             ToStringFunc="@(e=> e!=null?e.Name:null)" Immediate="true"
+                                             AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" ShowProgressIndicator="true">
+                                <ProgressIndicatorTemplate>
+                                    <MudProgressLinear Size="Size.Small" Indeterminate="true" />
+                                </ProgressIndicatorTemplate>
+                            </MudAutocomplete>
+                            <AddMediaPieceControl />
+                            <MudText>@localizer["reviewname"]: </MudText>
+                            <MudTextField MaxLength="Review.MAX_NAME" @bind-Value="@review.Name" />
 
-                    <MudText>@localizer["grade"]: </MudText>
-                    <MudRating @bind-SelectedValue="@review.Rating.Grade" MaxValue="10" />
+                            <MudText>@localizer["grade"]: </MudText>
+                            <MudRating @bind-SelectedValue="@review.Rating.Grade" MaxValue="10" />
 
-                    <MudText>@localizer["content"]: </MudText>
-                    <MarkdownEditor Theme="easymde" @bind-Value="@review.Content">
-                        <Toolbar>
-                            <MarkdownToolbarButton Action="MarkdownAction.Bold" Icon="fa fa-bold" Title="@localizer["bold"]" />
-                            <MarkdownToolbarButton Action="MarkdownAction.Italic" Icon="fa fa-italic" Title="@localizer["italic"]" />
-                            <MarkdownToolbarButton Action="MarkdownAction.HeadingBigger"  Icon="fa fa-heading" Title="@localizer["heading"]" />
-                            <MarkdownToolbarButton Action="MarkdownAction.OrderedList" Icon="fa fa-list-ol" Title="@localizer["listol"]" />
-                            <MarkdownToolbarButton Action="MarkdownAction.Quote" Icon="fa fa-quote-left" Title="@localizer["quote"]" />
-                            @*<MarkdownToolbarButton Action="MarkdownAction.Preview" Icon="fa fa-eye" Title="@localizer["preview"]" />*@
-                        </Toolbar>
-                    </MarkdownEditor>
-                    <MudText>@localizer["images"]: </MudText>
+                            <MudText>@localizer["content"]: </MudText>
+                            <MarkdownEditor Theme="easymde" @bind-Value="@review.Content">
+                                <Toolbar>
+                                    <MarkdownToolbarButton Action="MarkdownAction.Bold" Icon="fa fa-bold" Title="@localizer["bold"]" />
+                                    <MarkdownToolbarButton Action="MarkdownAction.Italic" Icon="fa fa-italic" Title="@localizer["italic"]" />
+                                    <MarkdownToolbarButton Action="MarkdownAction.HeadingBigger" Icon="fa fa-heading" Title="@localizer["heading"]" />
+                                    <MarkdownToolbarButton Action="MarkdownAction.OrderedList" Icon="fa fa-list-ol" Title="@localizer["listol"]" />
+                                    <MarkdownToolbarButton Action="MarkdownAction.Quote" Icon="fa fa-quote-left" Title="@localizer["quote"]" />
+                                    @*<MarkdownToolbarButton Action="MarkdownAction.Preview" Icon="fa fa-eye" Title="@localizer["preview"]" />*@
+                                </Toolbar>
+                            </MarkdownEditor>
+                            <MudText>@localizer["images"]: </MudText>
 
-                    <ReviewImageUploadComponent @ref="@imageUpload" Review="@review" />
+                            <ReviewImageUploadComponent @ref="@imageUpload" Review="@review" />
 
-                    <ValidationSummary />
+                            <ValidationSummary />
 
-                    <MudButton Color="Color.Surface" StartIcon="@Icons.Material.Filled.Save" FullWidth="false" ButtonType="ButtonType.Submit">@localizer["publish"]</MudButton>
-                </MudStack>
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
-</EditForm>
+                            <MudButton Color="Color.Surface" StartIcon="@Icons.Material.Filled.Save" FullWidth="false" ButtonType="ButtonType.Submit">@localizer["publish"]</MudButton>
+                        </MudStack>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </Authorized>
+    <NotAuthorized>
+        <YouAreBlockedMessage />
+    </NotAuthorized>
+</AuthorizeView>
 
 @code
 {
@@ -92,10 +98,13 @@
     private MudAutocomplete<string> tagAutocomplete = new();
     private bool isOverlayVisible = false;
     private bool mediaAutoCompleteDisabled = false;
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool first)
     {
-        await base.OnInitializedAsync();
-        await SetReview();
+        await base.OnAfterRenderAsync(first);
+        if (first)
+        {
+            await SetReview();
+        }
     }
     private async Task SetReview()
     {
@@ -113,6 +122,7 @@
                 review = found;
                 mediaAutoCompleteDisabled = true;
                 tags = (await tagService.GetReviewTags(reviewGuid)).Select(x => x.Name).ToList();
+                StateHasChanged();
             }
         }
     }
@@ -166,6 +176,10 @@
 
     .editor-preview {
         background: var(--mud-palette-surface);
+    }
+
+    .editor-statusbar {
+        display: none;
     }
 
 </style>

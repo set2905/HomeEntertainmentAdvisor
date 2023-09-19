@@ -128,13 +128,14 @@ SMTPSettings smtpSettings = new("mashkovna2905@gmail.com", "HomeEntertainmentAdv
 builder.Services.AddTransient<IEmailSender, EmailSender>(serviceProvider => new(smtpSettings));
 
 
-builder.Services.AddTransient<IAuthorizationHandler, ReviewOwnerAuthorizationHandler>();
-builder.Services.AddTransient<IAuthorizationHandler, IsNotBlockedAuthorizationHandler>();
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("UserIsAuthor", policy => policy.Requirements.Add(new UserIsAuthorRequirement()));
     options.AddPolicy("IsNotBlocked", policy => policy.Requirements.Add(new IsNotBlockedRequirement()));
 });
+builder.Services.AddTransient<IAuthorizationHandler, ReviewOwnerAuthorizationHandler>();
+builder.Services.AddTransient<IAuthorizationHandler, IsNotBlockedAuthorizationHandler>();
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
