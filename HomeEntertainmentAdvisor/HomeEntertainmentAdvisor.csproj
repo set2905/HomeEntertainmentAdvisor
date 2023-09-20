@@ -48,4 +48,8 @@
     <Folder Include="Domain\Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\CustomIdentity\css\site.css" />
+  </ItemGroup>
+
 </Project>

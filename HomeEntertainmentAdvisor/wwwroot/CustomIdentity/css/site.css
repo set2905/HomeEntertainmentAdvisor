@@ -1,0 +1,32 @@
+﻿.textfield {
+    color: var(--mud-palette-text-primary);
+    background: var(--mud-palette-surface);
+}
+
+    .textfield:focus {
+        color: var(--mud-palette-text-primary);
+        background: var(--mud-palette-surface);
+    }
+    .textfield:-webkit-autofill {
+        color: var(--mud-palette-text-primary) !important;
+        background: var(--mud-palette-surface) !important;
+    }
+
+.btn-primary {
+    color: var(--mud-palette-text-primary);
+    background-color: var(--mud-palette-primary);
+    border-color: var(--mud-palette-primary);
+}
+.btn-primary:hover {
+    color: var(--mud-palette-text-primary);
+    background-color: var(--mud-palette-primary);
+    border-color: var(--mud-palette-primary);
+}
+    .btn-primary:focus {
+        color: var(--mud-palette-text-primary);
+        background-color: var(--mud-palette-primary);
+        border-color: var(--mud-palette-primary);
+    }
+a:hover {
+    color: var(--mud-palette-primary);
+}
