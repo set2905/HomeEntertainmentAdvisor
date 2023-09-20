@@ -117,28 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="blocked" xml:space="preserve">
-    <value>Ваш аккаунт заблокирован</value>
+  <data name="error" xml:space="preserve">
+    <value>Error confirming your email.</value>
   </data>
-  <data name="forgot" xml:space="preserve">
-    <value>Забыли пароль?</value>
+  <data name="iderror" xml:space="preserve">
+    <value>Unable to load user with ID</value>
   </data>
-  <data name="invalid" xml:space="preserve">
-    <value>Неудачная попытка входа</value>
+  <data name="success" xml:space="preserve">
+    <value>Thank you for confirming your email.</value>
   </data>
-  <data name="log_in" xml:space="preserve">
-    <value>Войти</value>
-  </data>
-  <data name="password" xml:space="preserve">
-    <value>Пароль</value>
-  </data>
-  <data name="register" xml:space="preserve">
-    <value>Зарегистрировать нового пользователя</value>
-  </data>
-  <data name="rememberme" xml:space="preserve">
-    <value>Запомнить меня</value>
-  </data>
-  <data name="useexternal" xml:space="preserve">
-    <value>Вход через социальные сети</value>
+  <data name="title" xml:space="preserve">
+    <value>Confirm email</value>
   </data>
 </root>

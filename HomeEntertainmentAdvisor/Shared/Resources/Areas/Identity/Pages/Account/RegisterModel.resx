@@ -117,28 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="blocked" xml:space="preserve">
-    <value>Ваш аккаунт заблокирован</value>
+  <data name="clickinghere" xml:space="preserve">
+    <value>clicking here</value>
   </data>
-  <data name="forgot" xml:space="preserve">
-    <value>Забыли пароль?</value>
+  <data name="confirmemail" xml:space="preserve">
+    <value>Please confirm your account by</value>
   </data>
-  <data name="invalid" xml:space="preserve">
-    <value>Неудачная попытка входа</value>
+  <data name="confirmpassword" xml:space="preserve">
+    <value>Confirm password</value>
   </data>
-  <data name="log_in" xml:space="preserve">
-    <value>Войти</value>
+  <data name="create" xml:space="preserve">
+    <value>Create a new account.</value>
   </data>
   <data name="password" xml:space="preserve">
-    <value>Пароль</value>
+    <value>Password</value>
   </data>
   <data name="register" xml:space="preserve">
-    <value>Зарегистрировать нового пользователя</value>
+    <value>Register</value>
   </data>
-  <data name="rememberme" xml:space="preserve">
-    <value>Запомнить меня</value>
+  <data name="title" xml:space="preserve">
+    <value>Register</value>
   </data>
-  <data name="useexternal" xml:space="preserve">
-    <value>Вход через социальные сети</value>
+  <data name="useanotherservice" xml:space="preserve">
+    <value>Use another service to register.</value>
   </data>
 </root>

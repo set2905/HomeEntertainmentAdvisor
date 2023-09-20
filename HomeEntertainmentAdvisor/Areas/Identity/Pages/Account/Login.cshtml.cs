@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using HomeEntertainmentAdvisor.Models;
+using Microsoft.Extensions.Localization;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace HomeEntertainmentAdvisor.Areas.Identity.Pages.Account
 {
@@ -16,12 +18,13 @@ namespace HomeEntertainmentAdvisor.Areas.Identity.Pages.Account
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly ILogger<LoginModel> _logger;
-
-        public LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger, UserManager<User> userManager)
+        private readonly IStringLocalizer<LoginModel> _localizer;
+        public LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger, UserManager<User> userManager, IStringLocalizer<LoginModel> localizer)
         {
             _signInManager = signInManager;
             _logger = logger;
             _userManager=userManager;
+            _localizer=localizer;
         }
 
         [BindProperty]
@@ -45,7 +48,6 @@ namespace HomeEntertainmentAdvisor.Areas.Identity.Pages.Account
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
-            [Display(Name = "Remember me?")]
             public bool RememberMe { get; set; }
         }
 
@@ -77,7 +79,7 @@ namespace HomeEntertainmentAdvisor.Areas.Identity.Pages.Account
                 var user = await _userManager.FindByEmailAsync(Input.Email);
                 if (user != null&&user.IsBlocked)
                 {
-                    ModelState.AddModelError(string.Empty, "Your user account is blocked.");
+                    ModelState.AddModelError(string.Empty, _localizer["blocked"]);
                     return Page();
                 }
                 // This doesn't count login failures towards account lockout
@@ -99,7 +101,7 @@ namespace HomeEntertainmentAdvisor.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, _localizer["invalid"]);
                     return Page();
                 }
             }
