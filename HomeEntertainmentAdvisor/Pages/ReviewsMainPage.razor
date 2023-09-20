@@ -8,31 +8,42 @@
 @implements IDisposable
 <PageTitle>@localizer["pagename"]</PageTitle>
 <MudGrid Justify="Justify.Center">
-    <MudItem xs="12" md="10">
-        <MudChipSet MultiSelection SelectedChipsChanged="HandleTagSelectionChanged">
-            @foreach (var tag in tags)
-            {
-                <MudChip CloseIcon="" Text="@tag.Name" Value="@tag" />
-            }
-        </MudChipSet>
-        <MudTabs Outlined="true" Position="Position.Top" Rounded="false" Border="true"
-                 ApplyEffectsToContainer="true" Class="mt-8" PanelClass="pa-6">
-            <MudTabPanel Icon="fas fa-certificate" Text="@localizer["newest"]">
-                <ReviewList Reviews="@newest" />
-                <MudButton Class="mud-width-full" Disabled="@loadMoreNewestButtonDisabled" OnClick="()=>LoadMoreNewest()">@localizer["loadmore"]</MudButton>
-            </MudTabPanel>
-            <MudTabPanel Icon="fas fa-up-long" Text="@localizer["best"]">
-                <ReviewList Reviews="@top" />
-                <MudButton Class="mud-width-full" Disabled="@loadMoreTopButtonDisabled" OnClick="()=>LoadMoreTop()">@localizer["loadmore"]</MudButton>
-            </MudTabPanel>
-        </MudTabs>
-    </MudItem>
+    @if (isLoading)
+    {
+        <MudProgressLinear Size="Size.Small" Color="Color.Primary" Indeterminate="true" Class="my-7" />
+    }
+    else
+    {
+        <MudItem xs="12" md="10">
+            <MudChipSet MultiSelection SelectedChipsChanged="HandleTagSelectionChanged">
+                @foreach (var tag in tags)
+                {
+                    <MudChip CloseIcon="" Text="@tag.Name" Value="@tag" />
+                }
+            </MudChipSet>
+            <MudTabs Outlined="true" Position="Position.Top" Rounded="false" Border="true"
+                     ApplyEffectsToContainer="true" Class="mt-8" PanelClass="pa-6">
+                <MudTabPanel Icon="fas fa-certificate" Text="@localizer["newest"]">
+                    <ReviewList Reviews="@newest" />
+                    @if (newest.Count()!=0)
+                    {
+                        <MudButton Class="mud-width-full" Disabled="@loadMoreNewestButtonDisabled" OnClick="()=>LoadMoreNewest()">@localizer["loadmore"]</MudButton>
+                    }
+                </MudTabPanel>
+                <MudTabPanel Icon="fas fa-up-long" Text="@localizer["best"]">
+                    <ReviewList Reviews="@top" />
+                    @if (top.Count()!=0)
+                    {
+                        <MudButton Class="mud-width-full" Disabled="@loadMoreTopButtonDisabled" OnClick="()=>LoadMoreTop()">@localizer["loadmore"]</MudButton>
+                    }
+                </MudTabPanel>
+            </MudTabs>
+        </MudItem>
+    }
 </MudGrid>
-
 @code
 {
     private int perPage = 10;
-
     private int currentNewestPage = 0;
     private int currentTopPage = 0;
     private List<Review> newest = new();
@@ -41,6 +52,7 @@
     private List<Tag> selectedTags = new();
     private bool loadMoreNewestButtonDisabled = false;
     private bool loadMoreTopButtonDisabled = false;
+    private bool isLoading = true;
 
     private CancellationTokenSource tagFilterCancellationTokenSrc = new();
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -50,8 +62,8 @@
         {
             newest = await reviewService.GetPage(currentNewestPage, perPage, order: Domain.Repo.ReviewOrder.Date);
             top = await reviewService.GetPage(currentTopPage, perPage, order: Domain.Repo.ReviewOrder.Likes);
-
             tags = await tagService.GetTags();
+            isLoading = false;
             StateHasChanged();
         }
     }
@@ -70,7 +82,6 @@
             top = results[1];
             StateHasChanged();
         }
-
     }
     private void ResetPages()
     {
@@ -93,7 +104,6 @@
             loadMoreTopButtonDisabled = true;
         top.AddRange(loaded);
         StateHasChanged();
-
     }
     private async Task LoadMoreNewest()
     {

@@ -1,8 +1,15 @@
 ﻿@using HomeEntertainmentAdvisor.Models;
+@inject IStringLocalizer<ReviewList> localizer
     @foreach (Review rev in Reviews)
     {
             <ReviewItem Review="@rev" />
     }
+@if (Reviews.Count()==0)
+{ 
+    <MudText Align="Align.Center">
+        @localizer["empty"]
+    </MudText>
+}
 @code {
     [Parameter]
     public List<Review> Reviews { get; set; } = new();
