@@ -4,37 +4,37 @@
 @using HomeEntertainmentAdvisor.Services.Interfaces;
 @inject IAccountService accountService;
 @inject ISnackbar snackBar;
-
+@inject IStringLocalizer<UserManage> localizer;
 @attribute [Authorize(Roles = "admin")]
 
-<PageTitle>Users</PageTitle>
+<PageTitle>@localizer["users"]</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Large">
-    <h1>Users</h1>
+    <MudText Typo="Typo.h3">@localizer["users"]</MudText>
     <MudPaper Elevation="25">
         <MudToolBar>
-            <MudButton OnClick="async ()=> await SetBlockSelected(true)" Variant="Variant.Text" Color="Color.Surface">Block</MudButton>
-            <MudIconButton OnClick="async ()=> await SetBlockSelected(false)" Icon="@Icons.Material.Filled.LockReset" Color="Color.Surface" />
+            <MudButton OnClick="async ()=> await SetBlockSelected(true)" Variant="Variant.Text" Color="Color.Surface">@localizer["block"]</MudButton>
+            <MudIconButton Title="@localizer["blockreset"]" OnClick="async ()=> await SetBlockSelected(false)" Icon="@Icons.Material.Filled.LockReset" Color="Color.Surface" />
         </MudToolBar>
     </MudPaper>
     <MudTable T="User" Items="@users" MultiSelection="true" @bind-SelectedItems="selectedItems" Hover="true" Bordered="true" Striped="false"
               SelectOnRowClick="true">
         <HeaderContent>
             <MudTh>Id</MudTh>
-            <MudTh>Name</MudTh>
+            <MudTh>@localizer["name"]</MudTh>
             <MudTh>Email</MudTh>
-            <MudTh>Last login</MudTh>
-            <MudTh>Registration date</MudTh>
-            <MudTh>Role</MudTh>
-            <MudTh>Status</MudTh>
+            <MudTh>@localizer["lastlogin"]</MudTh>
+            <MudTh>@localizer["registerdate"]</MudTh>
+            <MudTh>@localizer["role"]</MudTh>
+            <MudTh>@localizer["status"]</MudTh>
         </HeaderContent>
         <RowTemplate Context="user">
             <MudTd DataLabel="Id">@user.Id</MudTd>
-            <MudTd DataLabel="Name">@user.UserName</MudTd>
+            <MudTd DataLabel="@localizer["name"]">@user.UserName</MudTd>
             <MudTd DataLabel="Email">@user.Email</MudTd>
-            <MudTd DataLabel="Last login">@user.LastLoginDate</MudTd>
-            <MudTd DataLabel="Registration date">@user.RegistrationDate</MudTd>
-            <MudTd DataLabel="Role">
+            <MudTd DataLabel="@localizer["lastlogin"]">@user.LastLoginDate</MudTd>
+            <MudTd DataLabel="@localizer["registerdate"]">@user.RegistrationDate</MudTd>
+            <MudTd DataLabel="@localizer["role"]">
                 <MudSelect T="string" Disabled="@isRoleSetInProgress" MultiSelection="true" @bind-SelectedValues="@usersRoles[user]" OnClose="async ()=>await SetRoles(user)" CloseIcon="@Icons.Material.Filled.Close" AdornmentColor="Color.Tertiary">
                     @foreach (string? role in roles)
                     {
@@ -42,10 +42,10 @@
                     }
                 </MudSelect>
             </MudTd>
-            <MudTd DataLabel="Status">@(user.IsBlocked ? "Blocked" : "Active")</MudTd>
+            <MudTd DataLabel="Status">@(user.IsBlocked ? localizer["blocked"] : localizer["active"])</MudTd>
             </RowTemplate>
             <PagerContent>
-                <MudTablePager PageSizeOptions="new int[]{10, 25, 50, 100}" />
+                <MudTablePager HidePageNumber=true RowsPerPageString="@localizer["rowsperpage"]" PageSizeOptions="new int[]{10, 25, 50, 100}" />
             </PagerContent>
             <FooterContent>
             </FooterContent>
@@ -80,7 +80,7 @@
         IEnumerable<string> roles = usersRoles[user];
         if (isRoleSetInProgress)
         {
-            snackBar.Add("Role set already in progress", Severity.Error);
+            snackBar.Add(localizer["roleinprogress"], Severity.Error);
             return;
         }
         isRoleSetInProgress = true;
@@ -99,11 +99,11 @@
         IEnumerable<string> selected = selectedItems.Select(x => x.Id);
         if (await accountService.SetBlock(selected, blocked))
         {
-            snackBar.Add($"{selected.Count()} users blocked");
+            snackBar.Add($"{selected.Count()} {localizer["usersblocked"]}");
         }
         else
         {
-            snackBar.Add($"{selected.Count()} users could not be unblocked", Severity.Error);
+            snackBar.Add($"{selected.Count()} {localizer["usersnotblocked"]}", Severity.Error);
         }
     }
 }

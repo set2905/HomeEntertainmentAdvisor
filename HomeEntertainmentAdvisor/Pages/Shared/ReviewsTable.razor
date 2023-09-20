@@ -2,45 +2,48 @@
 @using HomeEntertainmentAdvisor.Services.Interfaces;
 @inject IReviewService reviewService
 @inject ISnackbar snackBar
+@inject IStringLocalizer<ReviewsTable> localizer
 
 <MudTable Items="@Reviews" Filter="new Func<Review,bool>(FilterFunc1)" Hover="true" Bordered="true" Striped="false">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Your reviews</MudText>
+        <MudText Typo="Typo.h6">@localizer["title"]</MudText>
         <MudSpacer />
-        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField @bind-Value="searchString1" Placeholder="@localizer["search"]" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>№</MudTh>
         <MudTh>
             <MudTableSortLabel SortBy="new Func<Review, object>(x=>x.Name)">
-                Name
+                @localizer["name"]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortBy="new Func<Review, object>(x=>x.CachedLikes)">
-                Likes
+                @localizer["likes"]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortBy="new Func<Review, object>(x=>x.Status)">
-                Status
+                @localizer["status"]
             </MudTableSortLabel>
         </MudTh>
-        <MudTh>Actions</MudTh>
+        <MudTh>
+            @localizer["actions"]
+        </MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="№">@Reviews.IndexOf(context)</MudTd>
-        <MudTd DataLabel="Name">
-            <MudLink Href="@GetHref(context)">
+        <MudTd DataLabel="@localizer["name"]">
+            <MudText>
                 @context.Name
-            </MudLink>
+            </MudText>
         </MudTd>
-        <MudTd DataLabel="Likes">@context.CachedLikes</MudTd>
-        <MudTd DataLabel="Status">@context.Status.ToString()</MudTd>
-        <MudTd DataLabel="Actions">
-            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Surface" Href="@GetHref(context)" />
-            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Edit" Color="Color.Surface" Href="@GetEditHref(context)" />
-            <MudIconButton Size="Size.Small" OnClick="()=>HandleDeleteReviewClicked(context)" Icon="@GetDeleteIconButton(context)" Color="Color.Surface" />
+        <MudTd DataLabel="@localizer["likes"]">@context.CachedLikes</MudTd>
+        <MudTd DataLabel="@localizer["status"]">@localizer[context.Status.ToString()]</MudTd>
+        <MudTd DataLabel="@localizer["actions"]">
+            <MudIconButton Size="Size.Small" Title="@localizer["view"]" Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Surface" Href="@GetHref(context)" />
+            <MudIconButton Size="Size.Small" Title="@localizer["edit"]" Icon="@Icons.Material.Filled.Edit" Color="Color.Surface" Href="@GetEditHref(context)" />
+            <MudIconButton Size="Size.Small" Title="@localizer["delete"]" OnClick="()=>HandleDeleteReviewClicked(context)" Icon="@GetDeleteIconButton(context)" Color="Color.Surface" />
         </MudTd>
     </RowTemplate>
 </MudTable>
@@ -54,7 +57,6 @@
         if (context.Status == ReviewStatus.Deleted) return Icons.Material.Filled.Restore;
         return Icons.Material.Filled.Delete;
     }
-
     private string GetHref(Review context)
     {
         return $"Review/{context.Id}";
@@ -68,19 +70,17 @@
         if (review.Status != ReviewStatus.Deleted)
         {
             if (await reviewService.SetStatus(review, ReviewStatus.Deleted))
-                snackBar.Add($"{review.Name} deleted!");
+                snackBar.Add($"{review.Name} {localizer["deletedsuccess"]}!");
             else
-                snackBar.Add($"{review.Name} could not be deleted!", Severity.Error);
-
+                snackBar.Add($"{review.Name} {localizer["notdeleted"]}!", Severity.Error);
         }
         else
         {
             if (await reviewService.SetStatus(review, ReviewStatus.Draft))
-                snackBar.Add($"{review.Name} restored!");
+                snackBar.Add($"{review.Name} {localizer["restored"]}!");
             else
             {
-                snackBar.Add($"{review.Name} could not be restored!", Severity.Error);
-
+                snackBar.Add($"{review.Name} {localizer["notrestored"]}!", Severity.Error);
             }
         }
     }
