@@ -2,9 +2,9 @@
 
 namespace HomeEntertainmentAdvisor.Services.Interfaces
 {
-    public interface IImageCloud
+    public interface ICloudStorage
     {
         public Task<DelResResult> DeleteResourcesAsync(params string[] publicIds);
-        public Task<ImageUploadResult> UploadAsync(ImageUploadParams parameters, CancellationToken? cancellationToken = null);
+        public Task<ImageUploadResult> UploadImageAsync(ImageUploadParams parameters, CancellationToken? cancellationToken = null);
     }
 }

@@ -4,11 +4,11 @@ using HomeEntertainmentAdvisor.Services.Interfaces;
 
 namespace HomeEntertainmentAdvisor.Services
 {
-    public class ImageCloud : IImageCloud
+    public class CloudStorage : ICloudStorage
     {
         private readonly Cloudinary cloudinary;
 
-        public ImageCloud(string? cloudinaryUrl)
+        public CloudStorage(string? cloudinaryUrl)
         {
             if (cloudinaryUrl == null) throw new ArgumentNullException(nameof(cloudinaryUrl));
             cloudinary=new Cloudinary(cloudinaryUrl);
@@ -19,9 +19,9 @@ namespace HomeEntertainmentAdvisor.Services
             return cloudinary.DeleteResourcesAsync(publicIds);
         }
 
-        public Task<ImageUploadResult> UploadAsync(ImageUploadParams parameters, CancellationToken? cancellationToken = null)
+        public Task<ImageUploadResult> UploadImageAsync(ImageUploadParams parameters, CancellationToken? cancellationToken = default)
         {
-            return cloudinary.UploadAsync(parameters);
+            return cloudinary.UploadAsync(parameters, cancellationToken);
         }
     }
 }

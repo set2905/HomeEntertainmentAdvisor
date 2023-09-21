@@ -1,3 +1,4 @@
+using BlazorDownloadFile;
 using Blazored.LocalStorage;
 using HomeEntertainmentAdvisor.Areas.Identity;
 using HomeEntertainmentAdvisor.Data;
@@ -119,8 +120,10 @@ builder.Services.AddTransient<IReviewLikeService, ReviewLikeService>();
 builder.Services.AddTransient<IReviewCommentsService, ReviewCommentsService>();
 builder.Services.AddTransient<IImageService, ImageService>();
 builder.Services.AddTransient<IAccountService, AccountService>();
-builder.Services.AddTransient<IImageCloud, ImageCloud>(serviceProvider => new(cloudinaryUrl));
+builder.Services.AddTransient<ICloudStorage, CloudStorage>(serviceProvider => new(cloudinaryUrl));
+builder.Services.AddTransient<IReviewExporter, ReviewPDFExporter>();
 
+builder.Services.AddBlazorDownloadFile(ServiceLifetime.Scoped);
 
 string? smtpPassword = configuration["SMTP_Password"]??Environment.GetEnvironmentVariable("SMTP_PASSWORD");
 if (smtpPassword==null) throw new Exception("SMTP password is null");

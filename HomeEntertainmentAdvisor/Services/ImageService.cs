@@ -10,9 +10,9 @@ namespace HomeEntertainmentAdvisor.Services
     public class ImageService : IImageService
     {
         private readonly IReviewImagesRepo imagesRepo;
-        private readonly IImageCloud imageCloud;
+        private readonly ICloudStorage imageCloud;
 
-        public ImageService(IReviewImagesRepo imagesRepo, IImageCloud imageCloud)
+        public ImageService(IReviewImagesRepo imagesRepo, ICloudStorage imageCloud)
         {
             this.imagesRepo=imagesRepo;
             this.imageCloud=imageCloud;
@@ -27,7 +27,7 @@ namespace HomeEntertainmentAdvisor.Services
                 {
                     File=new FileDescription(file.Name, stream)
                 };
-                result=await imageCloud.UploadAsync(uploadParams);
+                result=await imageCloud.UploadImageAsync(uploadParams);
             }
             ReviewImage reviewImage = new()
             {

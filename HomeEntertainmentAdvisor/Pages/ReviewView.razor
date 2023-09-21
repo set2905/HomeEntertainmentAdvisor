@@ -7,6 +7,7 @@
 @inject IMediaService mediaService
 @inject IRatingService ratingService
 @inject IImageService imageService;
+@inject IReviewExporter reviewExporter;
 @inject AuthenticationStateProvider authenticationStateProvider
 @inject IStringLocalizer<ReviewView> localizer
 @inject ISnackbar snackBar
@@ -24,13 +25,15 @@
             <MediaRate Media="@review.Rating.MediaPiece" UserId="@currentUserId" />
             <MudPaper Class="pa-6 my-2">
                 <MudStack Row="true">
-                    <MudText Typo="Typo.h6">
-                        @review.Name
-                    </MudText>
                     <AuthorizeView Roles="admin">
                         <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Edit" Href="@GetEditHref(review)" />
                     </AuthorizeView>
+                    <MudIconButton Title="@localizer["export"]" Disabled=@exportButtonDisabled Size="Size.Small" Icon="@Icons.Material.Filled.PictureAsPdf" OnClick="DownloadExport" />
                 </MudStack>
+
+                <MudText Typo="Typo.h6" Class="overflow-hidden">
+                    @review.Name
+                </MudText>
                 <MudMarkdown Value="@review.Content"
                              Styling="Styling"
                              TableCellMinWidth="100"
@@ -58,6 +61,7 @@
     private MudMarkdownStyling Styling { get; } = new();
     private List<ReviewImage> images = new();
     private bool isLoading = true;
+    private bool exportButtonDisabled = false;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -90,6 +94,12 @@
                 StateHasChanged();
             }
         }
+    }
+    private async Task DownloadExport()
+    {
+        snackBar.Add(localizer["downloadwaiting"]);
+        exportButtonDisabled=true;
+        await reviewExporter.ExportReview(review);
     }
     private string GetEditHref(Review context)
     {
