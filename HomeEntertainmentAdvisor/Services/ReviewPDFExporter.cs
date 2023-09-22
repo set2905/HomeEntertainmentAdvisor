@@ -20,11 +20,12 @@ namespace HomeEntertainmentAdvisor.Services
         public async Task ExportReview(Review review)
         {
             ChromePdfRenderer renderer = new ChromePdfRenderer();
-            StringBuilder markdownBuilder = new(review.Content);
+            StringBuilder markdownBuilder = new($"### {review.Name}\n");
+            markdownBuilder.AppendLine($"{review.Content}");
             IEnumerable<ReviewImage> images = (await imagesRepo.GetImagesForReview(review.Id));
             foreach (ReviewImage img in images)
             {
-                markdownBuilder.Append($"![{img.FileName}]({img.Url})");
+                markdownBuilder.AppendLine($"![{img.FileName}]({img.Url})");
             }
             PdfDocument contentPDF = renderer.RenderMarkdownStringAsPdf(markdownBuilder.ToString());
             await blazorDownloadFileService.DownloadFile($"{review.Name}.pdf",
