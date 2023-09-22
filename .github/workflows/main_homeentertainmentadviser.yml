@@ -53,5 +53,5 @@ jobs:
         with:
           app-name: 'HomeEntertainmentAdviser'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E39C0D6FEB7E4EB58C19D966B30585B3 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_169FA65835EF4CF78E6AB9FA8DAF6F4A }}
           package: .
