@@ -144,6 +144,9 @@
   <data name="notfound" xml:space="preserve">
     <value>Обзор не найден</value>
   </data>
+  <data name="notowner" xml:space="preserve">
+    <value>Этот ресурс не принадлежит вам</value>
+  </data>
   <data name="pagename" xml:space="preserve">
     <value>Редактировать обзор</value>
   </data>
@@ -156,10 +159,19 @@
   <data name="quote" xml:space="preserve">
     <value>Цитата</value>
   </data>
+  <data name="reviewexists" xml:space="preserve">
+    <value>Обзор уже существует для </value>
+  </data>
   <data name="reviewname" xml:space="preserve">
     <value>Название обзора</value>
   </data>
+  <data name="saved" xml:space="preserve">
+    <value>Обзор сохранен</value>
+  </data>
   <data name="tags" xml:space="preserve">
     <value>Тэги</value>
+  </data>
+  <data name="usernotfound" xml:space="preserve">
+    <value>пользователь не найден</value>
   </data>
 </root>

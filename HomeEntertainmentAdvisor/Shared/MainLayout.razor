@@ -10,7 +10,7 @@
     <MudAppBar WrapContent="false" Dense="false" Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
         <MudContainer MaxWidth="MaxWidth.ExtraSmall">
-            <MudTextField  AdornmentColor="Color.Success" Margin="Margin.Dense" @bind-Value="Search" Variant="Variant.Text" InputType="InputType.Text" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" OnAdornmentClick="HandleSearchClicked" />
+            <MudTextField Class="searchfield" AdornmentColor="Color.Success" Margin="Margin.Dense" @bind-Value="Search" Variant="Variant.Text" InputType="InputType.Text" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" OnAdornmentClick="HandleSearchClicked" />
         </MudContainer>
         <MudSpacer />
         <MudContainer Style="width:auto" Class="d-none d-md-block">
@@ -72,8 +72,9 @@
     .mud-nav-item {
         width: auto;
     }
-    .mud-input-text{
-        color: var(--mud-palette-primary-text);
+
+    .searchfield .mud-input-text {
+        color: var(--mud-palette-primary-text) !important; 
     }
 
     .mud-success-text {

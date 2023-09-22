@@ -20,6 +20,11 @@ namespace HomeEntertainmentAdvisor.Services
             this.reviewLikesRepo= reviewLikesRepo;
             this.userManager = userManager;
         }
+        /// <summary>
+        /// Updated user total likes
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>Cached likes or updated likes, depending on last cache update</returns>
         public async Task<User?> TryUpdateUserLikes(string userId)
         {
             User? user = await userManager.FindByIdAsync(userId);
@@ -35,12 +40,23 @@ namespace HomeEntertainmentAdvisor.Services
             else
                 return user;
         }
+        /// <summary>
+        /// Checks if review is liked by user
+        /// </summary>
+        /// <param name="review"></param>
+        /// <param name="userId"></param>
+        /// <returns>true, if user like exisitng. false otherwise</returns>
         public async Task<bool> IsLikedByUser(Review review, string userId)
         {
             ReviewLike? like = await reviewLikesRepo.GetById((review.Id, userId));
             if (like == null) return false;
             return true;
         }
+        /// <summary>
+        /// Updates review like count
+        /// </summary>
+        /// <param name="review"></param>
+        /// <returns>Cached likes or updated likes, depending on last cache update</returns>
         public async Task<int> TryUpdateReviewLikeCount(Review review)
         {
             if (review.LastCacheUpdate < DateTime.Now-TimeSpan.FromSeconds(LIKECOUNT_UPDATE_SECONDS))
@@ -54,6 +70,13 @@ namespace HomeEntertainmentAdvisor.Services
             else
                 return review.CachedLikes;
         }
+        /// <summary>
+        /// Adds like to the review with specified id from user with specified id
+        /// </summary>
+        /// <param name="reviewId"></param>
+        /// <param name="userId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<bool> LikeReview(Guid reviewId, string userId, CancellationToken cancellationToken = default)
         {
             Review? review = await reviewRepo.GetById(reviewId);
@@ -64,6 +87,13 @@ namespace HomeEntertainmentAdvisor.Services
             return true;
 
         }
+        /// <summary>
+        /// Removes exiting like from review
+        /// </summary>
+        /// <param name="reviewId"></param>
+        /// <param name="userId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>true, if like removal is succesful</returns>
         public async Task<bool> RemoveLikeReview(Guid reviewId, string userId, CancellationToken cancellationToken = default)
         {
             Review? review = await reviewRepo.GetById(reviewId);

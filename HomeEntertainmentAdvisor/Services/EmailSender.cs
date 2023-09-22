@@ -16,7 +16,13 @@ namespace HomeEntertainmentAdvisor.Services
         {
             this.settings=settings;
         }
-
+        /// <summary>
+        /// Sends email to specified address, with specified subject and html content 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="subject"></param>
+        /// <param name="htmlMessage"></param>
+        /// <returns></returns>
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
             using (var message = new MimeMessage())

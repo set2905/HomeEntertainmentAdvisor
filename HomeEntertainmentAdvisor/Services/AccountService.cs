@@ -19,7 +19,12 @@ namespace HomeEntertainmentAdvisor.Services
             this.roleManager=roleManager;
 
         }
-
+        /// <summary>
+        /// Sets block status to provided users
+        /// </summary>
+        /// <param name="userIds"></param>
+        /// <param name="blockValue"></param>
+        /// <returns></returns>
         public async Task<bool> SetBlock(IEnumerable<string> userIds, bool blockValue)
         {
             if (!await IsUserNotBlocked())
@@ -36,11 +41,22 @@ namespace HomeEntertainmentAdvisor.Services
             }
             return true;
         }
-
+        /// <summary>
+        /// Gets <paramref name="take"/> users starting from <paramref name="skip"/> index
+        /// </summary>
+        /// <param name="skip"></param>
+        /// <param name="take"></param>
+        /// <returns></returns>
         public async Task<List<User>> GetUsers(int skip = 0, int take = 10)
         {
-            return await userManager.Users.Skip(skip).Take(10).ToListAsync();
+            return await userManager.Users.OrderBy(x=>x.UserName).Skip(skip).Take(10).ToListAsync();
         }
+        /// <summary>
+        /// Overwrites user roles with specified roles
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="roles"></param>
+        /// <returns></returns>
         public async Task<IdentityResult> OverwriteRoles(string userId, IEnumerable<string> roles)
         {
             if (!await IsUserNotBlocked())
@@ -52,11 +68,20 @@ namespace HomeEntertainmentAdvisor.Services
             var result = await userManager.AddToRolesAsync(user, roles);
             return result;
         }
+        /// <summary>
+        /// Get all existing roles 
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<string?>> GetAllRoles()
         {
             List<string?> roles = await roleManager.Roles.Select(x => x.Name).ToListAsync();
             return roles;
         }
+        /// <summary>
+        /// Gets all roles on a user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task<IList<string>> GetUserRoles(User user)
         {
             IList<string> roles = await userManager.GetRolesAsync(user);

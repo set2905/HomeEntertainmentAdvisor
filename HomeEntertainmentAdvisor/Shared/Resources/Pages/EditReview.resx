@@ -144,6 +144,9 @@
   <data name="notfound" xml:space="preserve">
     <value>Review not found</value>
   </data>
+  <data name="notowner" xml:space="preserve">
+    <value>You are not the owner of this resource</value>
+  </data>
   <data name="pagename" xml:space="preserve">
     <value>Edit review</value>
   </data>
@@ -156,10 +159,19 @@
   <data name="quote" xml:space="preserve">
     <value>Quote</value>
   </data>
+  <data name="reviewexists" xml:space="preserve">
+    <value>You already have a review for</value>
+  </data>
   <data name="reviewname" xml:space="preserve">
     <value>Review name</value>
   </data>
+  <data name="saved" xml:space="preserve">
+    <value>Review saved</value>
+  </data>
   <data name="tags" xml:space="preserve">
     <value>Tags</value>
+  </data>
+  <data name="usernotfound" xml:space="preserve">
+    <value>User could not be found!</value>
   </data>
 </root>

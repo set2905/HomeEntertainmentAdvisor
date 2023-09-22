@@ -16,7 +16,11 @@ namespace HomeEntertainmentAdvisor.Services
             this.imagesRepo=imagesRepo;
             this.blazorDownloadFileService=blazorDownloadFileService;
         }
-
+        /// <summary>
+        /// Exports review as pdf and downloads th file
+        /// </summary>
+        /// <param name="review"></param>
+        /// <returns></returns>
         public async Task ExportReview(Review review)
         {
             ChromePdfRenderer renderer = new ChromePdfRenderer();
