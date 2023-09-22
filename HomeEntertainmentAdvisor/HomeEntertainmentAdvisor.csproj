@@ -18,7 +18,6 @@
 
 
 	<ItemGroup>
-    <PackageReference Include="BlazorDownloadFile" Version="2.4.0.2" />
     <PackageReference Include="Blazored.FluentValidation" Version="2.1.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
     <PackageReference Include="CloudinaryDotNet" Version="1.22.0" />

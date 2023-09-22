@@ -1,22 +1,23 @@
 ﻿using MarkdownSharp;
-using BlazorDownloadFile;
 using HomeEntertainmentAdvisor.Domain.Repo.Interfaces;
 using HomeEntertainmentAdvisor.Models;
 using HomeEntertainmentAdvisor.Services.Interfaces;
 using System.Text;
 using HiQPdf;
+using Microsoft.JSInterop;
+using System.IO;
 
 namespace HomeEntertainmentAdvisor.Services
 {
     public class ReviewPDFExporter : IReviewExporter
     {
         private readonly IReviewImagesRepo imagesRepo;
-        private readonly IBlazorDownloadFileService blazorDownloadFileService;
+        private readonly IJSRuntime JS;
 
-        public ReviewPDFExporter(IReviewImagesRepo imagesRepo, IBlazorDownloadFileService blazorDownloadFileService)
+        public ReviewPDFExporter(IReviewImagesRepo imagesRepo, IJSRuntime JS)
         {
             this.imagesRepo=imagesRepo;
-            this.blazorDownloadFileService=blazorDownloadFileService;
+            this.JS=JS;
         }
         /// <summary>
         /// Exports review as pdf and downloads th file
@@ -33,21 +34,17 @@ namespace HomeEntertainmentAdvisor.Services
                 markdownBuilder.AppendLine($"![{img.FileName}]({img.Url})");
             }
             byte[] fileContent = GetFileContentFromMD(markdownBuilder.ToString());
-            await blazorDownloadFileService.DownloadFile($"{review.Name}.pdf",
-                                                        fileContent,
-                                                         32768,
-                                                         "application/octet-stream",
-                                                         null);
+            var fileStream = new MemoryStream(fileContent);
+            using var streamRef = new DotNetStreamReference(stream: fileStream);
+            await JS.InvokeVoidAsync("downloadFileFromStream", $"{review.Name}.pdf", streamRef);
         }
         private byte[] GetFileContentFromMD(string markdown)
         {
             Markdown markdownSharp = new();
             string html = markdownSharp.Transform(markdown);
             HtmlToPdf htmlToPdfConverter = new HtmlToPdf();
-            //htmlToPdfConverter.Document.FitPageHeight=true;
             htmlToPdfConverter.Document.ResizePageWidth=true;
             return htmlToPdfConverter.ConvertHtmlToMemory(html, "");
-            //return new byte[1];
         }
     }
 }
