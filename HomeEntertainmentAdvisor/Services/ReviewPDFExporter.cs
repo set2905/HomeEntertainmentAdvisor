@@ -13,6 +13,8 @@ namespace HomeEntertainmentAdvisor.Services
 
         public ReviewPDFExporter(IReviewImagesRepo imagesRepo, IBlazorDownloadFileService blazorDownloadFileService)
         {
+            if (IronPdf.Installation.AutomaticallyDownloadNativeBinaries!=true)
+                IronPdf.Installation.AutomaticallyDownloadNativeBinaries=true;
             this.imagesRepo=imagesRepo;
             this.blazorDownloadFileService=blazorDownloadFileService;
         }
