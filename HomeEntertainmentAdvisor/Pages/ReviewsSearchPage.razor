@@ -3,12 +3,12 @@
 @using HomeEntertainmentAdvisor.Pages.Shared
 @using HomeEntertainmentAdvisor.Services.Interfaces;
 @inject IReviewService reviewService
-
+@inject IStringLocalizer<ReviewsSearchPage> localizer
 <PageTitle>Review</PageTitle>
 <MudGrid Justify="Justify.Center">
     <MudItem xs="12" md="10">
         <MudText Typo="Typo.h3">
-            Search results by @Search:
+            @localizer["searchresults"] @Search:
         </MudText>
         <ReviewList Reviews="@reviews" />
 
