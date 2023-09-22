@@ -1,8 +1,10 @@
-﻿using BlazorDownloadFile;
+﻿using MarkdownSharp;
+using BlazorDownloadFile;
 using HomeEntertainmentAdvisor.Domain.Repo.Interfaces;
 using HomeEntertainmentAdvisor.Models;
 using HomeEntertainmentAdvisor.Services.Interfaces;
 using System.Text;
+using WkHtmlToPdfDotNet;
 
 namespace HomeEntertainmentAdvisor.Services
 {
@@ -13,8 +15,6 @@ namespace HomeEntertainmentAdvisor.Services
 
         public ReviewPDFExporter(IReviewImagesRepo imagesRepo, IBlazorDownloadFileService blazorDownloadFileService)
         {
-            if (IronPdf.Installation.AutomaticallyDownloadNativeBinaries!=true)
-                IronPdf.Installation.AutomaticallyDownloadNativeBinaries=true;
             this.imagesRepo=imagesRepo;
             this.blazorDownloadFileService=blazorDownloadFileService;
         }
@@ -25,7 +25,6 @@ namespace HomeEntertainmentAdvisor.Services
         /// <returns></returns>
         public async Task ExportReview(Review review)
         {
-            ChromePdfRenderer renderer = new ChromePdfRenderer();
             StringBuilder markdownBuilder = new($"### {review.Name}\n");
             markdownBuilder.AppendLine($"{review.Content}");
             IEnumerable<ReviewImage> images = (await imagesRepo.GetImagesForReview(review.Id));
@@ -33,12 +32,42 @@ namespace HomeEntertainmentAdvisor.Services
             {
                 markdownBuilder.AppendLine($"![{img.FileName}]({img.Url})");
             }
-            PdfDocument contentPDF = renderer.RenderMarkdownStringAsPdf(markdownBuilder.ToString());
+            byte[] fileContent = GetFileContentFromMD(markdownBuilder.ToString());
             await blazorDownloadFileService.DownloadFile($"{review.Name}.pdf",
-                                                         contentPDF.BinaryData,
+                                                        fileContent,
                                                          32768,
                                                          "application/octet-stream",
                                                          null);
+        }
+        private byte[] GetFileContentFromMD(string markdown)
+        {
+            Markdown markdownSharp = new();
+            string html = markdownSharp.Transform(markdown);
+            var doc = new HtmlToPdfDocument()
+            {
+                GlobalSettings = {
+                    ColorMode = ColorMode.Color,
+                    Orientation = Orientation.Portrait,
+                    PaperSize = PaperKind.A4Plus,
+                                    },
+                Objects = {
+                    new ObjectSettings() {
+                        PagesCount = true,
+                        HtmlContent = html,
+                        WebSettings = { DefaultEncoding = "utf-8" },
+                        HeaderSettings = { FontSize = 9, Right = "[page]/[toPage]", Line = true, Spacing = 2.812 }
+                    }
+                }
+            };
+            using (PdfTools pdfTools = new PdfTools())
+            {
+                using (BasicConverter basicConverter = new BasicConverter(pdfTools))
+                {
+                    return basicConverter.Convert(doc);
+                }
+                   
+            }
+
         }
     }
 }
