@@ -4,7 +4,9 @@ using HomeEntertainmentAdvisor.Domain.Repo.Interfaces;
 using HomeEntertainmentAdvisor.Models;
 using HomeEntertainmentAdvisor.Services.Interfaces;
 using System.Text;
-using WkHtmlToPdfDotNet;
+using System.Xml;
+using Syncfusion.Pdf;
+using Syncfusion.HtmlConverter;
 
 namespace HomeEntertainmentAdvisor.Services
 {
@@ -43,29 +45,14 @@ namespace HomeEntertainmentAdvisor.Services
         {
             Markdown markdownSharp = new();
             string html = markdownSharp.Transform(markdown);
-            var doc = new HtmlToPdfDocument()
+            HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
+            htmlConverter.ConverterSettings.SplitImages = true;
+            htmlConverter.ConverterSettings.SplitTextLines = true;
+            PdfDocument document = htmlConverter.Convert(html,"");
+            using (MemoryStream ms = new MemoryStream())
             {
-                GlobalSettings = {
-                    ColorMode = ColorMode.Color,
-                    Orientation = Orientation.Portrait,
-                    PaperSize = PaperKind.A4Plus,
-                                    },
-                Objects = {
-                    new ObjectSettings() {
-                        PagesCount = true,
-                        HtmlContent = html,
-                        WebSettings = { DefaultEncoding = "utf-8" },
-                        HeaderSettings = { FontSize = 9, Right = "[page]/[toPage]", Line = true, Spacing = 2.812 }
-                    }
-                }
-            };
-            using (PdfTools pdfTools = new PdfTools())
-            {
-                using (BasicConverter basicConverter = new BasicConverter(pdfTools))
-                {
-                    return basicConverter.Convert(doc);
-                }
-                   
+                document.Save(ms);
+                return ms.ToArray();
             }
 
         }

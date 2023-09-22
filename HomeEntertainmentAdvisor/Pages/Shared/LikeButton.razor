@@ -5,14 +5,18 @@
 @inject IReviewService reviewService
 @inject IStringLocalizer<LikeButton> localizer
 @implements IDisposable
-<MudContainer Class="d-flex align-center px-0">
-    <MudText Typo="Typo.body2" Class="d-none d-sm-block">
-        @localizer["ishelpfull"]
-    </MudText>
-    <MudButton EndIcon="@Icons.Material.Filled.ThumbUp" IconColor="@likeButtonColor" OnClick="HandleLikeClicked">
-        @likeCount
-    </MudButton>
-</MudContainer>
+<AuthorizeView>
+    <MudContainer Class="d-flex align-center px-0">
+
+        <MudText Typo="Typo.body2" Class="d-none d-sm-block">
+            @localizer["ishelpfull"]
+        </MudText>
+        <MudButton EndIcon="@Icons.Material.Filled.ThumbUp" IconColor="@likeButtonColor" OnClick="HandleLikeClicked">
+            @likeCount
+        </MudButton>
+    </MudContainer>
+</AuthorizeView>
+
 @code {
     [Parameter]
     public Review? Review { get; set; }
