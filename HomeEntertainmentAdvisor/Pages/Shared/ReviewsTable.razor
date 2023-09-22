@@ -40,9 +40,9 @@
         </MudTd>
         <MudTd DataLabel="@localizer["likes"]">@context.CachedLikes</MudTd>
         <MudTd DataLabel="@localizer["status"]">@localizer[context.Status.ToString()]</MudTd>
-        <MudTd DataLabel="@localizer["actions"]">
-            <MudIconButton Size="Size.Small" Title="@localizer["view"]" Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Surface" Href="@GetHref(context)" />
-            <MudIconButton Size="Size.Small" Title="@localizer["edit"]" Icon="@Icons.Material.Filled.Edit" Color="Color.Surface" Href="@GetEditHref(context)" />
+        <MudTd DataLabel="@localizer["actions"]" Class="justify-start">
+            <MudIconButton Class="mr-4" Size="Size.Small" Title="@localizer["view"]" Icon="@Icons.Material.Filled.RemoveRedEye" Color="Color.Surface" Href="@GetHref(context)" />
+            <MudIconButton Class="mr-4" Size="Size.Small" Title="@localizer["edit"]" Icon="@Icons.Material.Filled.Edit" Color="Color.Surface" Href="@GetEditHref(context)" />
             <MudIconButton Size="Size.Small" Title="@localizer["delete"]" OnClick="()=>HandleDeleteReviewClicked(context)" Icon="@GetDeleteIconButton(context)" Color="Color.Surface" />
         </MudTd>
     </RowTemplate>
