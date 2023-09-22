@@ -4,7 +4,9 @@ using HomeEntertainmentAdvisor.Domain.Repo.Interfaces;
 using HomeEntertainmentAdvisor.Models;
 using HomeEntertainmentAdvisor.Services.Interfaces;
 using System.Text;
-using WkHtmlToPdfDotNet;
+using Microsoft.AspNetCore.Html;
+using System.Drawing.Printing;
+using SelectPdf;
 
 namespace HomeEntertainmentAdvisor.Services
 {
@@ -43,31 +45,16 @@ namespace HomeEntertainmentAdvisor.Services
         {
             Markdown markdownSharp = new();
             string html = markdownSharp.Transform(markdown);
-            var doc = new HtmlToPdfDocument()
-            {
-                GlobalSettings = {
-                    ColorMode = ColorMode.Color,
-                    Orientation = Orientation.Portrait,
-                    PaperSize = PaperKind.A4Plus,
-                                    },
-                Objects = {
-                    new ObjectSettings() {
-                        PagesCount = true,
-                        HtmlContent = html,
-                        WebSettings = { DefaultEncoding = "utf-8" },
-                        HeaderSettings = { FontSize = 9, Right = "[page]/[toPage]", Line = true, Spacing = 2.812 }
-                    }
-                }
-            };
-            using (PdfTools pdfTools = new PdfTools())
-            {
-                using (BasicConverter basicConverter = new BasicConverter(pdfTools))
-                {
-                    return basicConverter.Convert(doc);
-                }
-                   
-            }
+            HtmlToPdf converter = new HtmlToPdf();
 
+            // set converter options
+            converter.Options.PdfPageSize = PdfPageSize.A4;
+            converter.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
+
+
+            // create a new pdf document converting an url
+            PdfDocument doc = converter.ConvertHtmlString(html);
+            return doc.Save();
         }
     }
 }
