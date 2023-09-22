@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-HomeEntertainmentAdvisor-af87bb29-aa6a-4aba-9481-7781065b3484</UserSecretsId>
+	<PublishTrimmed>true</PublishTrimmed>
   </PropertyGroup>
 	
 	<ItemGroup>

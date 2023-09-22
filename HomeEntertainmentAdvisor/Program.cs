@@ -120,10 +120,12 @@ builder.Services.AddBlazorDownloadFile(ServiceLifetime.Scoped);
 
 string? smtpPassword = configuration["SMTP_Password"]??Environment.GetEnvironmentVariable("SMTP_PASSWORD");
 if (smtpPassword==null) throw new Exception("SMTP password is null");
-SMTPSettings smtpSettings = new("mashkovna2905@gmail.com", "HomeEntertainmentAdvisorAdmin", smtpPassword, "smtp.gmail.com", 587);
+//Надо бы куда-то в другое место
+string email = "mashkovna2905@gmail.com";
+string smtphost = "smtp.gmail.com";
+int smtpport = 587;
+SMTPSettings smtpSettings = new(email, "HomeEntertainmentAdvisorAdmin", smtpPassword, smtphost, smtpport);
 builder.Services.AddTransient<IEmailSender, EmailSender>(serviceProvider => new(smtpSettings));
-
-
 
 builder.Services.AddAuthorization(options =>
 {
