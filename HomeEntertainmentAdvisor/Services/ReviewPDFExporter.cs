@@ -4,9 +4,7 @@ using HomeEntertainmentAdvisor.Domain.Repo.Interfaces;
 using HomeEntertainmentAdvisor.Models;
 using HomeEntertainmentAdvisor.Services.Interfaces;
 using System.Text;
-using System.Xml;
-using Syncfusion.Pdf;
-using Syncfusion.HtmlConverter;
+using HiQPdf;
 
 namespace HomeEntertainmentAdvisor.Services
 {
@@ -45,16 +43,11 @@ namespace HomeEntertainmentAdvisor.Services
         {
             Markdown markdownSharp = new();
             string html = markdownSharp.Transform(markdown);
-            HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
-            htmlConverter.ConverterSettings.SplitImages = true;
-            htmlConverter.ConverterSettings.SplitTextLines = true;
-            PdfDocument document = htmlConverter.Convert(html,"");
-            using (MemoryStream ms = new MemoryStream())
-            {
-                document.Save(ms);
-                return ms.ToArray();
-            }
-
+            HtmlToPdf htmlToPdfConverter = new HtmlToPdf();
+            //htmlToPdfConverter.Document.FitPageHeight=true;
+            htmlToPdfConverter.Document.ResizePageWidth=true;
+            return htmlToPdfConverter.ConvertHtmlToMemory(html, "");
+            //return new byte[1];
         }
     }
 }
