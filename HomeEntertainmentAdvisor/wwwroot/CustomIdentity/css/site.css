@@ -13,17 +13,17 @@
     }
 
 .btn-primary {
-    color: var(--mud-palette-text-primary);
+    /*color: var(--mud-palette-text-primary);*/
     background-color: var(--mud-palette-primary);
     border-color: var(--mud-palette-primary);
 }
 .btn-primary:hover {
-    color: var(--mud-palette-text-primary);
+    /*color: var(--mud-palette-text-primary);*/
     background-color: var(--mud-palette-primary);
     border-color: var(--mud-palette-primary);
 }
     .btn-primary:focus {
-        color: var(--mud-palette-text-primary);
+        /*color: var(--mud-palette-text-primary);*/
         background-color: var(--mud-palette-primary);
         border-color: var(--mud-palette-primary);
     }

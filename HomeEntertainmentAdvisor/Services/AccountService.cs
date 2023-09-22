@@ -1,11 +1,8 @@
 ﻿using HomeEntertainmentAdvisor.Models;
-using HomeEntertainmentAdvisor.Pages;
 using HomeEntertainmentAdvisor.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeEntertainmentAdvisor.Services

@@ -43,7 +43,6 @@ if (builder.Environment.IsDevelopment())
         Console.WriteLine(ex.Message);
     }
     connectionString =Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING")?? builder.Configuration.GetConnectionString("DefaultConnection");
-
 }
 else
 {
@@ -64,9 +63,6 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString)
     .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.DetachedLazyLoadingWarning)));
 
-
-
-
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
@@ -85,22 +81,19 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireUppercase = false;
 });
 
-
 builder.Services.AddAuthentication()
     .AddFacebook(facebookOptions =>
     {
-        facebookOptions.AppId = fbId;
-        facebookOptions.AppSecret = fbSecret;
+        facebookOptions.AppId = fbId??string.Empty;
+        facebookOptions.AppSecret = fbSecret??string.Empty;
     })
     .AddGoogle(googleOptions =>
     {
-        googleOptions.ClientId = googleId;
-        googleOptions.ClientSecret = googleSecret;
+        googleOptions.ClientId = googleId??string.Empty;
+        googleOptions.ClientSecret = googleSecret??string.Empty;
     });
 
-
 builder.Services.AddTransient<AppExceptionHandlingMiddleware>();
-
 
 builder.Services.AddTransient<ICommentsRepo, CommentsRepo>();
 builder.Services.AddTransient<IMediaPiecesRepo, MediaPiecesRepo>();
@@ -167,7 +160,6 @@ var app = builder.Build();
 app.UseResponseCompression();
 app.UseMiddleware<AppExceptionHandlingMiddleware>();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -175,7 +167,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -210,10 +201,8 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "An error occurred while seeding the database.");
     }
 }
-
 app.MapControllers();
 app.MapBlazorHub();
 app.MapHub<CommentHub>("/commenthub");
 app.MapFallbackToPage("/_Host");
-
 app.Run();
