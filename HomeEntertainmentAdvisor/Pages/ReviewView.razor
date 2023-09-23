@@ -28,7 +28,7 @@
                     <AuthorizeView Roles="admin">
                         <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Edit" Href="@GetEditHref(review)" />
                     </AuthorizeView>
-                    <MudIconButton Title="@localizer["export"]" Disabled=@exportButtonDisabled Size="Size.Small" Icon="@Icons.Material.Filled.PictureAsPdf" OnClick="DownloadExport" />
+                    @*<MudIconButton Title="@localizer["export"]" Disabled=@exportButtonDisabled Size="Size.Small" Icon="@Icons.Material.Filled.PictureAsPdf" OnClick="DownloadExport" />*@
                 </MudStack>
 
                 <MudText Typo="Typo.h6" Class="overflow-hidden">
