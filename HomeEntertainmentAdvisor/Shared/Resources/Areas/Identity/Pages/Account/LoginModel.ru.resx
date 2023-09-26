@@ -120,6 +120,9 @@
   <data name="blocked" xml:space="preserve">
     <value>Ваш аккаунт заблокирован</value>
   </data>
+  <data name="confirmemail" xml:space="preserve">
+    <value>Подтвердите адрес электронной почты</value>
+  </data>
   <data name="forgot" xml:space="preserve">
     <value>Забыли пароль?</value>
   </data>

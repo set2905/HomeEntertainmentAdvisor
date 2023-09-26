@@ -120,6 +120,9 @@
   <data name="blocked" xml:space="preserve">
     <value>Your user account is blocked.</value>
   </data>
+  <data name="confirmemail" xml:space="preserve">
+    <value>Confirm your Email</value>
+  </data>
   <data name="forgot" xml:space="preserve">
     <value>Forgot your password?</value>
   </data>
